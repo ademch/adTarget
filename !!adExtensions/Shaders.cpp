@@ -19,13 +19,15 @@ void GPUProgram::printInfoLog(GLhandleARB object)
 	int maxLength = 0;
 	glGetObjectParameterivARB(object, GL_OBJECT_INFO_LOG_LENGTH_ARB, &maxLength);
 
-	char *infoLog = new char[maxLength];
-	glGetInfoLogARB(object, maxLength, &maxLength, infoLog);
+	if (maxLength)
+	{
+		char *infoLog = new char[maxLength];
+		glGetInfoLogARB(object, maxLength, &maxLength, infoLog);
 
-	if (infoLog[0] != 0)
 		printf("%s\n", infoLog);
 
-delete [] infoLog;
+		delete [] infoLog;
+	}
 }
 
 
@@ -112,7 +114,7 @@ GLint GLSL_AbstractPipeline::glGetUniformLocationARBassert(GLhandleARB programOb
 }
 
 
-bool GLSL_AbstractPipeline::CreateShader(char* name, char* nameVertexProgram, char* nameFragmentProgram)
+bool GLSL_AbstractPipeline::CreateShader(const char* name, const char* nameVertexProgram, const char* nameFragmentProgram)
 {
 GLcharARB* shaderData;
 
@@ -132,7 +134,7 @@ GLcharARB* shaderData;
 }
 
 
-bool GLSL_AbstractPipeline::CreateShaderR(char* name, char* sourceVertexProgram, char* sourceFragmentProgram)
+bool GLSL_AbstractPipeline::CreateShaderR(const char* name, const char* sourceVertexProgram, const char* sourceFragmentProgram)
 {
 	GLcharARB* shaderData;
 

@@ -51,7 +51,7 @@ public:
 	    bUseShaderPipeline = false;
 	}
 
-	~GLSL_AbstractPipeline()
+	virtual ~GLSL_AbstractPipeline()
 	{
 		destroy_shaders();
 	}
@@ -79,8 +79,8 @@ public:
 	}
 
 protected:
-	bool CreateShader(char* name, char* nameVertexProgram, char* nameFragmentProgram);
-	bool CreateShaderR(char* name, char* sourceVertexProgram, char* sourceFragmentProgram);
+	bool CreateShader(const char* name, const char* nameVertexProgram, const char* nameFragmentProgram);
+	bool CreateShaderR(const char* name, const char* sourceVertexProgram, const char* sourceFragmentProgram);
 	GLint glGetUniformLocationARBassert(GLhandleARB programObj, const GLcharARB *name);
 
 private:

@@ -26,7 +26,9 @@ int saveGreyscaleBMP(char *fname, unsigned char *buf, int _width, int _height, i
 		palImage.dataOut      = buf;
 
 		for (int i = 0; i<256; i++) {
-			palImage.palette[i].rgbBlue = palImage.palette[i].rgbGreen = palImage.palette[i].rgbRed = i;
+			palImage.palette[i].rgbBlue  = i;
+			palImage.palette[i].rgbGreen = i;
+			palImage.palette[i].rgbRed   = i;
 			palImage.palette[i].rgbReserved = 0;
 		}
 	}
@@ -90,7 +92,7 @@ int loadGreyscaleBMP(char *filename, unsigned char **dataOutPtr, BITMAPINFOHEADE
     // verify that this is a .BMP file by checking bitmap id
     if (bmfh.bfType != 0x4D42) {
         fclose(fp);
-        return NULL;
+        return false;
     }
 
     //read the bitmap info header
@@ -156,6 +158,7 @@ int loadGreyscaleBMP(char *filename, unsigned char **dataOutPtr, BITMAPINFOHEADE
 
 	delete [] palette;
 	free(data);
+
     return TRUE;
 }
 

@@ -33,7 +33,7 @@ public:
 		bRenderGUIdecoration  = true;
 
 		fUserScale = 1.f;
-		fZoomFactor = 0.8f;
+		fZoomFactor = 0.5f;	// updated to match POLYItan, before was 0.8f
 
 		trackball(curquat, 0.0, 0.0, 0.0, 0.0);
 

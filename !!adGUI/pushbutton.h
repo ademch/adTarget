@@ -1,8 +1,9 @@
 #ifndef PUSHBUTTON_H
 #define PUSHBUTTON_H
 
-#include "glfont.h"
+
 #include "button.h"
+#include <string>
 
 class PushButton : public Button
 {

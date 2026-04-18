@@ -32,7 +32,7 @@ posx(x), posy(y), _text(str), val_min(_v_min),val_max(_v_max)
 void ColorMap::Draw()
 {
 float t;
-int i;
+
 Vec3 curColor;
 
 	if (active)

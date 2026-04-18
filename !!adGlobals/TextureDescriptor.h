@@ -3,6 +3,7 @@
 #define TEXTURE_DESCRIPTOR_H
 
 #include <map>
+#include <string>
 
 class TextureDescriptor
 {

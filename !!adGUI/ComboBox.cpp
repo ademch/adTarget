@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ComboBox.h"
 #include <gl\gl.h>
-#include <gl\glut.h>
+#include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 
 extern GLFONT font;
@@ -99,7 +99,7 @@ void ComboBox::Draw()
 		glEnable(GL_BLEND);
 		
 		glFontBegin(&font);
-		int iListItem = 0;
+		unsigned int iListItem = 0;
 		std::vector<std::string>::iterator iter;
 		for (iter = items.begin(); iter != items.end(); iter++, iListItem++)
 		{

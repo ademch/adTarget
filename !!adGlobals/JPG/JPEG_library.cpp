@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "JPEG_library.h"
 
+
 // Here's the routine that will replace the standard error_exit method:
 METHODDEF(void) my_error_exit(j_common_ptr cinfo)
 {

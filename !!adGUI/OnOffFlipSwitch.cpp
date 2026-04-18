@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "OnOffFlipSwitch.h"
-#include <gl\glut.h>
+#include "../!!adGlobals/glut/glut.h"
 
 
 OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float scale)

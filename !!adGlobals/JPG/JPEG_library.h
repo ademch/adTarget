@@ -1,3 +1,5 @@
+
+#include <setjmp.h>
 #include "../../!!adGlobals/JPG/jpeg-9e/jpeglib.h"
 
 

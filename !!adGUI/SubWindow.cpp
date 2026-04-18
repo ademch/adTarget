@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <gl/glut.h>
+#include "../!!adGlobals/glut/glut.h"
 #include "glfont.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 
@@ -19,16 +19,16 @@ GLfloat m[4][4];
 	glEnable(GL_SCISSOR_TEST);
 
 	glClearColor(clrBackground.X, clrBackground.Y, clrBackground.Z, 0.0);
-	//очистка активного буфера цвета кадра и буфера глубины
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_PROJECTION);
-	//инициализация верхней матрицы на стеке единичной матрицой
+
 	glLoadIdentity();
-	//умножение верхней матрицы на стеке на матрицу параллельного проецирования
+
 	glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
 
-	//выбор стека матриц модельно-видовых преобразований
+
 	glMatrixMode(GL_MODELVIEW);
 
 	glLoadIdentity();

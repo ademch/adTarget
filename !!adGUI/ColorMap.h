@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "../!!adGlobals/vector_math.h"
+#include <string>
 
 class ColorMap
 {

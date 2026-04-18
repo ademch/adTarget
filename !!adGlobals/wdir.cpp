@@ -65,7 +65,7 @@ return dir_project;
 }
 
 
-char* FullPathToFile(char* fileName)
+char* FullPathToFile(const char* fileName)
 {
 	static char strProjDir[512];
 
@@ -74,11 +74,11 @@ char* FullPathToFile(char* fileName)
 }
 
 
-char* GetFileExtension(char* fileName)
+char* GetFileExtension(const char* fileName)
 {
 	static char strFileExt[12];
 
-	char* extPos = strrchr(fileName, '.');
+	const char* extPos = strrchr(fileName, '.');
 	if (extPos == NULL) return NULL;
 
 	return strcpy(strFileExt, extPos);

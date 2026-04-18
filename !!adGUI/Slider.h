@@ -2,11 +2,13 @@
 #define SLIDER_H
 
 
-#include <gl/glut.h>
+#include "../!!adGlobals/glut/glut.h"
 #include "glfont.h"
 #include <assert.h>
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
+#include "SubWindow.h"
+#include <string>
 
 extern GLFONT font;
 
@@ -61,7 +63,7 @@ public:
 		bDrawComment = true;
 
 		fTickGranularity = 1.0f;
-		fValueGranularity = 0.0f;
+		fValueGranularity = 1.0f;	// changed to match POLYItan branch
 
 		bFocused = false;
 		vColor_focused   = Vecc4(0.1,0.8,0.1,0.7);
@@ -194,13 +196,13 @@ public:
 				*ptr_fVal_cur = int(round(*ptr_fVal_cur));
 
 				float fRemainder = fmod(*ptr_fVal_cur, fValueGranularity);
-				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0; // fix float representation aspect 0.1000000001
+				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0.0f; // fix float representation aspect 0.1000000001
 				*ptr_fVal_cur = (*ptr_fVal_cur) - fRemainder;
 			}
-			else if ((SlType == SL_FLOAT) && (fValueGranularity > 0.0f))
+			else if ((SlType == SL_FLOAT))// && (fValueGranularity > 0.0f)) removed to match POLYItan branch
 			{
 				float fRemainder = fmod(*ptr_fVal_cur, fValueGranularity);
-				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0; // fix float representation aspect 0.1000000001
+				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0.0f; // fix float representation aspect 0.1000000001
 				*ptr_fVal_cur = (*ptr_fVal_cur) - fRemainder;
 			}
 
@@ -235,13 +237,13 @@ public:
 				*ptr_fVal_cur = int(round(*ptr_fVal_cur));
 
 				float fRemainder = fmod(*ptr_fVal_cur, fValueGranularity);
-				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0; // fix float representation aspect 0.1000000001
+				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0.0f; // fix float representation aspect 0.1000000001
 				*ptr_fVal_cur = (*ptr_fVal_cur) - fRemainder;
 			}
-			else if ((SlType == SL_FLOAT) && (fValueGranularity > 0.0f))
+			else if ((SlType == SL_FLOAT))// && (fValueGranularity > 0.0f)) removed to match POLYItan branch
 			{
 				float fRemainder = fmod(*ptr_fVal_cur, fValueGranularity);
-				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0; // fix float representation aspect 0.1000000001
+				if (abs(fRemainder - fValueGranularity) < 1e-6) fRemainder = 0.0f; // fix float representation aspect 0.1000000001
 				*ptr_fVal_cur = (*ptr_fVal_cur) - fRemainder;
 			}
 
@@ -298,9 +300,10 @@ protected:
 	int m_iBox_width;
 	int m_iBox_sep;
 
+	float* ptr_fVal_cur;
 	float m_fVal_min;
 	float m_fVal_max;
-	float* ptr_fVal_cur;
+
 
 	Vec4 vColor_focused;
 	Vec4 vColor_defocused;

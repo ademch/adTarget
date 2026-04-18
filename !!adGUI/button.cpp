@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "button.h"
 #include <gl/gl.h>
-#include <gl/glut.h>
+#include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 
 extern GLFONT font;

@@ -82,6 +82,7 @@ void glFontDestroy (GLFONT *Font)
 {
 	//Free character memory
 	free(Font->Char);
+	Font->Char = NULL;
 }
 //*********************************************************
 void glFontBegin (GLFONT *Font)

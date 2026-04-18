@@ -221,7 +221,7 @@ inline Vec3 operator*(Matr4 m, Vec3 v);
 Vec3   operator*(Vec3 v, Matr4 m);
 Vec3   operator^(Matr4 m, Vec3 v);
 Vec3d  operator^(Matr4d m, Vec3d v);
-inline Matr4 operator*(Matr4 m1,Matr4 m2);
+inline Matr4 operator*(const Matr4& m1, const Matr4& m2);
 
 // Matrix generators
 Matr4  Mat4MakeIdent();

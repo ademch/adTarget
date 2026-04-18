@@ -4,7 +4,7 @@
 #define WDIR_H
 
 char* getProjectDir();
-char* FullPathToFile(char* fileName);
-char* GetFileExtension(char* fileName);
+char* FullPathToFile(const char* fileName);
+char* GetFileExtension(const char* fileName);
 
 #endif

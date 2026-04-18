@@ -7,7 +7,7 @@
 
 #include "vector_math.h"
 
-inline float sqr(float a) {return a*a;}
+inline float  sqr(float a)  {return a*a;}
 inline double sqr(double a) {return a*a;}
 
 // Artificial geometry pipeline --------------------------------------------------------------
@@ -419,7 +419,7 @@ Vec3d u;
 }
 
 
-Matr4 operator*(Matr4 m1, Matr4 m2)
+Matr4 operator*(const Matr4& m1, const Matr4& m2)
 {
 unsigned char j;
 Matr4 u;
