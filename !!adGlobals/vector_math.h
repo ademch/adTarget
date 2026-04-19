@@ -128,6 +128,7 @@ Vec4 Vecc4(Vec3 v3=Vecc3(0.0,0.0,0.0), float w=1.0);			//constructor
 Vec4 Vecp4(float a[4]);											//pointer caster
 
 // double precision
+Vec2  Vecc2(Vec3d vec);
 Vec3  Vecc3(Vec3d vec);				                            //caster
 Vec3d Vecc3d(Vec3 vec);				                            //caster
 Vec3d Vecc3d(double x=0.0,double y=0.0,double z=0.0);			//constructor

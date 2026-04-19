@@ -11,8 +11,8 @@ Arrow::Arrow(std::string caption, int px, int py, int length, float size)
 
 	glFontGetLength(caption.c_str(), &font, m_TextWidth, m_Height, size);
 
-	_size = size;
-	_text = caption;
+	_size   = size;
+	_text   = caption;
 	_length = length;
 
 	vColor = Vecc4(0.1f, 0.7f, 0.1f, 1.0f);
@@ -35,6 +35,7 @@ void Arrow::Draw()
 	glDisable(GL_BLEND);
 
 	glDisable(GL_TEXTURE_2D);
+	glLineWidth(2.0);
 	glBegin(GL_LINES);
 		glVertex3i(posx,             posy,    4);
 		glVertex3i(posx + _length,   posy,    4);

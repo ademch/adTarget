@@ -108,8 +108,13 @@ Vec3 u;
 return u;
 }			   
 
+Vec2 Vecc2(Vec3d vec)
+{
+	return Vecc2((float)vec.X, (float)vec.Y);
+}
+
 Vec3 Vecc3(Vec3d vec)
-{	return Vecc3((float)vec.X, (float)vec.Y, (float)vec.Z);}			   
+{	return Vecc3((float)vec.X, (float)vec.Y, (float)vec.Z);}	   
 
 Vec3d Vecc3d(double x,double y,double z)
 {
