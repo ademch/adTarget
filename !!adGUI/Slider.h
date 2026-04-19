@@ -142,6 +142,8 @@ public:
 
 		glDisable(GL_TEXTURE_2D);
 
+		// draw border
+
 		glLineWidth(1);
 		glBegin(GL_LINE_LOOP);
 			glVertex3f(posx,               posy,                                4);
@@ -149,6 +151,8 @@ public:
 			glVertex3f(posx + m_iBox_width,posy + _text_height*fBoxHeightScale, 4);
 			glVertex3f(posx,               posy + _text_height*fBoxHeightScale, 4);
 		glEnd();
+
+		// draw "mercury"
 
 		float fullness= (*ptr_fVal_cur - m_fVal_min)/(m_fVal_max - m_fVal_min);
 
@@ -164,8 +168,7 @@ public:
 		glEnd();
 
 		// Draw ticks
-		{
-			glBegin(GL_LINES);
+		glBegin(GL_LINES);
 			float iTickCount = (m_fVal_max - m_fVal_min)/fTickGranularity;
 			float fCurrentVal = m_fVal_min;
 			unsigned int iTickStep = int(ceil(iTickCount/100.0f));	// decimate ticks to have tidy look
@@ -176,8 +179,7 @@ public:
 				glVertex3f(posx + fullness*m_iBox_width, posy - 5, 4);
 				fCurrentVal = fCurrentVal + float(iTickStep*fTickGranularity);
 			}
-			glEnd();
-		}
+		glEnd();
 	}
 
 	bool Clicked(int button, int state, int x, int y)

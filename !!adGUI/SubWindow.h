@@ -49,10 +49,13 @@ public:
 	virtual bool KeyboardFunc(unsigned char key, int x, int y);
 	virtual void MouseWheelFunc(int state,int delta,int x,int y);
 
-	virtual void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
+	virtual void Reshape(int iBottomLeftX,int iBottomLeftY, int iWidth,int iHeight)
 	{
-		m_iBottomLeftX = iBottomLeftX;	m_iBottomLeftY = iBottomLeftY;
-		m_iWidth = iWidth;	m_iHeight = iHeight;
+		m_iBottomLeftX = iBottomLeftX;
+		m_iBottomLeftY = iBottomLeftY;
+
+		m_iWidth  = iWidth;
+		m_iHeight = iHeight;
 	}
 	virtual void SetupGraphicsPipeline();
 

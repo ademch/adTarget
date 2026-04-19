@@ -19,7 +19,7 @@ public:
 		m_height = iH;
 	}
 
-	unsigned int m_uiTextureID;
+	unsigned int m_uiTextureID;		// driver texture ID
 	int m_width;
 	int m_height;
 };
@@ -31,9 +31,10 @@ class TextureBank
 public:
 	~TextureBank()
 	{
-		std::map<std::string, TextureDescriptor*>::iterator iter;
+		typeTexBankIter iter;
 		for (iter = bank.begin(); iter != bank.end(); ++iter)
 		{
+			// delete TextureDescriptor
 			delete iter->second;
 		}
 
