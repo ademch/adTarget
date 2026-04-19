@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Histogram.h"
 #include <gl\GL.h>
+#include "glfont.h"
 #include <assert.h>
 
 extern GLFONT font;

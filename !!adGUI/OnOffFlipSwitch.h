@@ -1,12 +1,9 @@
 #ifndef ONOFFFLIPSWITCH_H
 #define ONOFFFLIPSWITCH_H
 
-#include "glfont.h"
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
 #include "../!!adGUI/SubWindow.h"
-
-extern GLFONT font;
 
 class OnOffFlipSwitch : public GUI_Element
 {

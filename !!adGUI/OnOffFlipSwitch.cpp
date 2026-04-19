@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "OnOffFlipSwitch.h"
 #include "../!!adGlobals/glut/glut.h"
+#include "glfont.h"
+
+extern GLFONT font;
 
 
 OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float scale)

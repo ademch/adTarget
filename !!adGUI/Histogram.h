@@ -1,5 +1,6 @@
-#pragma once
-#include "glfont.h"
+#ifndef HISTOGRAM_H
+#define HISTOGRAM_H
+
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
 
@@ -47,3 +48,5 @@ private:
 	float SigmaPercentage(unsigned int sigmaCount);
 
 };
+
+#endif

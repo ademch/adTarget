@@ -1,4 +1,6 @@
-#include <assert.h>
+#ifndef COLORMAP_H
+#define COLORMAP_H
+
 #include "../!!adGlobals/vector_math.h"
 #include <string>
 
@@ -31,3 +33,5 @@ protected:
 	Vec3 end_col;
 	bool active;
 };
+
+#endif
