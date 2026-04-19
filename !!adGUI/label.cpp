@@ -9,6 +9,9 @@ Label::Label(std::string caption, int px, int py, float size)
 	posx = px;
 	posy = py;
 
+	iHPosShift = px;
+	iVPosShift = py;
+
 	_text=caption;
 	_size=size;
 

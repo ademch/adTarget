@@ -9,10 +9,15 @@ extern int window_w;
 extern int window_h;
 
 
-ColorMap::ColorMap(std::string str, int x, int y, float _v_min, float _v_max):
-posx(x), posy(y), _text(str), val_min(_v_min),val_max(_v_max)
+ColorMap::ColorMap(std::string str, int px, int py, float _v_min, float _v_max): _text(str), val_min(_v_min),val_max(_v_max)
 {
 	assert(_v_min < _v_max);
+
+	posx = px;
+	posy = py;
+
+	iHPosShift = px;
+	iVPosShift = py;
 
 	_text_scale = 5;
 	_text_sep = 10;

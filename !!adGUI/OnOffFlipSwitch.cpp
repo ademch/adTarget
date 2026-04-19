@@ -11,6 +11,9 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 	posx = px;
 	posy = py;
 
+	iHPosShift = px;
+	iVPosShift = py;
+
 	glFontGetLength(strCaption.c_str(), &font, _text_width, _text_height, scale);
 
 	_size = scale;

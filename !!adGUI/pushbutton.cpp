@@ -6,7 +6,7 @@
 const float i_alpha=0.4;
 
 PushButton::PushButton(std::string caption, float size, float r, float g,float b, int px, int py, bool active):
-Button(caption, size, r, g,b, px, py)
+		Button(caption, size, r, g,b, px, py)
 {
 	if (active)
 		flare=true;

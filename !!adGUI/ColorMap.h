@@ -1,21 +1,21 @@
 #ifndef COLORMAP_H
 #define COLORMAP_H
 
+#include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
 #include <string>
 
-class ColorMap
+class ColorMap : public GUI_Element
 {
 public:
-	ColorMap(std::string str, int x, int y, float _v_min, float _v_max);
+	ColorMap(std::string str, int px, int py, float _v_min, float _v_max);
 	void Draw();
 	bool Clicked(int button, int state, int x, int y);
 	void Hover(int x, int y);
 	void SetBoxWidth(int _b_w);
 	void SetBoxHeight(int _b_s);
+
 protected:
-	int posx;
-	int posy;
 	std::string _text;
 	int _box_width;
 	int _box_height;

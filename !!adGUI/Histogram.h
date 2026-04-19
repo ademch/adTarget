@@ -38,9 +38,6 @@ private:
 	float fMaxG;
 	float fMaxB;
 
-	int posx;
-	int posy;
-
 	// Sigma mapping
 	unsigned int aSigmaMap[256];
 	float aSigmaGUI[7];

@@ -1,12 +1,16 @@
 #include "stdafx.h"
+#include "SubWindow.h"
 #include "../!!adGlobals/glut/glut.h"
 #include "glfont.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 
+
 extern GLFONT font;
 
-#include "SubWindow.h"
-
+// 3D scene setup for children
+// 1. setup viewport
+// 2. Draw frame
+// 3. Setup modelview and projection matrices for 3D objects
 void OpenGLSubWindow::Render()
 {
 GLfloat m[4][4];
@@ -66,6 +70,9 @@ GLfloat m[4][4];
 }
 
 
+// 3D scene setup for children
+// 1. setup viewport
+// 2. Setup modelview and projection matrices for 3D objects
 void OpenGLSubWindow::SetupGraphicsPipeline()
 {
 GLfloat m[4][4];
@@ -91,14 +98,33 @@ GLfloat m[4][4];
 	glMultMatrixf(&m[0][0]);
 }
 
+void OpenGLSubWindow::SetupGraphicsPipelineWithIdentityModelViewMatrix()
+{
+	GLfloat m[4][4];
+
+	// setup window specific params
+	glViewport(m_iBottomLeftX, m_iBottomLeftY, m_iWidth, m_iHeight);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glOrtho(-m_iWidth / 2.0f, m_iWidth / 2.0f, -m_iHeight / 2.0f, m_iHeight / 2.0f, -3000, 3000);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+}
+
 void OpenGLSubWindow::ResetView()
 {
-	vUserSceneTranslation = Vecc3();
 	fUserScale = 1.f;
+
+	vUserSceneTranslation = Vecc3();
 	matrUserScale = Mat4MakeIdent();
 	trackball(curquat, 0.0, 0.0, 0.0, 0.0);
 }
 
+// Does not depend on any OpenGL matrix
 // x,y window coordinates from (0,0) to (w,h) (having y flipped of cause)
 void OpenGLSubWindow::MotionFunc(int x,int y)
 {
@@ -128,6 +154,7 @@ void OpenGLSubWindow::MotionFunc(int x,int y)
 	}
 }
 
+// Does not depend on any OpenGL matrix
 // x,y window coordinates from (0,0) to (w,h) (having y flipped of cause)
 void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 {
@@ -166,6 +193,7 @@ bool OpenGLSubWindow::KeyboardFunc(unsigned char key, int x, int y)
 	return false;
 }
 
+// Does not depend on any OpenGL matrix
 // x,y window coordinates from (0,0) to (w,h) (having y flipped of cause)
 void OpenGLSubWindow::MouseWheelFunc(int state,int delta,int x,int y)
 {

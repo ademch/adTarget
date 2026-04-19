@@ -54,6 +54,9 @@ public:
 		posx = px;
 		posy = py;
 
+		iHPosShift = px;
+		iVPosShift = py;
+
 		glFontGetLength(strCaption.c_str(), &font, _text_width, _text_height, scale);
 		m_iBox_width=250;
 		m_iBox_sep  =20;

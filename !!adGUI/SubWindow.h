@@ -49,6 +49,7 @@ public:
 	virtual bool KeyboardFunc(unsigned char key, int x, int y);
 	virtual void MouseWheelFunc(int state,int delta,int x,int y);
 
+	// params are in window coordinates
 	virtual void Reshape(int iBottomLeftX,int iBottomLeftY, int iWidth,int iHeight)
 	{
 		m_iBottomLeftX = iBottomLeftX;
@@ -58,6 +59,7 @@ public:
 		m_iHeight = iHeight;
 	}
 	virtual void SetupGraphicsPipeline();
+	virtual void SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 	void ResetView();
 
@@ -70,11 +72,12 @@ public:
 	float fZoomFactor;
 
 protected:
-	int m_iBottomLeftX;
-	int m_iBottomLeftY;
+	
+	int m_iBottomLeftX;	// in window coords
+	int m_iBottomLeftY;	// in window coords
 
-	int m_iWidth;
-	int m_iHeight;
+	int m_iWidth;		// in window coords
+	int m_iHeight;		// in window coords
 
 	float curquat[4];
 

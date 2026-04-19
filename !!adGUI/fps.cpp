@@ -10,6 +10,10 @@ FPS::FPS(int px, int py, float size): _size(size)
 {
 	posx = px;
 	posy = py;
+
+	iHPosShift = px;
+	iVPosShift = py;
+
 	vColor_focused = Vecc4(0.1f, 0.8f, 0.1f, 0.7f);
 
 	QueryPerformanceFrequency(&ticksPerSecond);

@@ -31,12 +31,6 @@ public:
    virtual void Hover(int x, int y);
    virtual bool Clicked(int button, int state, int x, int y);
 
-   void Reposition(int px, int py)
-   {
-	   posx = px;
-	   posy = py;
-   }
-
 protected:
 	float m_TextSize;
 

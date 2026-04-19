@@ -14,9 +14,14 @@ extern GLFONT font;
 #define SigmaLL  5
 #define SigmaLLL 6
 
-Histogram::Histogram(std::string caption, int px, int py, int width, int height, float size) :
-	                 posx(px), posy(py)
+Histogram::Histogram(std::string caption, int px, int py, int width, int height, float size)
 {
+	posx = px;
+	posy = py;
+
+	iHPosShift = px;
+	iVPosShift = py;
+
 	m_width  = float(width);
 	m_height = float(height);
 

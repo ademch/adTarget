@@ -11,6 +11,9 @@ Button::Button(std::string caption, int px, int py, int width, float size)
 	posx = px;
 	posy = py;
 
+	iHPosShift = px;
+	iVPosShift = py;
+
 	glFontGetLength(caption.c_str(),&font, m_TextWidth, m_Height, size);
 
 	m_TextSize = size;
