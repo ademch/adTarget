@@ -203,8 +203,10 @@ float PointDistSqr(Vec3 pt1, Vec3 pt2)
 {    return sqr(pt1.X-pt2.X) + sqr(pt1.Y-pt2.Y)+ sqr(pt1.Z-pt2.Z);  }
 
 float PointDistSqr(Vec2 pt1, Vec2 pt2)
-{	return sqr(pt1.X - pt2.X) + sqr(pt1.Y - pt2.Y); }
+{	 return sqr(pt1.X - pt2.X) + sqr(pt1.Y - pt2.Y); }
 
+Vec2 VecMix(Vec2 v1, Vec2 v2, float t)
+{	 return v1*(1.0f-t) + v2*t;  }
 
 Vec3 VecMix(Vec3 v1, Vec3 v2, float t)
 {    return v1*(1.0f-t) + v2*t;  }

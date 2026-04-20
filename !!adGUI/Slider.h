@@ -146,7 +146,6 @@ public:
 		glDisable(GL_TEXTURE_2D);
 
 		// draw border
-
 		glLineWidth(1);
 		glBegin(GL_LINE_LOOP);
 			glVertex3f(posx,               posy,                                4);
@@ -156,7 +155,6 @@ public:
 		glEnd();
 
 		// draw "mercury"
-
 		float fullness= (*ptr_fVal_cur - m_fVal_min)/(m_fVal_max - m_fVal_min);
 
 		// limit fullness when ptr_fVal_cur is set from outside

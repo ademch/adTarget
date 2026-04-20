@@ -6,7 +6,6 @@
 #include "../../!!adGlobals/adOpenGLUtilities.h"
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
-#include <gl\gl.h>
 
 #include <vector>
 
@@ -40,7 +39,7 @@ protected:
 		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 		for (auto iterElement : liGUI_Elements)
-			iterElement->Hover(v3DCoords.X, v3DCoords.Y);
+			iterElement->Hover(int(v3DCoords.X), int(v3DCoords.Y));
 	}
 
 	bool MouseFuncGUI(int button, int state, int x, int y)
@@ -54,7 +53,7 @@ protected:
 
 		for (auto iterElement : liGUI_Elements)
 		{
-			if (iterElement->Clicked(button, state, v3DCoords.X, v3DCoords.Y))
+			if (iterElement->Clicked(button, state, int(v3DCoords.X), int(v3DCoords.Y)))
 				return true;
 		}
 
@@ -63,13 +62,13 @@ protected:
 
 	void MotionFuncGUI(int x, int y)
 	{
-		SetupGraphicsPipelineWithIdentityModelViewMatrix();
+		SetupGraphicsPipelineWithIdentityModelViewMatrix(); 
 
 		Vec3d v3DCoords;
 		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 		for (auto iterElement : liGUI_Elements)
-			iterElement->Drag(v3DCoords.X, v3DCoords.Y);
+			iterElement->Drag(int(v3DCoords.X), int(v3DCoords.Y));
 	}
 
 	void ReshapeGUI(int iWidth, int iHeight)
@@ -95,6 +94,13 @@ protected:
 
 			iterElement->Reposition(px, py);
 		}
+	}
+
+	void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
+	{
+		OpenGLSubWindow::Reshape(iBottomLeftX, iBottomLeftY, iWidth, iHeight);
+
+		ReshapeGUI(iWidth, iHeight);
 	}
 
 

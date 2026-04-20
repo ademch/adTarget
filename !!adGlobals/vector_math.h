@@ -206,6 +206,7 @@ Vec2   VecRotate(Vec2 v, float angle);
 
 float  AngleBetweenVectors(Vec2 vec1, Vec2 vec2);
 
+Vec2   VecMix(Vec2 v1, Vec2 v2, float t);
 Vec3   VecMix(Vec3 v1, Vec3 v2, float t);
 VecUB4 VecMix(VecUB4 v1, VecUB4 v2, float t);
 

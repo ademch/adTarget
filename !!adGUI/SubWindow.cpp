@@ -100,8 +100,6 @@ GLfloat m[4][4];
 
 void OpenGLSubWindow::SetupGraphicsPipelineWithIdentityModelViewMatrix()
 {
-	GLfloat m[4][4];
-
 	// setup window specific params
 	glViewport(m_iBottomLeftX, m_iBottomLeftY, m_iWidth, m_iHeight);
 

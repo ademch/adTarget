@@ -2,14 +2,14 @@
 #define GUI_ELEMENT_H
 
 enum HorizontalAlignment {
-	HALIGN_CUSTOM,
+	HALIGN_CUSTOM,	// legacy code gets this value
 	HALIGN_LEFT,
 	HALIGN_CENTER,
 	HALIGN_RIGHT
 };
 
 enum VerticalAlignment {
-	VALIGN_CUSTOM,
+	VALIGN_CUSTOM,	// legacy code gets this value
 	VALIGN_TOP,
 	VALIGN_CENTER,
 	VALIGN_BOTTOM
