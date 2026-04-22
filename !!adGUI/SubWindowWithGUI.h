@@ -14,10 +14,41 @@ class OpenGLSubWindowWithGUI : public OpenGLSubWindow
 public:
 
 	OpenGLSubWindowWithGUI(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight) :
-		                   OpenGLSubWindow(iBottomLeftX, iBottomLeftY, iWidth, iHeight)
+		   OpenGLSubWindow(iBottomLeftX, iBottomLeftY, iWidth, iHeight)
 	{
+		fBottomLeftXperc = 0.0f;
+		fBottomLeftYperc = 0.0f;
+
+		fWidthPerc  = 1.0f;
+		fHeightPerc = 1.0f;
+	}
+	OpenGLSubWindowWithGUI(int iParentWidth, int iParentHeight,
+		                   float _fBottomLeftXperc, float _fBottomLeftYperc,
+		                   float _fWidthPerc, float _fHeightPerc) :
+		   OpenGLSubWindow(int(iParentWidth*_fBottomLeftXperc),
+			               int(iParentHeight*_fBottomLeftYperc),
+			               int(iParentWidth*_fWidthPerc),
+			               int(iParentHeight*_fHeightPerc))
+	{
+		fBottomLeftXperc = _fBottomLeftXperc;
+		fBottomLeftYperc = _fBottomLeftYperc;
+
+		fWidthPerc  = _fWidthPerc;
+		fHeightPerc = _fHeightPerc;
 	}
 	virtual ~OpenGLSubWindowWithGUI() {}
+
+	void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
+	{
+		OpenGLSubWindow::Reshape(iBottomLeftX, iBottomLeftY, iWidth, iHeight);
+
+		ReshapeGUI(iWidth, iHeight);
+	}
+
+	float fBottomLeftXperc;
+	float fBottomLeftYperc;
+	float fWidthPerc;
+	float fHeightPerc;
 
 protected:
 
@@ -96,15 +127,9 @@ protected:
 		}
 	}
 
-	void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
-	{
-		OpenGLSubWindow::Reshape(iBottomLeftX, iBottomLeftY, iWidth, iHeight);
-
-		ReshapeGUI(iWidth, iHeight);
-	}
-
 
 private:
+
 };
 
 
