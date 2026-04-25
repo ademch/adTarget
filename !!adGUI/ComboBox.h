@@ -4,9 +4,8 @@
 #include "glfont.h"
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
-#include "SubWindow.h"
 #include <vector>
-
+#include <functional>
 
 class ComboBox: public GUI_Element
 {
@@ -27,9 +26,8 @@ public:
    ComboBox(std::string caption, int px, int py, int width, float size);
    ~ComboBox();
 
-   OpenGLSubWindow*OnClickThis;
-   bool(OpenGLSubWindow::*OnClick)();
-   bool(OpenGLSubWindow::*OnSelect)(int);
+   std::function<bool()>    OnClick;
+   std::function<bool(int)> OnSelect;
 
    void Draw();
    virtual void Hover(int x, int y);
@@ -43,8 +41,8 @@ public:
 protected:
 	float m_TextSize;
 
-	bool bExpanded;
-	int iGUIpushed;
+	bool  bExpanded;
+	int   iGUIpushed;
 
 	float m_TextWidth;
 

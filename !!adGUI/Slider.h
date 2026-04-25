@@ -1,7 +1,6 @@
 #ifndef SLIDER_H
 #define SLIDER_H
 
-
 #include "../!!adGlobals/glut/glut.h"
 #include "glfont.h"
 #include <assert.h>
@@ -9,6 +8,7 @@
 #include "gui_element.h"
 #include "SubWindow.h"
 #include <string>
+#include <functional>
 
 extern GLFONT font;
 
@@ -28,10 +28,9 @@ public:
 
 	float fBoxHeightScale;
 
-	OpenGLSubWindow*OnClickThis;
-	bool(OpenGLSubWindow::*OnClick)();
-	float(OpenGLSubWindow::*OnDrawValue)(float);
-	bool(OpenGLSubWindow::*OnClickDrag)();
+	std::function<bool()>      OnClick;
+	std::function<bool(float)> OnDrawValue;
+	std::function<bool()>      OnClickDrag;
 
 	void SetValue(float _val, float _v_min, float _v_max)
 	{
@@ -45,7 +44,7 @@ public:
 	}
 
 	Slider(std::string strCaption, int px, int py, float _v_min, float _v_max, float* _v_cur, float scale):
-	       _text(strCaption), size(scale), ptr_fVal_cur(_v_cur),m_fVal_min(_v_min),m_fVal_max(_v_max)
+	 _text(strCaption), size(scale), ptr_fVal_cur(_v_cur),m_fVal_min(_v_min),m_fVal_max(_v_max)
 	{
 		assert(_v_min < _v_max);
 		assert(_v_max >= *_v_cur);
@@ -73,11 +72,6 @@ public:
 		vColor_defocused = Vecc4(0.1,0.5,0.1,0.7);
 
 		fBoxHeightScale= 0.7;
-
-		OnClickThis = NULL;
-		OnDrawValue = NULL;
-		OnClick     = NULL;
-		OnClickDrag = NULL;
 	}
 	
 	void Draw()
@@ -96,8 +90,8 @@ public:
 		if (bDrawComment)
 		{
 			float fValue = *ptr_fVal_cur;
-			if (OnClickThis != NULL && OnDrawValue != NULL)
-				fValue = (OnClickThis->*OnDrawValue)(fValue);
+			if (OnDrawValue != NULL)
+				fValue = OnDrawValue(fValue);
 
 			if (SlType == SL_FLOAT)
 				sprintf(text_buf, "%6.2f  %s", fValue, _text.c_str());
@@ -122,12 +116,12 @@ public:
 		// Render min max values
 		glFontBegin(&font);
 			float fValueMin = m_fVal_min;
-			if (OnClickThis != NULL && OnDrawValue != NULL)
-				fValueMin = (OnClickThis->*OnDrawValue)(fValueMin);
+			if (OnDrawValue != NULL)
+				fValueMin = OnDrawValue(fValueMin);
 
 			float fValueMax = m_fVal_max;
-			if (OnClickThis != NULL && OnDrawValue != NULL)
-				fValueMax = (OnClickThis->*OnDrawValue)(fValueMax);
+			if (OnDrawValue != NULL)
+				fValueMax = OnDrawValue(fValueMax);
 
 			if (SlType == SL_INT) {
 				sprintf(text_buf, "%d", int(fValueMin));
@@ -215,7 +209,7 @@ public:
 		
 		if (bMouseButtonPressed)
 		{
-			if (OnClickThis!=NULL && OnClick != NULL) (OnClickThis->*OnClick)();
+			if (OnClick != NULL) OnClick();
 			bMouseButtonPressed = false;
 
 			return true;
@@ -250,7 +244,7 @@ public:
 				*ptr_fVal_cur = (*ptr_fVal_cur) - fRemainder;
 			}
 
-			if (OnClickThis != NULL && OnClickDrag != NULL) (OnClickThis->*OnClickDrag)();
+			if (OnClickDrag != NULL) OnClickDrag();
 
 			return true;
 		}
@@ -283,7 +277,7 @@ public:
 		if (*ptr_fVal_cur < m_fVal_min )
 			*ptr_fVal_cur = m_fVal_min;
 
-		if (OnClickThis!=NULL && OnClick != NULL) (OnClickThis->*OnClick)();
+		if (OnClick != NULL) OnClick();
 	}
 
 	void SetBoxWidth(int _b_w) {

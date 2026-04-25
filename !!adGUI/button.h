@@ -5,6 +5,7 @@
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
 #include "SubWindow.h"
+#include <functional>
 
 
 class Button : public GUI_Element
@@ -12,7 +13,7 @@ class Button : public GUI_Element
 public:
    float m_TextWidth;
    float m_Height;
-   int m_Width;
+   int   m_Width;
 
    bool bFocused;
    bool bEnabled;
@@ -24,8 +25,7 @@ public:
    Button(std::string caption, int px, int py, int width, float size);
    ~Button();
 
-   OpenGLSubWindow* OnClickThis;
-   bool(OpenGLSubWindow::*OnClick)();
+   std::function<bool()> OnClick;
 
    void Draw();
    virtual void Hover(int x, int y);

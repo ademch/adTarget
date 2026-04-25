@@ -4,6 +4,7 @@
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
 #include "../!!adGUI/SubWindow.h"
+#include <functional>
 
 class OnOffFlipSwitch : public GUI_Element
 {
@@ -27,18 +28,17 @@ public:
    virtual void Hover(int x, int y);
    virtual bool Clicked(int button, int state, int x, int y);
 
-   OpenGLSubWindow* OnPreClickThis;
-   bool(OpenGLSubWindow::*OnPreClick)(bool bON_Request);
+   std::function<bool(bool bON_Request)> OnPreClick;
 
    void SetOnOff(bool _bOn, bool bCallCallback);
 
 protected:
 	float _size;
-	int m_iBox_width;
-	int m_iBox_sep;
+	int   m_iBox_width;
+	int   m_iBox_sep;
 
-	bool bFocused;
-	int iGUIpushed;
+	bool  bFocused;
+	int   iGUIpushed;
 };
 
 #endif

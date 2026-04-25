@@ -27,9 +27,6 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 
 	bPushButton = false;
 
-	OnPreClickThis = NULL;
-	OnPreClick     = NULL;
-
 	vColor_focused   = Vecc4(0.1, 0.8, 0.1, 0.7);
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
 	
@@ -122,8 +119,8 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 
 		if (bPushButton)
 		{
-			if ((OnPreClickThis != NULL) && (OnPreClick != NULL)) {
-				if ((OnPreClickThis->*OnPreClick)(!bON))
+			if (OnPreClick != NULL) {
+				if (OnPreClick(!bON))
 					bON = !bON;
 			}
 			else
@@ -141,8 +138,8 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 			{
 				// on/off is triggered on mouse up
 
-				if ((OnPreClickThis != NULL) && (OnPreClick != NULL)) {
-					if ((OnPreClickThis->*OnPreClick)(!bON))
+				if (OnPreClick != NULL) {
+					if (OnPreClick(!bON))
 						bON = !bON;
 				}
 				else
@@ -161,9 +158,9 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 void OnOffFlipSwitch::SetOnOff(bool _bOn, bool bCallCallback)
 {
 	if (bCallCallback) {
-		if ((OnPreClickThis != NULL) && (OnPreClick != NULL) && (_bOn != bON))
+		if ((OnPreClick != NULL) && (_bOn != bON))
 		{
-			if ((OnPreClickThis->*OnPreClick)(_bOn))
+			if (OnPreClick(_bOn))
 				bON = _bOn;
 		}
 	}

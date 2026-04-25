@@ -33,9 +33,6 @@ ComboBox::ComboBox(std::string caption, int px, int py, int width, float size)
 	vColor_focused   = Vecc4(0.1, 0.8, 0.1, 0.7);
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
 
-	OnClickThis = NULL;
-	OnClick     = NULL;
-	OnSelect    = NULL;
 }
 
 ComboBox::~ComboBox()
@@ -148,7 +145,7 @@ bool ComboBox::Clicked(int button, int state, int x, int y)
 
 			bExpanded = false;
 
-			if ((OnClickThis != NULL) && (OnSelect != NULL)) (OnClickThis->*OnSelect)(iSelected);
+			if (OnSelect != NULL) OnSelect(iSelected);
 
 			return true;
 		}
@@ -159,7 +156,7 @@ bool ComboBox::Clicked(int button, int state, int x, int y)
 		{
 			if ((x < posx + m_Width) && (x > posx) && (y < posy + m_Height) && (y > posy))
 			{
-				if ((OnClickThis != NULL) && (OnClick != NULL)) (OnClickThis->*OnClick)();
+				if (OnClick != NULL) OnClick();
 				
 				iGUIpushed = 0;
 				return true;
