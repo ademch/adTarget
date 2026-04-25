@@ -35,6 +35,7 @@ protected:
 	bool MouseFuncGUI(int button, int state, int x, int y);
 	void MotionFuncGUI(int x, int y);
 	void ReshapeGUI(int iWidth, int iHeight);
+	void MouseWheelFuncGUI(int state, int delta, int x, int y);
 
 
 private:

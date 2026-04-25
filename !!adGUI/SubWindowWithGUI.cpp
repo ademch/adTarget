@@ -90,6 +90,17 @@ void OpenGLSubWindowWithGUI::MotionFuncGUI(int x, int y)
 		iterElement->Drag(int(v3DCoords.X), int(v3DCoords.Y));
 }
 
+void OpenGLSubWindowWithGUI::MouseWheelFuncGUI(int state, int delta, int x, int y)
+{
+	SetupGraphicsPipelineWithIdentityModelViewMatrix();
+
+	Vec3d v3DCoords;
+	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+
+	for (auto iterElement : liGUI_Elements)
+		iterElement->Wheel(state, delta, int(v3DCoords.X), int(v3DCoords.Y));
+}
+
 void OpenGLSubWindowWithGUI::ReshapeGUI(int iWidth, int iHeight)
 {
 	for (auto iterElement : liGUI_Elements)
