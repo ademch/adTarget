@@ -31,7 +31,7 @@ protected:
 	std::vector<GUI_Element*> liGUI_Elements;
 
 	void RenderGUI();
-	void PassiveMotionFuncGUI(int x, int y);
+	bool PassiveMotionFuncGUI(int x, int y);
 	bool MouseFuncGUI(int button, int state, int x, int y);
 	void MotionFuncGUI(int x, int y);
 	void ReshapeGUI(int iWidth, int iHeight);

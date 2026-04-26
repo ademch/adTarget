@@ -50,7 +50,7 @@ void OpenGLSubWindowWithGUI::RenderGUI()
 		iterElement->Draw();
 }
 
-void OpenGLSubWindowWithGUI::PassiveMotionFuncGUI(int x, int y)
+bool OpenGLSubWindowWithGUI::PassiveMotionFuncGUI(int x, int y)
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
@@ -59,16 +59,18 @@ void OpenGLSubWindowWithGUI::PassiveMotionFuncGUI(int x, int y)
 
 	bool bResult = false;
 	for (auto iterElement : liGUI_Elements)
-		bResult |= iterElement->Hover(int(v3DCoords.X), int(v3DCoords.Y));
+	{
+		bResult = iterElement->Hover(int(v3DCoords.X), int(v3DCoords.Y));
+		
+		// Break if some GUI has handled hover
+		if (bResult) break;
+	}
 
-	if (!bResult)
-		glutSetCursor(GLUT_CURSOR_INHERIT);
+	return bResult;
 }
 
 bool OpenGLSubWindowWithGUI::MouseFuncGUI(int button, int state, int x, int y)
 {
-	bool result = false;
-
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 	Vec3d v3DCoords;
@@ -80,7 +82,7 @@ bool OpenGLSubWindowWithGUI::MouseFuncGUI(int button, int state, int x, int y)
 			return true;
 	}
 
-	return result;
+	return false;
 }
 
 void OpenGLSubWindowWithGUI::MotionFuncGUI(int x, int y)

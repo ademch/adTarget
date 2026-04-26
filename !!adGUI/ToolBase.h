@@ -29,7 +29,7 @@ public:
 	virtual void Render() {};
 
 	virtual void MotionFunc(Vec3 ptMouse) {};
-	virtual void PassiveMotionFunc(Vec3 ptMouse) {};
+	virtual bool PassiveMotionFunc(Vec3 ptMouse)                { return false; };
 	virtual bool MouseFunc(int button, int state, Vec3 ptMouse) { return false; };
 	virtual bool KeyboardFunc(unsigned char key, Vec3 ptMouse)  { return false; };
 	virtual void MouseWheelFunc(int state, int delta, Vec3 ptMouse) {};
@@ -42,10 +42,18 @@ public:
 			iterElement->Draw();
 	}
 
-	void PassiveMotionFuncGUI(Vec3 ptMouse)
+	bool PassiveMotionFuncGUI(Vec3 ptMouse)
 	{
+		bool bResult = false;
 		for (auto iterElement : liGUI_Elements)
+		{
 			iterElement->Hover(int(ptMouse.X), int(ptMouse.Y));
+
+			// Break if some GUI has handled hover
+			if (bResult) break;
+		}
+
+		return bResult;
 	}
 
 	bool MouseFuncGUI(int button, int state, Vec3 ptMouse)

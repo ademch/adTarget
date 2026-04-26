@@ -33,7 +33,7 @@ public:
 	std::function<bool()>    OnClick;
 	std::function<bool(int)> OnSelect;
 
-	void Draw();
+	virtual void Draw();
 	virtual bool Hover(int x, int y);
 	virtual bool Clicked(int button, int state, int x, int y);
 

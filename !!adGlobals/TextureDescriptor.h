@@ -14,7 +14,8 @@ public:
 		m_width  = w;
 		m_height = h;
 	}
-	void SetDimensions(int iW, int iH) {
+	void SetDimensions(int iW, int iH)
+	{
 		m_width  = iW;
 		m_height = iH;
 	}
@@ -50,7 +51,6 @@ public:
 
 		return iter->second;
 	}
-
 
 	std::map<std::string, TextureDescriptor*> bank;
 

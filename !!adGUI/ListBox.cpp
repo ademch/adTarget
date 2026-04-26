@@ -119,15 +119,21 @@ void ListBox::Draw()
 	glEnable(GL_BLEND);
 
 		glFontBegin(&font);
-			unsigned int iListItem = 0;
+
+			int iListItem = 0;
 			std::vector<std::string>::iterator iter;
 			for (iter = items.begin(); iter != items.end(); iter++, iListItem++)
 			{
-				if (iListItem == iSelected) glColor4f(0, 0, 0, 1);
-				else glColor4fv(&vColor_defocused.X);
+				if (iListItem >= m_Count) break;
 
-				glFontTextOut(iter->c_str(), posx + m_Height / 2, posy + m_Height*(m_Count-1) - iListItem * m_Height, 4, m_TextSize);
+				if (iListItem == iSelected)
+					glColor4f(0, 0, 0, 1);
+				else
+					glColor4fv(&vColor_defocused.X);
+
+				glFontTextOut(iter->substr(0,20).c_str(), posx + m_Height/2, posy + m_Height*(m_Count-1) - iListItem*m_Height, 4, m_TextSize);
 			}
+
 		glFontEnd();
 
 	glDisable(GL_BLEND);

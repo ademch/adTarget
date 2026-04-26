@@ -12,13 +12,13 @@ class ComboBox: public GUI_Element
 public:
    float m_Height;
    int   m_Width;
+
    std::string _text;
 
-   bool bFocused;
-   bool bEnabled;
-   bool bVisible;
-
    unsigned int iSelected;
+
+   bool  bEnabled;
+   bool  bVisible;
    
    Vec4 vColor_focused;
    Vec4 vColor_defocused;
@@ -29,7 +29,7 @@ public:
    std::function<bool()>    OnClick;
    std::function<bool(int)> OnSelect;
 
-   void Draw();
+   virtual void Draw();
    virtual bool Hover(int x, int y);
    virtual bool Clicked(int button, int state, int x, int y);
 
@@ -43,8 +43,9 @@ protected:
 
 	bool  bExpanded;
 	int   iGUIpushed;
-
+	bool  bFocused;
 	float m_TextWidth;
+
 
 private:
 	int iListPixelShift;
