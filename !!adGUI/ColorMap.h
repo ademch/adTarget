@@ -11,7 +11,8 @@ public:
 	ColorMap(std::string str, int px, int py, float _v_min, float _v_max);
 	void Draw();
 	bool Clicked(int button, int state, int x, int y);
-	void Hover(int x, int y);
+	bool Hover(int x, int y);
+
 	void SetBoxWidth(int _b_w);
 	void SetBoxHeight(int _b_s);
 

@@ -13,7 +13,7 @@ public:
 	PushButton();
 	~PushButton();
 
-	void Hover(int x, int y);
+	bool Hover(int x, int y);
 	bool ClickedD(int button, int state, int x, int y);
 	bool IsActive();
 };

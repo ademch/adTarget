@@ -32,14 +32,21 @@ Button::~Button()
 {
 }
 
-void Button::Hover(int x, int y)
+bool Button::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	if ((x<posx + m_Width) && (x>posx) && (y<posy+m_Height) && (y>posy) && bEnabled)
-		bFocused=true;
-	else
-		bFocused=false;
+	if ((x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
+	{
+		bFocused = bEnabled;
+		return true;
+	}
+
+	bFocused   = false;
+	iGUIpushed = 0;
+
+	return false;
 }
 
 
@@ -68,33 +75,31 @@ void Button::Draw()
 
 bool Button::Clicked(int button, int state, int x, int y)
 {
-
 	if (GUI_Element::Clicked(button, state, x, y)) return true;
 
 	if (!bEnabled) return false;
 
-	if ((state == GLUT_DOWN) && (x < posx + m_Width) && (x > posx) &&
-		                        (y < posy + m_Height) && (y > posy))
+	if ((x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
 	{
-		iGUIpushed = 1;
-		return true;
-	}
-	else
-	{
-		if (iGUIpushed)
+		if (state == GLUT_DOWN)
 		{
-			if ((x < posx + m_Width)  && (x > posx) &&
-				(y < posy + m_Height) && (y > posy))
+			iGUIpushed = 1;
+			return true;
+		}
+		// OnClick is going to happen only if mouse is released within the button boundaries
+		else
+		{
+			if (iGUIpushed)
 			{
 				if (OnClick != NULL) OnClick();
 
 				iGUIpushed = 0;
 				return true;
 			}
-
-			iGUIpushed = 0;
 		}
 	}
 
+	iGUIpushed = 0;
 	return false;
 }

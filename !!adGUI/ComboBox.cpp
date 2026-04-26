@@ -16,19 +16,19 @@ ComboBox::ComboBox(std::string caption, int px, int py, int width, float size)
 
 	glFontGetLength(caption.c_str(), &font, m_TextWidth, m_Height, size);
 
-	m_TextSize=size;
-	_text   = caption;
-	m_Width = width;
+	m_TextSize = size;
+	_text      = caption;
+	m_Width    = width;
 
 	iListPixelShift = 5;
 
-	bEnabled = true;
-	bVisible = true;
-	bFocused = false;
+	bEnabled   = true;
+	bVisible   = true;
+	bFocused   = false;
 	iGUIpushed = 0;
-	bExpanded = false;
-	iSelected = 0;
-	iHovered  = 0;
+	bExpanded  = false;
+	iSelected  = 0;
+	iHovered   = 0;
 
 	vColor_focused   = Vecc4(0.1, 0.8, 0.1, 0.7);
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
@@ -172,26 +172,32 @@ bool ComboBox::Clicked(int button, int state, int x, int y)
 }
 
 
-void ComboBox::Hover(int x, int y)
+bool ComboBox::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	if (!bEnabled) return;
-
-	if ((x<posx + m_Width) && (x>posx) && (y<posy+m_Height) && (y>posy))
-		bFocused=true;
+	if ((x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
+	{
+		bFocused = bEnabled;
+		return true;
+	}
 	else
-		bFocused=false;
+		bFocused = false;
 
-	if (bExpanded)
+	if (bExpanded && bEnabled)
 	{
 		if ((x < posx + m_Width) && (x > posx) &&
 			(y < posy + iListPixelShift + m_Height + m_Height*items.size()) && (y > posy + m_Height + iListPixelShift))
 		{
 			int iYLocal = y - posy - m_Height - iListPixelShift;
 			iHovered = iYLocal/m_Height;
+
+			return true;
 		}
 	}
+
+	return false;
 }
 
 

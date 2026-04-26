@@ -5,7 +5,7 @@
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
-
+#include "../!!adGlobals/glut/glut.h"
 #include <vector>
 
 
@@ -57,8 +57,12 @@ void OpenGLSubWindowWithGUI::PassiveMotionFuncGUI(int x, int y)
 	Vec3d v3DCoords;
 	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
+	bool bResult = false;
 	for (auto iterElement : liGUI_Elements)
-		iterElement->Hover(int(v3DCoords.X), int(v3DCoords.Y));
+		bResult |= iterElement->Hover(int(v3DCoords.X), int(v3DCoords.Y));
+
+	if (!bResult)
+		glutSetCursor(GLUT_CURSOR_INHERIT);
 }
 
 bool OpenGLSubWindowWithGUI::MouseFuncGUI(int button, int state, int x, int y)

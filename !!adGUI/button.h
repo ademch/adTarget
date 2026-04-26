@@ -28,7 +28,7 @@ public:
    std::function<bool()> OnClick;
 
    void Draw();
-   virtual void Hover(int x, int y);
+   virtual bool Hover(int x, int y);
    virtual bool Clicked(int button, int state, int x, int y);
 
 protected:

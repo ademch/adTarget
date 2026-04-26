@@ -326,3 +326,11 @@ void glWireRectangle(float fX_bottom, float fY_bottom, float fWidth, float fHeig
 		glVertex3f(fX_bottom,          fY_bottom + fHeight, fZ);
 	glEnd();
 }
+
+void glLine(float fXstart, float fYstart, float fXend, float fYend, float fZ)
+{
+	glBegin(GL_LINES);
+		glVertex3f(fXstart, fYstart, fZ);
+		glVertex3f(fXend,   fYend,   fZ);
+	glEnd();
+}

@@ -36,13 +36,17 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 
 OnOffFlipSwitch::~OnOffFlipSwitch() { }
 
-void OnOffFlipSwitch::Hover(int x, int y)
+bool OnOffFlipSwitch::Hover(int x, int y)
 {
 	if ((x < posx + m_iBox_width) && (x > posx) &&
-		(y < posy + _text_height) && (y > posy) && bEnabled)
-		bFocused=true;
-	else
-		bFocused=false;
+		(y < posy + _text_height) && (y > posy))
+	{
+		bFocused = bEnabled;
+		return true;
+	}
+
+	bFocused=false;
+	return false;
 }
 
 

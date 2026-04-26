@@ -251,14 +251,20 @@ public:
 		return false;
 	}
 
-	void Hover(int x, int y)
+	bool Hover(int x, int y)
 	{
 		GUI_Element::Hover(x, y);
 
-		if ((x<posx + m_iBox_width + 1) && (x>posx - 1) && (y<posy+_text_height) && (y>posy) && bEnabled)
-			bFocused=true;
-		else
-			bFocused=false;
+		if ((x < posx + m_iBox_width + 1) && (x > posx - 1) &&
+			(y < posy + _text_height)     && (y > posy))
+		{
+			bFocused = bEnabled;
+			return true;
+		}
+
+		bFocused = false;
+
+		return false;
 	}
 
 	void Wheel(int state,int delta,int x,int y)

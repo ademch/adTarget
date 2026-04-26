@@ -33,6 +33,7 @@ void glTexturedQuad(float fX_bottom, float fY_bottom, float fWidth, float fHeigh
 void glTexturedQuadMesh(float fX_bottom, float fY_bottom, float fWidth, float fHeight, float fZ = 0.0f, int iHorSlices = 10, int iVertSlices = 10);
 void glQuad(float fX_bottom, float fY_bottom, float fWidth, float fHeight, float fZ = 0.0f);
 void glWireRectangle(float fX_bottom, float fY_bottom, float fWidth, float fHeight, float fZ = 0.0f);
+void glLine(float fXstart, float fYstart, float fXend, float fYend, float fZ = 0.0f);
 
 void RenderTexturedQuad(unsigned int tex,
 		                float fX_bottom, float fY_bottom,

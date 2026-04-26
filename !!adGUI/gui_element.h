@@ -34,13 +34,14 @@ public:
 	virtual void Draw() {}
 
 	virtual bool Clicked(int button, int state, int x, int y) { return false; }
-	virtual bool Drag(int x, int y) { return false; }
-	virtual void Hover(int x, int y) { }
+	virtual bool Drag(int x, int y)  { return false; }
+	virtual bool Hover(int x, int y) { return false; }
 	virtual void Wheel(int state,int delta,int x,int y) { }
 
 	HorizontalAlignment hAlign;
 	VerticalAlignment   vAlign;
 
+	// New variables that hold relative shift relatively to alignment
 	int iHPosShift;
 	int iVPosShift;
 

@@ -93,7 +93,7 @@ bool ColorMap::Clicked(int button, int state, int x, int y)
 	return false;
 }
 
-void ColorMap::Hover(int x, int y)
+bool ColorMap::Hover(int x, int y)
 {
 //	if ((x<posx + _box_width) && (x>posx) && (y<posy+_text_height) && (y>posy))
 //	{	active=true; glutSetCursor(GLUT_CURSOR_INHERIT);}
