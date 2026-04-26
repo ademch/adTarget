@@ -59,4 +59,6 @@ protected:
 
 };
 
+TextureDescriptor* LoadTexture(int iWidth, int iHeight, unsigned char *data);
+
 #endif

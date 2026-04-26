@@ -3,11 +3,14 @@
 #include <gl\gl.h>
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
+#include <assert.h>
 
 extern GLFONT font;
 
 ListBox::ListBox(std::string caption, int px, int py, int width, int count, float size)
 {
+	assert(count >= 3);
+	
 	posx = px;
 	posy = py;
 
@@ -32,6 +35,8 @@ ListBox::ListBox(std::string caption, int px, int py, int width, int count, floa
 	iSelected  =  0;
 	iHovered   = -1;
 
+	iPeepHoleShift = 0;
+
 	bFocusedUp   = false;
 	bFocusedDown = false;
 
@@ -52,6 +57,10 @@ void ListBox::Draw()
 	GUI_Element::Draw();
 
 	if (!bVisible) return;
+
+	// Imagine iSelectedRowInPeepHole is zero, it becomes -1, -2, -3 when scrolled down
+	// When it is within 0 to m_Count-1 it becomes highlighted (visible)
+	int iSelectedRowInPeepHole = iSelected - iPeepHoleShift;
 
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
@@ -97,6 +106,18 @@ void ListBox::Draw()
 		glVertex3f(posx + m_Width - 0.7*m_Height, posy                    + m_Height, 5);
 		glVertex3f(posx + m_Width - 0.7*m_Height, posy + m_Height*m_Count - m_Height, 5);
 	glEnd();
+
+	// Scroller handle
+	{
+		float fStepSizePerClick = m_Height*(m_Count-3) / (items.size() - m_Count);
+		glColor3f(0, 0, 0);
+		glQuad(posx + m_Width - 1.2*m_Height, posy + m_Height*m_Count - 2.0*m_Height - fStepSizePerClick*iPeepHoleShift, m_Height, m_Height, 6);
+
+		// border
+		glColor4fv(&vColor_defocused.X);
+		glLineWidth(1);
+		glWireRectangle(posx + m_Width - 1.2*m_Height, posy + m_Height*m_Count - 2.0*m_Height - fStepSizePerClick*iPeepHoleShift, m_Height, m_Height, 7);
+	}
 	
 	// Scroll bar separator
 	glLineWidth(1);
@@ -104,7 +125,10 @@ void ListBox::Draw()
 
 	// selected item
 	glColor4fv(&vColor_defocused.X);	// defocused is brighter than grey
-	glQuad(posx + 2, posy + m_Height*(m_Count-1) - iSelected*m_Height + 2, m_Width - fScrollBarWidth - 4, m_Height - 4, 3.5);
+	if ((iSelectedRowInPeepHole >= 0) && (iSelectedRowInPeepHole < m_Count))
+	{
+		glQuad(posx + 2, posy + m_Height*(m_Count - 1) - iSelectedRowInPeepHole*m_Height + 2, m_Width - fScrollBarWidth - 4, m_Height - 4, 3.5);
+	}
 
 	// hovered item
 	if (iHovered >= 0)
@@ -121,12 +145,9 @@ void ListBox::Draw()
 		glFontBegin(&font);
 
 			int iListItem = 0;
-			std::vector<std::string>::iterator iter;
-			for (iter = items.begin(); iter != items.end(); iter++, iListItem++)
+			for (auto iter = items.begin() + iPeepHoleShift; (iter != items.end()) && (iListItem < m_Count); iter++, iListItem++)
 			{
-				if (iListItem >= m_Count) break;
-
-				if (iListItem == iSelected)
+				if ((iSelectedRowInPeepHole >= 0) && (iSelectedRowInPeepHole < m_Count) && (iSelectedRowInPeepHole == iListItem))
 					glColor4f(0, 0, 0, 1);
 				else
 					glColor4fv(&vColor_defocused.X);
@@ -155,6 +176,10 @@ bool ListBox::Clicked(int button, int state, int x, int y)
 			(y > posy)                      && (y < posy + m_Height))
 		{
 			iArrowDownPushed = 1;
+
+			// if number of items is bigger than our last view element
+			if (int32_t(items.size()) > m_Count + iPeepHoleShift) iPeepHoleShift++;
+
 			return true;
 		}
 
@@ -163,6 +188,9 @@ bool ListBox::Clicked(int button, int state, int x, int y)
 			(y > posy + m_Height * (m_Count - 1)) && (y < posy + m_Height * m_Count))
 		{
 			iArrowUpPushed = 1;
+
+			if (iPeepHoleShift > 0) iPeepHoleShift--;
+
 			return true;
 		}
 
@@ -180,7 +208,7 @@ bool ListBox::Clicked(int button, int state, int x, int y)
 
 				if (OnSelect != NULL) OnSelect(iRow);
 
-				iSelected = iRow;
+				iSelected = iRow + iPeepHoleShift;
 
 				return true;
 			}
@@ -245,6 +273,9 @@ bool ListBox::Hover(int x, int y)
 	}
 
 	iHovered = -1;
+	bFocusedDown = false;
+	bFocusedUp   = false;
+
 	return false;
 }
 
@@ -273,4 +304,24 @@ bool ListBox::SetSelected(std::string _str)
 	}
 
 	return false;
+}
+
+void ListBox::Wheel(int state, int delta, int x, int y)
+{
+	GUI_Element::Wheel(state, delta, x, y);
+
+	if (!bEnabled) return;
+
+	float fDelta = float(delta) / 120.0;
+
+	if (fDelta < 0.0)
+	{
+		// if number of items is bigger than our last view element
+		if (int32_t(items.size()) > m_Count + iPeepHoleShift) iPeepHoleShift++;
+	}
+	else
+	{
+		if (iPeepHoleShift > 0) iPeepHoleShift--;
+	}
+
 }

@@ -15,13 +15,14 @@ public:
 
 	std::string _text;
 
-	int   m_Count;
+	int  m_Count;
 
 	bool bFocusedUp;
 	bool bFocusedDown;
 	bool bEnabled;
 	bool bVisible;
 
+	// global selection in items
 	unsigned int iSelected;
 
 	Vec4 vColor_focused;
@@ -36,6 +37,7 @@ public:
 	virtual void Draw();
 	virtual bool Hover(int x, int y);
 	virtual bool Clicked(int button, int state, int x, int y);
+	virtual void Wheel(int state, int delta, int x, int y);
 
 	bool SetSelected(std::string);
 	std::string GetSelected();
@@ -57,6 +59,8 @@ private:
 
 	HCURSOR hCurGrab;
 	HCURSOR hCurGrabbing;
+
+	int iPeepHoleShift;
 };
 
 #endif
