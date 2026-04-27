@@ -32,8 +32,8 @@ public:
 
 		bRenderGUIdecoration  = true;
 
-		fUserScale = 1.f;
-		fZoomFactor = 0.5f;	// updated to match POLYItan, before was 0.8f
+		fUserScale  = 1.f;
+		fZoomFactor = 0.75f;	// 0.25, 0.5. 0.75 have perfect ieee representation
 
 		trackball(curquat, 0.0, 0.0, 0.0, 0.0);
 
@@ -44,9 +44,9 @@ public:
 	virtual void Render();
 
 	virtual void MotionFunc(int x,int y);
-	virtual void PassiveMotionFunc(int x,int y);
+	virtual void PassiveMotionFunc(int x, int y) {}
 	virtual void MouseFunc(int button,int state,int x,int y);
-	virtual bool KeyboardFunc(unsigned char key, int x, int y);
+	virtual bool KeyboardFunc(unsigned char key, int x, int y) { return false; }
 	virtual void MouseWheelFunc(int state,int delta,int x,int y);
 
 	// params are in window coordinates

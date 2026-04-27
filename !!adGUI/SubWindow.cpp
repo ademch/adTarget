@@ -22,42 +22,42 @@ GLfloat m[4][4];
 	glScissor(m_iBottomLeftX, m_iBottomLeftY, m_iWidth, m_iHeight);
 	glEnable(GL_SCISSOR_TEST);
 
-	glClearColor(clrBackground.X, clrBackground.Y, clrBackground.Z, 0.0);
+		glClearColor(clrBackground.X, clrBackground.Y, clrBackground.Z, 0.0);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glMatrixMode(GL_PROJECTION);
+		glMatrixMode(GL_PROJECTION);
 
-	glLoadIdentity();
+		glLoadIdentity();
 
-	glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
+		glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
 
 
-	glMatrixMode(GL_MODELVIEW);
+		glMatrixMode(GL_MODELVIEW);
 
-	glLoadIdentity();
+		glLoadIdentity();
 
-	if (bRenderGUIdecoration)
-	{
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_LIGHTING);
+		if (bRenderGUIdecoration)
+		{
+			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_LIGHTING);
 
-		glLineWidth(1.0);
-		glColor3f(0.9f, 0.9f, 0.9f);
+			glLineWidth(1.0);
+			glColor3f(0.9f, 0.9f, 0.9f);
 
-		glBegin(GL_LINE_LOOP);
-			glVertex2f(-m_iWidth / 2.0 + 1, -m_iHeight / 2.0 + 1);
-			glVertex2f(-m_iWidth / 2.0 + 1,  m_iHeight / 2.0 - 1);
-			glVertex2f( m_iWidth / 2.0 - 1,  m_iHeight / 2.0 - 1);
-			glVertex2f( m_iWidth / 2.0 - 1, -m_iHeight / 2.0 + 1);
-		glEnd();
+			glBegin(GL_LINE_LOOP);
+				glVertex2f(-m_iWidth/2.0 + 1, -m_iHeight/2.0 + 1);
+				glVertex2f(-m_iWidth/2.0 + 1,  m_iHeight/2.0 - 1);
+				glVertex2f( m_iWidth/2.0 - 1,  m_iHeight/2.0 - 1);
+				glVertex2f( m_iWidth/2.0 - 1, -m_iHeight/2.0 + 1);
+			glEnd();
 
-		glFontBegin(&font);
-			glFontTextOut(m_strCaption, -m_iWidth / 2.0, -m_iHeight / 2.0, 0, 7);
-		glFontEnd();
+			glFontBegin(&font);
+				glFontTextOut(m_strCaption, -m_iWidth/2.0, -m_iHeight/2.0, 0, 7);
+			glFontEnd();
 
-		glDisable(GL_TEXTURE_2D);
-	}
+			glDisable(GL_TEXTURE_2D);
+		}
 
 	glDisable(GL_SCISSOR_TEST);
 
@@ -106,7 +106,7 @@ void OpenGLSubWindow::SetupGraphicsPipelineWithIdentityModelViewMatrix()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glOrtho(-m_iWidth / 2.0f, m_iWidth / 2.0f, -m_iHeight / 2.0f, m_iHeight / 2.0f, -3000, 3000);
+	glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -159,7 +159,6 @@ void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
 		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
 	{
-
 		if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && bSceneRotationAllowed)
 		{	bMouseSceneRotationInProgress = true;
 
@@ -182,15 +181,6 @@ void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 }
 
 
-void OpenGLSubWindow::PassiveMotionFunc(int x,int y)
-{
-}
-
-bool OpenGLSubWindow::KeyboardFunc(unsigned char key, int x, int y)
-{
-	return false;
-}
-
 // Does not depend on any OpenGL matrix
 // x,y window coordinates from (0,0) to (w,h) (having y flipped of cause)
 void OpenGLSubWindow::MouseWheelFunc(int state,int delta,int x,int y)
@@ -209,30 +199,31 @@ float fDelta;
 		if ( (fDelta > 0) && (fUserScale > pow(1.0/ fZoomFactor, 10)) )  return;
 
 		if (fDelta < 0)
-			fUserScale *= (1.0/-fDelta)*fZoomFactor;
+			fUserScale *= fZoomFactor;
 		else
-			fUserScale *= fDelta*1.0/fZoomFactor;
+			fUserScale *= 1.0/fZoomFactor;
 
 		// 0. Subwindow coordinates
-		Vec2 vUserScalePoint2D;
+		Vec2 ptMouseWorld2D;
 		// make the lower left corner to be zero window coordinate
-		vUserScalePoint2D = Vecc2(x - m_iBottomLeftX, y - m_iBottomLeftY);
+		ptMouseWorld2D = Vecc2(x - m_iBottomLeftX, y - m_iBottomLeftY);
 		// -w/2 to w/2, -h/2 to h/2
-		vUserScalePoint2D = vUserScalePoint2D - Vecc2(m_iWidth / 2.0, m_iHeight / 2.0);
+		ptMouseWorld2D = ptMouseWorld2D - Vecc2(m_iWidth/2.0, m_iHeight/2.0);
 
 		// 1. remove user translation
+		//    matrUserScale holds current user scaling relatively to the prior ptMouseWorld2D
 		matrUserScale = Mat4MakeTrans(vUserSceneTranslation.X, vUserSceneTranslation.Y, 0.0)*matrUserScale;
-		// 2. move to the center
-		matrUserScale = Mat4MakeTrans(-vUserScalePoint2D.X, -vUserScalePoint2D.Y, 0.0)*matrUserScale;
+		// 2. move scaling point to the center
+		matrUserScale = Mat4MakeTrans(-ptMouseWorld2D.X, -ptMouseWorld2D.Y, 0.0)*matrUserScale;
 
 		// 3. scale
 		if (fDelta < 0)
-			matrUserScale = Mat4MakeScale((1.0 / -fDelta)*fZoomFactor, (1.0 / -fDelta)*fZoomFactor, 1.0f)*matrUserScale;
+			matrUserScale = Mat4MakeScale(fZoomFactor, fZoomFactor, 1.0f)*matrUserScale;
 		else
-			matrUserScale = Mat4MakeScale(fDelta*1.0 / fZoomFactor, fDelta*1.0 / fZoomFactor, 1.0f)*matrUserScale;
+			matrUserScale = Mat4MakeScale(1.0/fZoomFactor, 1.0/fZoomFactor, 1.0f)*matrUserScale;
 
-		// 4. move back
-		matrUserScale = Mat4MakeTrans(vUserScalePoint2D.X, vUserScalePoint2D.Y, 0.0)*matrUserScale;
+		// 4. move back to the ptMouseWorld2D
+		matrUserScale = Mat4MakeTrans(ptMouseWorld2D.X, ptMouseWorld2D.Y, 0.0)*matrUserScale;
 		// 5. reapply user translation
 		matrUserScale = Mat4MakeTrans(-vUserSceneTranslation.X, -vUserSceneTranslation.Y, 0.0)*matrUserScale;
 	}	
