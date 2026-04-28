@@ -25,7 +25,8 @@ public:
 		clrFrame      = Vecc3(0.9f, 0.9f, 0.9f);
 
 		bMouseSceneRotationInProgress = false;
-		vUserSceneTranslation = Vecc3();
+
+		vUserSceneTranslation     = Vecc3();
 		bMouseSceneDragInProgress = false;
 
 		bSceneRotationAllowed = true;

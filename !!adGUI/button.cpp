@@ -70,7 +70,7 @@ void Button::Draw()
 	glDisable(GL_TEXTURE_2D);
 
 	glLineWidth(1);
-	glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height+1, 4.5);
+	glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 4.5);
 }
 
 bool Button::Clicked(int button, int state, int x, int y)
@@ -82,20 +82,23 @@ bool Button::Clicked(int button, int state, int x, int y)
 	if ((x < posx + m_Width)  && (x > posx) &&
 		(y < posy + m_Height) && (y > posy))
 	{
-		if (state == GLUT_DOWN)
+		if (button == GLUT_LEFT_BUTTON)
 		{
-			iGUIpushed = 1;
-			return true;
-		}
-		// OnClick is going to happen only if mouse is released within the button boundaries
-		else
-		{
-			if (iGUIpushed)
+			if (state == GLUT_DOWN)
 			{
-				if (OnClick != NULL) OnClick();
-
-				iGUIpushed = 0;
+				iGUIpushed = 1;
 				return true;
+			}
+			// OnClick is going to happen only if mouse is released within the button boundaries
+			else
+			{
+				if (iGUIpushed)
+				{
+					if (OnClick != NULL) OnClick();
+
+					iGUIpushed = 0;
+					return true;
+				}
 			}
 		}
 	}

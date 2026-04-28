@@ -158,14 +158,16 @@ void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
 	{
 		if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && bSceneRotationAllowed)
-		{	bMouseSceneRotationInProgress = true;
+		{	
+			bMouseSceneRotationInProgress = true;
 
 			iBeginRotateX = x;
 			iBeginRotateY = y;
 		}
 
 		if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN && bSceneDragAllowed)
-		{	bMouseSceneDragInProgress = true;
+		{	
+			bMouseSceneDragInProgress = true;
 
 			iBeginDragX = x;
 			iBeginDragY = y;
