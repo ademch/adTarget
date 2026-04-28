@@ -115,18 +115,18 @@ void OpenGLSubWindowWithGUI::ReshapeGUI(int iWidth, int iHeight)
 		iterElement->GetPosition(px, py);
 
 		if (iterElement->hAlign == HALIGN_LEFT)
-			px = -iWidth / 2 + iterElement->iHPosShift;
+			px = -iWidth/2 + iterElement->iHPosShift;
 		else if (iterElement->hAlign == HALIGN_CENTER)
 			px = iterElement->iHPosShift;
 		else if (iterElement->hAlign == HALIGN_RIGHT)
-			px = iWidth / 2 + iterElement->iHPosShift;
+			px = iWidth/2 + iterElement->iHPosShift;
 
 		if (iterElement->vAlign == VALIGN_BOTTOM)
-			py = -iHeight / 2 + iterElement->iVPosShift;
+			py = -iHeight/2 + iterElement->iVPosShift;
 		else if (iterElement->vAlign == VALIGN_CENTER)
 			py = iterElement->iVPosShift;
 		else if (iterElement->vAlign == VALIGN_TOP)
-			py = iHeight / 2 + iterElement->iVPosShift;
+			py = iHeight/2 + iterElement->iVPosShift;
 
 		iterElement->Reposition(px, py);
 	}

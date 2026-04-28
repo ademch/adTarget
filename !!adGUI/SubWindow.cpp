@@ -203,7 +203,7 @@ float fDelta;
 		else
 			fUserScale *= 1.0/fZoomFactor;
 
-		// 0. Subwindow coordinates
+		// 0. Transform mouse Subwindow coordinates to World coordinates
 		Vec2 ptMouseWorld2D;
 		// make the lower left corner to be zero window coordinate
 		ptMouseWorld2D = Vecc2(x - m_iBottomLeftX, y - m_iBottomLeftY);

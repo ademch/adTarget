@@ -269,9 +269,9 @@ void cpuLoadIdentity();
 void cpuRotatef(float angle, float x, float y, float z);
 void cpuTranslatef(float x, float y, float z);
 void cpuScalef(float x, float y, float z);
-void cpuMultMatrixf(float*);
+void cpuMultMatrixf(const Matr4& m);			// just pass matrix from 28Apr2026
 void cpuVertex3fv(float*);
-Vec3 cpuPipelineVertex3fv(float*);
+Vec3 cpuPipelineVertex3fv(const Vec3& vCPU_in);	// just pass vector from 28Apr2026
 
 bool LineLineIntersect3D( Vec3d p1,Vec3d p2,Vec3d p3,Vec3d p4, Vec3d *pa,Vec3d *pb, double *mua, double *mub);
 Vec3 PointLineProject(Vec3 pt, Vec3 ptLine, Vec3 vnLineDir);

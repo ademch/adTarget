@@ -41,12 +41,9 @@ Matr4 mScale;
 }
 
 
-void cpuMultMatrixf(float* m)
+void cpuMultMatrixf(const Matr4& m)
 {
-Matr4 u;
-
-	memcpy(u.m, m, sizeof(Matr4));
-	mCpuPipeline = mCpuPipeline * u;
+	mCpuPipeline = mCpuPipeline * m;
 }
 
 void cpuLoadIdentity()
@@ -63,14 +60,9 @@ Vec3 vGPU;
 	//glVertex3fv(&vGPU.X);
 }
 
-Vec3 cpuPipelineVertex3fv(float* v)
+Vec3 cpuPipelineVertex3fv(const Vec3& vCPU_in)
 {
-Vec3 vCPU;
-
-	memcpy(&vCPU, v, sizeof(Vec3));
-	vCPU = mCpuPipeline * vCPU;
-
-return vCPU;
+	return mCpuPipeline * vCPU_in;;
 }
 
 
