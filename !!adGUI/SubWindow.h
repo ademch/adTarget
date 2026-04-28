@@ -11,6 +11,7 @@ public:
 	char m_strCaption[255];
 
 	Vec3 clrBackground;
+	Vec3 clrFrame;
 
 	OpenGLSubWindow(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
 	{
@@ -21,6 +22,7 @@ public:
 
 		m_strCaption[0] = 0;
 		clrBackground = Vecc3(0.1f, 0.1f, 0.1f);
+		clrFrame      = Vecc3(0.9f, 0.9f, 0.9f);
 
 		bMouseSceneRotationInProgress = false;
 		vUserSceneTranslation = Vecc3();

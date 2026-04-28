@@ -23,41 +23,39 @@ GLfloat m[4][4];
 	glEnable(GL_SCISSOR_TEST);
 
 		glClearColor(clrBackground.X, clrBackground.Y, clrBackground.Z, 0.0);
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glMatrixMode(GL_PROJECTION);
 
-		glLoadIdentity();
-
-		glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
+			glLoadIdentity();
+			glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
 
 
 		glMatrixMode(GL_MODELVIEW);
 
-		glLoadIdentity();
+			glLoadIdentity();
 
-		if (bRenderGUIdecoration)
-		{
-			glDisable(GL_TEXTURE_2D);
-			glDisable(GL_LIGHTING);
+			if (bRenderGUIdecoration)
+			{
+				glDisable(GL_TEXTURE_2D);
+				glDisable(GL_LIGHTING);
 
-			glLineWidth(1.0);
-			glColor3f(0.9f, 0.9f, 0.9f);
+				glLineWidth(1.0);
+				glColor3fv(&clrFrame.X);
 
-			glBegin(GL_LINE_LOOP);
-				glVertex2f(-m_iWidth/2.0 + 1, -m_iHeight/2.0 + 1);
-				glVertex2f(-m_iWidth/2.0 + 1,  m_iHeight/2.0 - 1);
-				glVertex2f( m_iWidth/2.0 - 1,  m_iHeight/2.0 - 1);
-				glVertex2f( m_iWidth/2.0 - 1, -m_iHeight/2.0 + 1);
-			glEnd();
+				glBegin(GL_LINE_LOOP);
+					glVertex2f(-m_iWidth/2.0 + 1, -m_iHeight/2.0 + 1);
+					glVertex2f(-m_iWidth/2.0 + 1,  m_iHeight/2.0 - 1);
+					glVertex2f( m_iWidth/2.0 - 1,  m_iHeight/2.0 - 1);
+					glVertex2f( m_iWidth/2.0 - 1, -m_iHeight/2.0 + 1);
+				glEnd();
 
-			glFontBegin(&font);
-				glFontTextOut(m_strCaption, -m_iWidth/2.0, -m_iHeight/2.0, 0, 7);
-			glFontEnd();
+				glFontBegin(&font);
+					glFontTextOut(m_strCaption, -m_iWidth/2.0, -m_iHeight/2.0, 0, 7);
+				glFontEnd();
 
-			glDisable(GL_TEXTURE_2D);
-		}
+				glDisable(GL_TEXTURE_2D);
+			}
 
 	glDisable(GL_SCISSOR_TEST);
 

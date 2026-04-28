@@ -310,18 +310,22 @@ void ListBox::Wheel(int state, int delta, int x, int y)
 {
 	GUI_Element::Wheel(state, delta, x, y);
 
-	if (!bEnabled) return;
-
-	float fDelta = float(delta) / 120.0;
-
-	if (fDelta < 0.0)
+	if ((x > posx) && (x < posx + m_Width) &&
+		(y > posy) && (y < posy + m_Height * m_Count))
 	{
-		// if number of items is bigger than our last view element
-		if (int32_t(items.size()) > m_Count + iPeepHoleShift) iPeepHoleShift++;
-	}
-	else
-	{
-		if (iPeepHoleShift > 0) iPeepHoleShift--;
-	}
+		if (bEnabled)
+		{
+			float fDelta = float(delta) / 120.0;
 
+			if (fDelta < 0.0)
+			{
+				// if number of items is bigger than our last view element
+				if (int32_t(items.size()) > m_Count + iPeepHoleShift) iPeepHoleShift++;
+			}
+			else
+			{
+				if (iPeepHoleShift > 0) iPeepHoleShift--;
+			}
+		}
+	}
 }

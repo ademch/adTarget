@@ -19,9 +19,9 @@ OpenGLSubWindowWithGUI::OpenGLSubWindowWithGUI(int iBottomLeftX, int iBottomLeft
 	fHeightPerc = 1.0f;
 }
 
-OpenGLSubWindowWithGUI::OpenGLSubWindowWithGUI( int iParentWidth, int iParentHeight,
-												float _fBottomLeftXperc, float _fBottomLeftYperc,
-												float _fWidthPerc, float _fHeightPerc) :
+OpenGLSubWindowWithGUI::OpenGLSubWindowWithGUI(int iParentWidth, int iParentHeight,
+											   float _fBottomLeftXperc, float _fBottomLeftYperc,
+										       float _fWidthPerc,       float _fHeightPerc) :
 	                    OpenGLSubWindow(int(iParentWidth*_fBottomLeftXperc),
 										int(iParentHeight*_fBottomLeftYperc),
 										int(iParentWidth*_fWidthPerc),
@@ -30,7 +30,7 @@ OpenGLSubWindowWithGUI::OpenGLSubWindowWithGUI( int iParentWidth, int iParentHei
 	fBottomLeftXperc = _fBottomLeftXperc;
 	fBottomLeftYperc = _fBottomLeftYperc;
 
-	fWidthPerc = _fWidthPerc;
+	fWidthPerc  = _fWidthPerc;
 	fHeightPerc = _fHeightPerc;
 }
 
