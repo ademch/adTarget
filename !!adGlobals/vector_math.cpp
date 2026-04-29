@@ -334,7 +334,7 @@ Vec3 operator-(Vec3 v)            {return Vecc3(-v.X, -v.Y, -v.Z);}
 Vec3 operator*(Vec3 v1,float s)   {return Vecc3(v1.X*s, v1.Y*s, v1.Z*s);}
 Vec2 operator*(Vec2 v1, float s)  {return Vecc2(v1.X*s, v1.Y*s); }
 Vec3 operator*(float s, Vec3 v1)  {return Vecc3(v1.X*s, v1.Y*s, v1.Z*s);}
-Vec2 operator*(float s, Vec2 v1)  { return Vecc2(v1.X*s, v1.Y*s); }
+Vec2 operator*(float s, Vec2 v1)  {return Vecc2(v1.X*s, v1.Y*s); }
 Vec3 operator/(Vec3 v,float s)    {return v*(1.0f/s);}
 Vec2 operator/(Vec2 v, float s)   {return v*(1.0f/s);}
 float operator^(Vec3 v1,Vec3 v2)  {return v1.X*v2.X + v1.Y*v2.Y + v1.Z*v2.Z;} // DOT product

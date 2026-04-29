@@ -34,16 +34,23 @@ HorScrollBar::HorScrollBar(std::string caption, int px, int py, int width, int h
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
 }
 
-HorScrollBar::~HorScrollBar()
+
+
+void HorScrollBar::Resize(int iWidth, int iHeight)
 {
+	m_Width = iWidth;
+
+	m_ptHandleStartWorldCoords = Vecc3(-iWidth/2.0, 0);
+	m_ptHandleEndWorldCoords   = Vecc3( iWidth/2.0, 0);
 }
+
 
 bool HorScrollBar::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	if ((x > posx) && (x <= posx + m_Width) && 
-		(y > posy) && (y <= posy + m_Height))
+	if ((x > posx) && (x < posx + m_Width) && 
+		(y > posy) && (y < posy + m_Height + 1))
 	{
 		bFocused = bEnabled;
 		return true;
@@ -84,7 +91,7 @@ void HorScrollBar::Draw()
 		Vec3 ptHandleEndTrans = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
 		glQuad(iGUIpushed + ptHandleStartTrans.X + 1, posy - iGUIpushed + ptHandleStartTrans.Y + 3,
-			   ptHandleEndTrans.X - ptHandleStartTrans.X -4, m_Height-5, 5);
+			   ptHandleEndTrans.X - ptHandleStartTrans.X -3, m_Height-5, 5);
 	}
 
 }
@@ -240,8 +247,8 @@ void HorScrollBar::Wheel(int state, int delta, int x, int y)
 				Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
 				Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
-				float fUnderflow = -m_Width / 2.0 - ptHandleStartTrans.X;
-				float fOverflow  = ptHandleEndTrans.X - m_Width / 2.0;
+				float fUnderflow = -m_Width/2.0 - ptHandleStartTrans.X;
+				float fOverflow  = ptHandleEndTrans.X - m_Width/2.0;
 
 				if (fUnderflow > 0)
 					vUserSceneTranslation.X += fUnderflow;

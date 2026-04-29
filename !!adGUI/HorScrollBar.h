@@ -9,7 +9,6 @@
 class HorScrollBar : public GUI_Element
 {
 public:
-	float m_TextWidth;
 	int   m_Height;
 	int   m_Width;
 
@@ -27,7 +26,7 @@ public:
 	int8_t iZoomIndex;
 
 	HorScrollBar(std::string caption, int px, int py, int width, int height);
-	~HorScrollBar();
+	~HorScrollBar() {}
 
 	std::function<bool()> OnClick;
 
@@ -36,6 +35,8 @@ public:
 	virtual bool Clicked(int button, int state, int x, int y);
 	virtual void Wheel(int state, int delta, int x, int y);
 	virtual bool Drag(int x, int y);
+
+	void Resize(int iWidth, int iHeight);
 
 protected:
 

@@ -19,7 +19,7 @@ public:
 
 	virtual ~OpenGLSubWindowWithGUI() {}
 
-	void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight);
+	virtual void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight);
 
 	// put here and not in OpenGLSubWindow to support legacy code that creates OpenGLSubWindow without this info
 	float fBottomLeftXperc;

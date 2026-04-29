@@ -21,6 +21,7 @@ ListBox::ListBox(std::string caption, int px, int py, int width, int count, floa
 
 	m_TextSize = size;
 	_text = caption;
+
 	m_Width = width;
 	m_Count = count;
 
