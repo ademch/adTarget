@@ -9,15 +9,14 @@
 class HorScrollBar : public GUI_Element
 {
 public:
-	int   m_Height;
-	int   m_Width;
+	int  m_Height;
+	int  m_Width;
 
 	Vec3 m_ptHandleStartWorldCoords;
 	Vec3 m_ptHandleEndWorldCoords;
 
 	bool bFocused;
 	bool bEnabled;
-	std::string _text;
 
 	Vec4 vColor_focused;
 	Vec4 vColor_defocused;
@@ -28,7 +27,7 @@ public:
 	HorScrollBar(std::string caption, int px, int py, int width, int height);
 	~HorScrollBar() {}
 
-	std::function<bool()> OnClick;
+	std::function<void(Matr4)> OnChange;
 
 	virtual void Draw();
 	virtual bool Hover(int x, int y);

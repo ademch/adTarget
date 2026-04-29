@@ -117,23 +117,12 @@ bool HorScrollBar::Clicked(int button, int state, int x, int y)
 				iGUIpushed = 1;
 				return true;
 			}
-			// OnClick is going to happen only if mouse is released within the button boundaries
-			else
-			{
-				if (iGUIpushed)
-				{
-					bMouseSceneDragInProgress = false;
-
-					if (OnClick != NULL) OnClick();
-
-					iGUIpushed = 0;
-					return true;
-				}
-			}
 		}
 	}
-
+	
+	bMouseSceneDragInProgress = false;
 	iGUIpushed = 0;
+
 	return false;
 }
 
@@ -164,6 +153,8 @@ bool HorScrollBar::Drag(int x, int y)
 		}
 
 		vUserSceneTranslation.Y += (y - iBeginDragY);
+
+		if (OnChange != NULL) OnChange(Mat4MakeTrans(vUserSceneTranslation.X, 0, 0)*matrUserScale);
 
 		iBeginDragX = x;
 		iBeginDragY = y;
@@ -221,10 +212,9 @@ void HorScrollBar::Wheel(int state, int delta, int x, int y)
 				ptMouseWorld2D.X = ptHandleStartTrans.X + fHandleCurrentWidth*t;
 			}
 
-			// 1. remove user translation
-			//    matrUserScale holds current user scaling relatively to the prior ptMouseWorld2D
+			// 1. remove user translation (During Draw matrUserScale is applied after modelview matrix gets translation)
 			matrUserScale = Mat4MakeTrans(vUserSceneTranslation.X, vUserSceneTranslation.Y, 0.0)*matrUserScale;
-			// 2. move scaling point to the center
+			// 2. move mouse scaling point to the center
 			matrUserScale = Mat4MakeTrans(-ptMouseWorld2D.X, -ptMouseWorld2D.Y, 0.0)*matrUserScale;
 
 			// 3. scale
@@ -244,6 +234,7 @@ void HorScrollBar::Wheel(int state, int delta, int x, int y)
 
 				cpuTranslatef(vUserSceneTranslation.X, 0, 0);
 				cpuMultMatrixf(matrUserScale);
+
 				Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
 				Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
@@ -255,6 +246,9 @@ void HorScrollBar::Wheel(int state, int delta, int x, int y)
 				else if (fOverflow > 0)
 					vUserSceneTranslation.X += -fOverflow;
 			}
+
+										   // multiply the same way like during Draw: Translation then Scaling
+			if (OnChange != NULL) OnChange(Mat4MakeTrans(vUserSceneTranslation.X, 0, 0)*matrUserScale);
 
 		}
 	}

@@ -6,7 +6,6 @@
 #include <assert.h>
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
-#include "SubWindow.h"
 #include <string>
 #include <functional>
 
