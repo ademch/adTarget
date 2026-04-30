@@ -307,7 +307,7 @@ bool ListBox::SetSelected(std::string _str)
 	return false;
 }
 
-void ListBox::Wheel(int state, int delta, int x, int y)
+bool ListBox::Wheel(int state, int delta, int x, int y)
 {
 	GUI_Element::Wheel(state, delta, x, y);
 
@@ -327,6 +327,10 @@ void ListBox::Wheel(int state, int delta, int x, int y)
 			{
 				if (iPeepHoleShift > 0) iPeepHoleShift--;
 			}
+
+			return true;
 		}
 	}
+
+	return false;
 }

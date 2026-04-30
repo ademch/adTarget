@@ -35,12 +35,71 @@ OpenGLSubWindowWithGUI::OpenGLSubWindowWithGUI(int iParentWidth, int iParentHeig
 }
 
 
+void OpenGLSubWindowWithGUI::Render()
+{
+	OpenGLSubWindow::Render();
+
+	Draw();
+
+	glDisable(GL_LIGHTING);
+
+	RenderGUI();
+}
+
 void OpenGLSubWindowWithGUI::Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
 {
 	OpenGLSubWindow::Reshape(iBottomLeftX, iBottomLeftY, iWidth, iHeight);
 
 	ReshapeGUI(iWidth, iHeight);
 }
+
+
+bool OpenGLSubWindowWithGUI::MouseWheelFunc(int state, int delta, int x, int y)
+{
+	if (OpenGLSubWindow::MouseWheelFunc(state, delta, x, y)) return true;
+
+	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
+	{
+		if (MouseWheelFuncGUI(state, delta, x, y)) return true;
+	}
+
+	return false;
+}
+
+
+// Passive motion is special, global window cares about all windows
+// to make sure focus, cursor is updated correcly. We do not check for boundaries
+bool OpenGLSubWindowWithGUI::PassiveMotionFunc(int x, int y)
+{
+	OpenGLSubWindow::PassiveMotionFunc(x, y);
+
+	return PassiveMotionFuncGUI(x, y);
+}
+
+
+bool OpenGLSubWindowWithGUI::MouseFunc(int button, int state, int x, int y)
+{
+	OpenGLSubWindow::MouseFunc(button, state, x, y);
+
+	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
+	{
+		if (MouseFuncGUI(button, state, x, y)) return true;
+	}
+
+	return false;
+}
+
+
+void OpenGLSubWindowWithGUI::MotionFunc(int x, int y)
+{
+	OpenGLSubWindow::MotionFunc(x, y);
+
+	MotionFuncGUI(x, y);
+}
+
+
 
 void OpenGLSubWindowWithGUI::RenderGUI()
 {
@@ -96,7 +155,7 @@ void OpenGLSubWindowWithGUI::MotionFuncGUI(int x, int y)
 		iterElement->Drag(int(v3DCoords.X), int(v3DCoords.Y));
 }
 
-void OpenGLSubWindowWithGUI::MouseWheelFuncGUI(int state, int delta, int x, int y)
+bool OpenGLSubWindowWithGUI::MouseWheelFuncGUI(int state, int delta, int x, int y)
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
@@ -104,7 +163,12 @@ void OpenGLSubWindowWithGUI::MouseWheelFuncGUI(int state, int delta, int x, int 
 	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 	for (auto iterElement : liGUI_Elements)
-		iterElement->Wheel(state, delta, int(v3DCoords.X), int(v3DCoords.Y));
+	{
+		if (iterElement->Wheel(state, delta, int(v3DCoords.X), int(v3DCoords.Y)))
+			return true;
+	}
+
+	return false;
 }
 
 void OpenGLSubWindowWithGUI::ReshapeGUI(int iWidth, int iHeight)

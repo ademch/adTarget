@@ -56,7 +56,7 @@ void Button::Draw()
 
 	// clear screen under button
 	glColor3f(0, 0, 0);
-	glQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height+1, 3);
+	glQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 3);
 
 	if (bFocused && bEnabled)
 		glColor4fv(&vColor_focused.X);

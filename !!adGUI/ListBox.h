@@ -37,7 +37,7 @@ public:
 	virtual void Draw();
 	virtual bool Hover(int x, int y);
 	virtual bool Clicked(int button, int state, int x, int y);
-	virtual void Wheel(int state, int delta, int x, int y);
+	virtual bool Wheel(int state, int delta, int x, int y);
 
 	bool SetSelected(std::string);
 	std::string GetSelected();

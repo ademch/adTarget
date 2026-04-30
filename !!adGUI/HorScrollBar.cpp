@@ -166,7 +166,7 @@ bool HorScrollBar::Drag(int x, int y)
 }
 
 
-void HorScrollBar::Wheel(int state, int delta, int x, int y)
+bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 {
 	GUI_Element::Wheel(state, delta, x, y);
 
@@ -179,12 +179,12 @@ void HorScrollBar::Wheel(int state, int delta, int x, int y)
 
 			if (fDelta < 0)
 			{
-				if (iZoomIndex - 1 <= -10) return;
+				if (iZoomIndex - 1 <= -10) return false;
 				iZoomIndex--;
 			}
 			else
 			{
-				if (iZoomIndex + 1 > 0) return;
+				if (iZoomIndex + 1 > 0) return false;
 				iZoomIndex++;
 			}
 
@@ -250,6 +250,9 @@ void HorScrollBar::Wheel(int state, int delta, int x, int y)
 										   // multiply the same way like during Draw: Translation then Scaling
 			if (OnChange != NULL) OnChange(Mat4MakeTrans(vUserSceneTranslation.X, 0, 0)*matrUserScale);
 
+			return true;
 		}
 	}
+
+	return false;
 }

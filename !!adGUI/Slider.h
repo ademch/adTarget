@@ -266,11 +266,11 @@ public:
 		return false;
 	}
 
-	void Wheel(int state,int delta,int x,int y)
+	bool Wheel(int state,int delta,int x,int y)
 	{ 
 		GUI_Element::Wheel(state, delta, x, y);
 
-		if (!bFocused) return;
+		if (!bFocused) return false;
 
 		float fDelta = float(delta)/120.0;
 		
@@ -283,6 +283,8 @@ public:
 			*ptr_fVal_cur = m_fVal_min;
 
 		if (OnClick != NULL) OnClick();
+
+		return true;
 	}
 
 	void SetBoxWidth(int _b_w) {

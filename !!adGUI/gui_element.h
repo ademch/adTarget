@@ -36,7 +36,7 @@ public:
 	virtual bool Clicked(int button, int state, int x, int y) { return false; }
 	virtual bool Drag(int x, int y)  { return false; }
 	virtual bool Hover(int x, int y) { return false; }
-	virtual void Wheel(int state,int delta,int x,int y) { }
+	virtual bool Wheel(int state,int delta,int x,int y) { return false; }
 
 	HorizontalAlignment hAlign;
 	VerticalAlignment   vAlign;

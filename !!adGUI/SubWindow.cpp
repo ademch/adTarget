@@ -152,7 +152,7 @@ void OpenGLSubWindow::MotionFunc(int x,int y)
 
 // Does not depend on any OpenGL matrix
 // x,y window coordinates from (0,0) to (w,h) (having y flipped of cause)
-void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
+bool OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 {
 	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
 		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
@@ -163,6 +163,8 @@ void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 
 			iBeginRotateX = x;
 			iBeginRotateY = y;
+
+			return true;
 		}
 
 		if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN && bSceneDragAllowed)
@@ -171,6 +173,8 @@ void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 
 			iBeginDragX = x;
 			iBeginDragY = y;
+
+			return true;
 		}
 	}
 
@@ -178,16 +182,18 @@ void OpenGLSubWindow::MouseFunc(int button,int state,int x,int y)
 		bMouseSceneDragInProgress = false;
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
 		bMouseSceneRotationInProgress = false;
+
+	return false;
 }
 
 
 // Does not depend on any OpenGL matrix
 // x,y window coordinates from (0,0) to (w,h) (having y flipped of cause)
-void OpenGLSubWindow::MouseWheelFunc(int state,int delta,int x,int y)
+bool OpenGLSubWindow::MouseWheelFunc(int state,int delta,int x,int y)
 {
 float fDelta;
 
-	if (!bSceneZoomAllowed) return;
+	if (!bSceneZoomAllowed) return false;
 
 	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
 		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
@@ -195,8 +201,8 @@ float fDelta;
 		fDelta = float(delta)/120.0;
 
 		// prevent infinite scaling
-		if ( (fDelta < 0) && (fUserScale < pow(fZoomFactor, 10)) ) return;
-		if ( (fDelta > 0) && (fUserScale > pow(1.0/ fZoomFactor, 10)) )  return;
+		if ( (fDelta < 0) && (fUserScale < pow(fZoomFactor, 10)) ) return false;
+		if ( (fDelta > 0) && (fUserScale > pow(1.0/ fZoomFactor, 10)) )  return false;
 
 		if (fDelta < 0)
 			fUserScale *= fZoomFactor;
@@ -226,5 +232,9 @@ float fDelta;
 		matrUserScale = Mat4MakeTrans(ptMouseWorld2D.X, ptMouseWorld2D.Y, 0.0)*matrUserScale;
 		// 5. reapply user translation
 		matrUserScale = Mat4MakeTrans(-vUserSceneTranslation.X, -vUserSceneTranslation.Y, 0.0)*matrUserScale;
+
+		return true;
 	}	
+
+	return false;
 }

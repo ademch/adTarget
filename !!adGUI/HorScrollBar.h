@@ -32,7 +32,7 @@ public:
 	virtual void Draw();
 	virtual bool Hover(int x, int y);
 	virtual bool Clicked(int button, int state, int x, int y);
-	virtual void Wheel(int state, int delta, int x, int y);
+	virtual bool Wheel(int state, int delta, int x, int y);
 	virtual bool Drag(int x, int y);
 
 	void Resize(int iWidth, int iHeight);

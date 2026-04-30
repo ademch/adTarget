@@ -48,9 +48,9 @@ public:
 
 	virtual void MotionFunc(int x,int y);
 	virtual bool PassiveMotionFunc(int x, int y) { return false; }
-	virtual void MouseFunc(int button,int state,int x,int y);
+	virtual bool MouseFunc(int button,int state,int x,int y);
 	virtual bool KeyboardFunc(unsigned char key, int x, int y) { return false; }
-	virtual void MouseWheelFunc(int state,int delta,int x,int y);
+	virtual bool MouseWheelFunc(int state,int delta,int x,int y);
 
 	// params are in window coordinates
 	virtual void Reshape(int iBottomLeftX,int iBottomLeftY, int iWidth,int iHeight)

@@ -21,6 +21,14 @@ public:
 
 	virtual void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight);
 
+	virtual bool PassiveMotionFunc(int x, int y);
+	virtual bool MouseFunc(int button, int state, int x, int y);
+	virtual void MotionFunc(int x, int y);
+	virtual bool MouseWheelFunc(int state, int delta, int x, int y);
+	virtual	void Render() final;	// calls Draw to be able to process component before its GUI
+
+	virtual	void Draw() {};
+
 	// put here and not in OpenGLSubWindow to support legacy code that creates OpenGLSubWindow without this info
 	float fBottomLeftXperc;
 	float fBottomLeftYperc;
@@ -32,11 +40,12 @@ protected:
 	std::vector<GUI_Element*> liGUI_Elements;
 
 	void RenderGUI();
+	void ReshapeGUI(int iWidth, int iHeight);
+
 	bool PassiveMotionFuncGUI(int x, int y);
 	bool MouseFuncGUI(int button, int state, int x, int y);
 	void MotionFuncGUI(int x, int y);
-	void ReshapeGUI(int iWidth, int iHeight);
-	void MouseWheelFuncGUI(int state, int delta, int x, int y);
+	bool MouseWheelFuncGUI(int state, int delta, int x, int y);
 
 
 private:
