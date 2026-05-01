@@ -64,11 +64,12 @@ void Button::Draw()
 		glColor4fv(&vColor_defocused.X);
 
 	glFontBegin(&font);
-		glFontTextOut(_text.c_str(),posx+ (m_Width-m_TextWidth)/2.0 + iGUIpushed,posy - iGUIpushed, 4,m_TextSize);
+		glFontTextOut(_text.c_str(), posx+ (m_Width-m_TextWidth)/2.0 + iGUIpushed,posy - iGUIpushed, 4,m_TextSize);
 	glFontEnd();
 
 	glDisable(GL_TEXTURE_2D);
 
+	// draw frame
 	glLineWidth(1);
 	glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 4.5);
 }

@@ -58,20 +58,22 @@ int Num;
 	//Read texture data
 	fread(TexBytes, sizeof(char), Num, Input);
 
-	//Set texture attributes
-	glBindTexture(GL_TEXTURE_2D, Font->Tex);  
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR); 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE);  
+		//Set texture attributes
+		glBindTexture(GL_TEXTURE_2D, Font->Tex);  
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR); 
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE);  
 	
-	//Create texture
-	glTexImage2D(GL_TEXTURE_2D, 0, 2, Font->TexWidth,
-		         Font->TexHeight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (void *)TexBytes);
+		//Create texture
+		glTexImage2D(GL_TEXTURE_2D, 0, 2,
+					 Font->TexWidth, Font->TexHeight,
+					 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (void *)TexBytes);
 
 	//Clean up
 	free(TexBytes);
+
 	fclose(Input);
 
 	//Return pointer to new font
@@ -119,37 +121,36 @@ void glFontTextOut (const char *String, float x, float y, float z, float scale)
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	
-	//Begin rendering quads
 	glBegin(GL_QUADS);
 	
-	//Loop through characters
-	for (i = 0; i < Length; i++)
-	{
-		//Get pointer to glFont character
-		if ((int)String[i]<0)
-			Char = &glFont->Char[256+(int)String[i] - glFont->IntStart];//russification
-		else
-			Char = &glFont->Char[(int)String[i] - glFont->IntStart];
+		//Loop through characters
+		for (i = 0; i < Length; i++)
+		{
+			//Get pointer to glFont character
+			if ((int)String[i]<0)
+				Char = &glFont->Char[256+(int)String[i] - glFont->IntStart];//russification
+			else
+				Char = &glFont->Char[(int)String[i] - glFont->IntStart];
 		
-		//Specify vertices and texture coordinates
-		glTexCoord2f(Char->tx1, Char->ty2);
-		glVertex3f(x, y, z);
+			//Specify vertices and texture coordinates
+			glTexCoord2f(Char->tx1, Char->ty2);
+			glVertex3f(x, y, z);
 
-		glTexCoord2f(Char->tx2, Char->ty2);
-		glVertex3f(x + Char->dx*scale, y, z);
+			glTexCoord2f(Char->tx2, Char->ty2);
+			glVertex3f(x + Char->dx*scale, y, z);
 
-		glTexCoord2f(Char->tx2, Char->ty1);
-		glVertex3f(x + Char->dx*scale, y + Char->dy*scale, z);
+			glTexCoord2f(Char->tx2, Char->ty1);
+			glVertex3f(x + Char->dx*scale, y + Char->dy*scale, z);
 
-		glTexCoord2f(Char->tx1, Char->ty1);
-		glVertex3f(x, y + Char->dy*scale, z);
+			glTexCoord2f(Char->tx1, Char->ty1);
+			glVertex3f(x, y + Char->dy*scale, z);
 	
-		//Move to next character
-		x += Char->dx*scale;
-	}
+			//Move to next character
+			x += Char->dx*scale;
+		}
 
-	//Stop rendering quads
 	glEnd();
+
 }
 //*********************************************************
 
@@ -158,8 +159,8 @@ void glFontGetLength (const char *String, GLFONT *Font, float& width, float& hei
 int Length, i;
 GLFONTCHAR *Char;
 
-	width=0.;
-	height=0.;
+	width  = 0.;
+	height = 0.;
 
 	if (Font->Char != NULL)
 		glFont = Font;

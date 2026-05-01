@@ -79,21 +79,19 @@ GLfloat m[4][4];
 	glViewport(m_iBottomLeftX, m_iBottomLeftY, m_iWidth, m_iHeight);
 
 	glMatrixMode(GL_PROJECTION);
-	//инициализация верхней матрицы на стеке единичной матрицой
-	glLoadIdentity();
-	//умножение верхней матрицы на стеке на матрицу параллельного проецирования
-	glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
 
-	//выбор стека матриц модельно-видовых преобразований
+		glLoadIdentity();
+		glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
+
 	glMatrixMode(GL_MODELVIEW);
 
-	glLoadIdentity();
+		glLoadIdentity();
 
-	glTranslatef(vUserSceneTranslation.X, vUserSceneTranslation.Y, vUserSceneTranslation.Z);
-	glMultMatrixf(&matrUserScale.m[0][0]);
+		glTranslatef(vUserSceneTranslation.X, vUserSceneTranslation.Y, vUserSceneTranslation.Z);
+		glMultMatrixf(&matrUserScale.m[0][0]);
 
-	build_rotmatrix(m, curquat);
-	glMultMatrixf(&m[0][0]);
+		build_rotmatrix(m, curquat);
+		glMultMatrixf(&m[0][0]);
 }
 
 void OpenGLSubWindow::SetupGraphicsPipelineWithIdentityModelViewMatrix()
@@ -102,12 +100,13 @@ void OpenGLSubWindow::SetupGraphicsPipelineWithIdentityModelViewMatrix()
 	glViewport(m_iBottomLeftX, m_iBottomLeftY, m_iWidth, m_iHeight);
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
+		
+		glLoadIdentity();
+		glOrtho(-m_iWidth/2.0f, m_iWidth/2.0f, -m_iHeight/2.0f, m_iHeight/2.0f, -3000, 3000);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+		
+		glLoadIdentity();
 
 }
 

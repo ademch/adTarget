@@ -60,5 +60,8 @@ protected:
 };
 
 TextureDescriptor* LoadTexture(int iWidth, int iHeight, unsigned char *data);
+TextureDescriptor* LoadTextureWinAPI(const char* filename);
+
+
 
 #endif

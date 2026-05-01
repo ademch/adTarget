@@ -4,7 +4,6 @@
 #include "glfont.h"
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
-#include "SubWindow.h"
 #include <functional>
 
 
