@@ -25,6 +25,7 @@ public:
 	virtual bool MouseFunc(int button, int state, int x, int y);
 	virtual void MotionFunc(int x, int y);
 	virtual bool MouseWheelFunc(int state, int delta, int x, int y);
+	virtual bool MouseHWheelFunc(int state, int delta, int x, int y);
 	virtual	void Render() final;	// calls Draw to be able to process component before its GUI
 
 	virtual	void Draw() {};
@@ -39,13 +40,14 @@ protected:
 
 	std::vector<GUI_Element*> liGUI_Elements;
 
-	void RenderGUI();
+	virtual void RenderGUI();
 	void ReshapeGUI(int iWidth, int iHeight);
 
 	bool PassiveMotionFuncGUI(int x, int y);
 	bool MouseFuncGUI(int button, int state, int x, int y);
 	void MotionFuncGUI(int x, int y);
 	bool MouseWheelFuncGUI(int state, int delta, int x, int y);
+	bool MouseHWheelFuncGUI(int state, int delta, int x, int y);
 
 
 private:

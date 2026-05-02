@@ -13,9 +13,9 @@ GLdouble projection[16];    // матрица проекции.
 GLdouble modelview[16];     // видовая матрица.
 GLfloat  vx,vy,vz;          // координаты курсора мыши в системе координат viewport-a.
 
-	glGetIntegerv(GL_VIEWPORT,viewport);           // узнаём параметры viewport-a.
-	glGetDoublev(GL_PROJECTION_MATRIX,projection); // узнаём матрицу проекции.
-	glGetDoublev(GL_MODELVIEW_MATRIX,modelview);   // узнаём видовую матрицу.
+	glGetIntegerv(GL_VIEWPORT,         viewport);     // узнаём параметры viewport-a.
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);   // узнаём матрицу проекции.
+	glGetDoublev(GL_MODELVIEW_MATRIX,  modelview);    // узнаём видовую матрицу.
 
 	// переводим оконные координаты курсора в систему координат viewport-a.
 	vx = float(mouse_x);

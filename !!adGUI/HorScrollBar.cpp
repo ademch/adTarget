@@ -4,6 +4,8 @@
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 
+const unsigned int g_minZoomOutIndex = -20;
+
 HorScrollBar::HorScrollBar(std::string caption, int px, int py, int width, int height)
 {
 	posx = px;
@@ -87,11 +89,20 @@ void HorScrollBar::Draw()
 
 		cpuTranslatef(vUserSceneTranslation.X, 0, 0);
 		cpuMultMatrixf(matrUserScale);
-		Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
-		Vec3 ptHandleEndTrans = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
-		glQuad(iGUIpushed + ptHandleStartTrans.X + 1, posy - iGUIpushed + ptHandleStartTrans.Y + 3,
-			   ptHandleEndTrans.X - ptHandleStartTrans.X -3, m_Height-5, 5);
+		Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
+		Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
+		float fLength = ptHandleEndTrans.X - ptHandleStartTrans.X;
+
+		float iForcedAddition = 0.0;
+		if (fLength < 5)
+			iForcedAddition = 5 - fLength;
+
+		glQuad(       ptHandleStartTrans.X + iGUIpushed - 1,		// startx
+			   posy + ptHandleStartTrans.Y - iGUIpushed + 3,	// starty
+			   fLength + iForcedAddition,	                    // width
+			   m_Height-5,										// height
+			   5);												// zcoord
 	}
 
 }
@@ -179,7 +190,7 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 
 			if (fDelta < 0)
 			{
-				if (iZoomIndex - 1 <= -10) return false;
+				if (iZoomIndex - 1 <= g_minZoomOutIndex) return false;
 				iZoomIndex--;
 			}
 			else

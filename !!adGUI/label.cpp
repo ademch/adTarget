@@ -15,7 +15,7 @@ Label::Label(std::string caption, int px, int py, float size)
 	_text=caption;
 	_size=size;
 
-	vColor = Vecc4(0.1f, 0.5f, 0.1f, 1.0f);
+	vColor = Vecc4(0.1f, 0.6f, 0.1f, 1.0f);
 }
 
 

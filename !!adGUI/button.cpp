@@ -3,6 +3,7 @@
 #include <gl/gl.h>
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
+#include "../!!adGlobals/globalToolTip.h"
 
 extern GLFONT font;
 
@@ -20,12 +21,15 @@ Button::Button(std::string caption, int px, int py, int width, float size)
 	_text      = caption;
 	m_Width    = width;
 
+	strHint = "";
+
 	bEnabled = true;
 	bFocused = false;
 	iGUIpushed = 0;
 
 	vColor_focused   = Vecc4(0.1, 0.8, 0.1, 0.7);
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
+
 }
 
 Button::~Button()
@@ -40,6 +44,9 @@ bool Button::Hover(int x, int y)
 		(y < posy + m_Height) && (y > posy))
 	{
 		bFocused = bEnabled;
+
+		ToolTip::Get()->Schedule(strHint.c_str());
+
 		return true;
 	}
 
@@ -106,4 +113,50 @@ bool Button::Clicked(int button, int state, int x, int y)
 
 	iGUIpushed = 0;
 	return false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ButtonImage::ButtonImage(std::string caption, int px, int py, int width) :
+	         Button(caption, px, py, width, 0)
+{
+	m_Height = width;
+	texDescr = NULL;
+}
+
+ButtonImage::~ButtonImage()
+{
+	delete texDescr;
+}
+
+
+
+void ButtonImage::Draw()
+{
+	// clear screen under button
+	glColor3f(0, 0, 0);
+	glQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 0);
+
+	if (bFocused && bEnabled)
+		glColor4fv(&vColor_focused.X);
+	else
+		glColor4fv(&vColor_defocused.X);
+
+	glBindTexture(GL_TEXTURE_2D, texDescr->m_uiTextureID);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	glEnable(GL_TEXTURE_2D);
+	glTexturedQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 6);
+	glDisable(GL_TEXTURE_2D);
+
+	// draw frame
+	glLineWidth(1);
+	glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 7);
+
+}
+
+void ButtonImage::LoadImage(const char* filename)
+{
+	texDescr = LoadTextureWinAPI(filename);
 }

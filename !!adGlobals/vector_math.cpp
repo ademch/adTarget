@@ -62,7 +62,7 @@ Vec3 vGPU;
 
 Vec3 cpuPipelineVertex3fv(const Vec3& vCPU_in)
 {
-	return mCpuPipeline * vCPU_in;;
+	return mCpuPipeline * vCPU_in;
 }
 
 

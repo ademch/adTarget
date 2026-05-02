@@ -4,6 +4,7 @@
 #include "glfont.h"
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
+#include "../!!adGlobals/TextureDescriptor.h"
 #include <functional>
 
 
@@ -17,12 +18,13 @@ public:
    bool bFocused;
    bool bEnabled;
    std::string _text;
-   
+   std::string strHint;
+
    Vec4 vColor_focused;
    Vec4 vColor_defocused;
 
    Button(std::string caption, int px, int py, int width, float size);
-   ~Button();
+   virtual ~Button();
 
    std::function<bool()> OnClick;
 
@@ -34,6 +36,28 @@ protected:
 	float m_TextSize;
 
 	int iGUIpushed;
+
+private:
+
+};
+
+
+
+class ButtonImage : public Button
+{
+public:
+
+	ButtonImage(std::string caption, int px, int py, int width);
+	~ButtonImage();
+
+	void LoadImage(const char* filename);
+
+	TextureDescriptor* texDescr;
+
+	void Draw();
+
+protected:
+
 
 };
 
