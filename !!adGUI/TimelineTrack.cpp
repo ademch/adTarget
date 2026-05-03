@@ -4,7 +4,7 @@
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "glfont.h"
 #include <assert.h>
-#include "VideoSlider.h"
+#include "TimelineTrack.h"
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
 #include <string>
@@ -13,20 +13,14 @@
 extern GLFONT font;
 
 
-VideoSlider::VideoSlider(int px, int py, float _v_min, float _v_max, float& _v_cur, int _height):
-	                     ref_fValue(_v_cur), m_fVal_min(_v_min), m_fVal_max(_v_max), m_iHeight(_height)
+TimelineTrack::TimelineTrack(int px, int py, int _width, int _height):
+	                         m_iWidth(_width), m_iHeight(_height)
 {
-	assert(_v_min <  _v_max);
-	assert(_v_max >= _v_cur);
-	assert(_v_min <= _v_cur);
-
 	posx = px;
 	posy = py;
 
 	iHPosShift = px;
 	iVPosShift = py;
-
-	m_iWidth  = 250;
 
 	m_fSliderX = 0.0;
 
@@ -34,53 +28,16 @@ VideoSlider::VideoSlider(int px, int py, float _v_min, float _v_max, float& _v_c
 	bEnabled = true;
 
 	bFocused = false;
-	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);
+	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);	// 0.04, 0.18, 0.04
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
 
 	matrSliderNonInverted = Mat4MakeIdent();
 
 }
 
-void VideoSlider::SetValue(float _val, float _v_min, float _v_max)
-{
-	if (_v_min < _v_max)
-	{
-		m_fVal_min = _v_min;
-		m_fVal_max = _v_max;
-	}
-	//if ((_val >= _v_min) && (_val <= _v_max)) assign the value no matter what
-	ref_fValue = _val;
-}
 
-int VideoSlider::GetValue()
-{
-	float t = (m_fSliderX + m_iWidth/2.0) / m_iWidth;
 
-	return m_fVal_max*t;
-}
-
-void VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
-{
-	float fTickStep = m_iWidth/count;
-
-	float vNew = matTransform.m[0][0] * fTickStep*iStep;
-
-	if ( vNew < 8) return;
-
-	glLineWidth(fThickness);
-	glBegin(GL_LINES);
-		float fCurrentVal = 0;
-		for (int iTick = 0; iTick <= int(count); iTick+=iStep)
-		{
-			fCurrentVal = fTickStep*iTick;
-
-			glVertex3f(posx + fCurrentVal,  posy + fCaliper/2.0*(m_iHeight/20.0f), 4);
-			glVertex3f(posx + fCurrentVal,  posy - fCaliper/2.0*(m_iHeight/20.0f), 4);
-		}
-	glEnd();
-}
-
-void VideoSlider::Draw()
+void TimelineTrack::Draw()
 {
 	GUI_Element::Draw();
 
@@ -88,7 +45,7 @@ void VideoSlider::Draw()
 	glGetFloatv(GL_MODELVIEW_MATRIX,  &matrSliderInverted.m[0][0]);
 
 	// clear screen under control
-	glColor3f(0, 0, 0);
+	glColor3f(0.023, 0.095, 0.023);
 	glQuad(posx, posy, m_iWidth, m_iHeight, 0);
 
 
@@ -96,30 +53,8 @@ void VideoSlider::Draw()
 	//	glColor3fv(&vColor_focused.X);
 	//else
 	glColor3fv(&vColor_defocused.X);
+	glWireRectangle(posx, posy, m_iWidth, m_iHeight, 3);
 
-	// Draw ticks
-	{
-		unsigned int Count = int(m_fVal_max);
-
-		// hours
-		DrawTicks(Count/3600.0f, 1, 2, 20, matrSliderInverted);
-
-		// quarters of hour
-		glColor3f(0.86, 0.86, 0.0);
-		DrawTicks(Count/60.0f, 15, 2, 16, matrSliderInverted);
-
-		// minutes
-		glColor3f(0.2, 0.6, 0.2);
-		DrawTicks(Count/60.0f, 1, 2, 10, matrSliderInverted);
-
-		// quarters of seconds
-		glColor3f(0.7, 0.7, 0.0);
-		DrawTicks(Count/1.0f, 15, 2, 6, matrSliderInverted);
-
-		// seconds
-		glColor3f(0.1, 0.6, 0.1);
-		DrawTicks(Count/1.0f, 1, 2, 3, matrSliderInverted);
-	}
 
 	// draw slider line
 	//
@@ -130,27 +65,20 @@ void VideoSlider::Draw()
 	{
 		glColor3f(1,0,0);
 
-		// triangle headshape simulated with lines
 		glLineWidth(1);
-		glLine( m_fSliderX, posy,
-				m_fSliderX, posy - m_iHeight/2,     5);
-		glLineWidth(3);
-		glLine (m_fSliderX, posy + m_iHeight/2 - 4,
-			    m_fSliderX, posy - m_iHeight/2 + 3, 5);
-		glLineWidth(5);
-		glLine( m_fSliderX, posy + m_iHeight/2 - 4,
-			    m_fSliderX, posy - m_iHeight/2 + 5, 5);
+		//glLine( m_fSliderX, posy,
+		//	    m_fSliderX, posy - m_iHeight,     5);
 	}
 
 }
 
-void VideoSlider::Resize(int iWidth, int iHeight)
+void TimelineTrack::Resize(int iWidth, int iHeight)
 {
 	m_iWidth  = iWidth;
 	m_iHeight = iHeight;
 }
 
-bool VideoSlider::Clicked(int button, int state, int x, int y)
+bool TimelineTrack::Clicked(int button, int state, int x, int y)
 {
 	GUI_Element::Clicked(button, state, x, y);
 
@@ -185,7 +113,7 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 }
 
 
-bool VideoSlider::Drag(int x, int y)
+bool TimelineTrack::Drag(int x, int y)
 {
 	GUI_Element::Drag(x, y);
 
@@ -204,7 +132,7 @@ bool VideoSlider::Drag(int x, int y)
 }
 
 
-bool VideoSlider::Hover(int x, int y)
+bool TimelineTrack::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
@@ -220,19 +148,13 @@ bool VideoSlider::Hover(int x, int y)
 	return false;
 }
 
-bool VideoSlider::Wheel(int state,int delta,int x,int y)
+bool TimelineTrack::Wheel(int state,int delta,int x,int y)
 { 
 	GUI_Element::Wheel(state, delta, x, y);
 
 	if (!bFocused) return false;
 
 	float fDelta = float(delta)/120.0;
-
-	if (ref_fValue > m_fVal_max )
-		ref_fValue = m_fVal_max;
-
-	if (ref_fValue < m_fVal_min )
-		ref_fValue = m_fVal_min;
 
 	if (OnClick != NULL) OnClick();
 

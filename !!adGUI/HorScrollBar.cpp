@@ -40,7 +40,8 @@ HorScrollBar::HorScrollBar(std::string caption, int px, int py, int width, int h
 
 void HorScrollBar::Resize(int iWidth, int iHeight)
 {
-	m_Width = iWidth;
+	m_Width  = iWidth;
+	m_Height = iHeight;
 
 	m_ptHandleStartWorldCoords = Vecc3(-iWidth/2.0, 0);
 	m_ptHandleEndWorldCoords   = Vecc3( iWidth/2.0, 0);
@@ -98,10 +99,10 @@ void HorScrollBar::Draw()
 		if (fLength < 5)
 			iForcedAddition = 5 - fLength;
 
-		glQuad(       ptHandleStartTrans.X + iGUIpushed - 1,		// startx
+		glQuad(       ptHandleStartTrans.X + iGUIpushed - 1,	// startx
 			   posy + ptHandleStartTrans.Y - iGUIpushed + 3,	// starty
 			   fLength + iForcedAddition,	                    // width
-			   m_Height-5,										// height
+			   m_Height-6,										// height
 			   5);												// zcoord
 	}
 
