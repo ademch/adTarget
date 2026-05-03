@@ -14,7 +14,7 @@ extern GLFONT font;
 
 
 VideoSlider::VideoSlider(std::string strCaption, int px, int py, float _v_min, float _v_max, float& _v_cur, int _height):
-	_text(strCaption), ptr_fVal_cur(_v_cur), m_fVal_min(_v_min), m_fVal_max(_v_max), m_iHeight(_height)
+	                     _text(strCaption), ref_fValue(_v_cur), m_fVal_min(_v_min), m_fVal_max(_v_max), m_iHeight(_height)
 {
 	assert(_v_min < _v_max);
 	assert(_v_max >= _v_cur);
@@ -28,7 +28,7 @@ VideoSlider::VideoSlider(std::string strCaption, int px, int py, float _v_min, f
 
 	m_iWidth  = 250;
 
-	m_fSliderXcoord = 0.0;
+	m_fSliderX = 0.0;
 
 	bMouseButtonPressed = false;
 	bEnabled = true;
@@ -51,7 +51,14 @@ void VideoSlider::SetValue(float _val, float _v_min, float _v_max)
 		m_fVal_max = _v_max;
 	}
 	//if ((_val >= _v_min) && (_val <= _v_max)) assign the value no matter what
-	ptr_fVal_cur = _val;
+	ref_fValue = _val;
+}
+
+int VideoSlider::GetValue()
+{
+	float t = (m_fSliderX + m_iWidth/2.0) / m_iWidth;
+
+	return m_fVal_max*t;
 }
 
 void VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
@@ -60,19 +67,18 @@ void VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCal
 
 	float vNew = matTransform.m[0][0] * fTickStep*iStep;
 
-	if ( vNew < 10) return;
+	if ( vNew < 8) return;
 
 	glLineWidth(fThickness);
-
 	glBegin(GL_LINES);
-	float fCurrentVal = 0;
-	for (int iTick = 0; iTick <= int(count); iTick+=iStep)
-	{
-		fCurrentVal = fTickStep*iTick;
+		float fCurrentVal = 0;
+		for (int iTick = 0; iTick <= int(count); iTick+=iStep)
+		{
+			fCurrentVal = fTickStep*iTick;
 
-		glVertex3f(posx + fCurrentVal,    posy + m_iHeight/2.0 + fCaliper/2.0, 4);
-		glVertex3f(posx + fCurrentVal,    posy + m_iHeight/2.0 - fCaliper/2.0, 4);
-	}
+			glVertex3f(posx + fCurrentVal,  posy + m_iHeight/2.0 + fCaliper/2.0, 4);
+			glVertex3f(posx + fCurrentVal,  posy + m_iHeight/2.0 - fCaliper/2.0, 4);
+		}
 	glEnd();
 }
 
@@ -96,10 +102,7 @@ void VideoSlider::Draw()
 
 	// draw lower border
 	glLineWidth(1);
-	glBegin(GL_LINES);
-	glVertex3f(posx,            posy, 4);
-	glVertex3f(posx + m_iWidth, posy, 4);
-	glEnd();
+	glLine(posx, posy, posx + m_iWidth, posy, 4);
 
 	// Draw ticks
 	{
@@ -129,8 +132,8 @@ void VideoSlider::Draw()
 	glLineWidth(1);
 	glColor3f(1,0,0);
 	glBegin(GL_LINES);
-		glVertex3f(m_fSliderXcoord,  posy + m_iHeight + 3, 4);
-		glVertex3f(m_fSliderXcoord,  posy + m_iHeight - fPointerPokeHeight, 4);
+		glVertex3f(m_fSliderX,  posy + m_iHeight + 3, 4);
+		glVertex3f(m_fSliderX,  posy + m_iHeight - fPointerPokeHeight, 4);
 	glEnd();
 }
 
@@ -151,7 +154,7 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 
 		if (state==GLUT_DOWN)
 		{
-			m_fSliderXcoord = (matrSliderNonInverted * Vecc3(x)).X;
+			m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
 
 			bMouseButtonPressed = true;
 			return true;
@@ -175,7 +178,7 @@ bool VideoSlider::Drag(int x, int y)
 
 	if (bMouseButtonPressed && (x<posx + m_iWidth + 1) && (x>posx - 1))
 	{
-		m_fSliderXcoord = (matrSliderNonInverted * Vecc3(x)).X;
+		m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
 
 		if (OnClickDrag != NULL) OnClickDrag();
 
@@ -208,11 +211,11 @@ bool VideoSlider::Wheel(int state,int delta,int x,int y)
 
 	float fDelta = float(delta)/120.0;
 
-	if (ptr_fVal_cur > m_fVal_max )
-		ptr_fVal_cur = m_fVal_max;
+	if (ref_fValue > m_fVal_max )
+		ref_fValue = m_fVal_max;
 
-	if (ptr_fVal_cur < m_fVal_min )
-		ptr_fVal_cur = m_fVal_min;
+	if (ref_fValue < m_fVal_min )
+		ref_fValue = m_fVal_min;
 
 	if (OnClick != NULL) OnClick();
 

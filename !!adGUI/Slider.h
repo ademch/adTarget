@@ -150,7 +150,7 @@ public:
 		// draw "mercury"
 		float fullness= (*ptr_fVal_cur - m_fVal_min)/(m_fVal_max - m_fVal_min);
 
-		// limit fullness when ptr_fVal_cur is set from outside
+		// limit fullness when ref_fValue is set from outside
 		if (fullness > 1.0) fullness = 1.0;
 		if (fullness < 0.0) fullness = 0.0;
 		
