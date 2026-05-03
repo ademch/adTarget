@@ -129,6 +129,11 @@ void VideoSlider::Draw()
 	}
 
 	// draw slider line
+	//
+	// Slider coordinates are world coordinates in the range (eg -300...300)
+	// scaled to a range (eg -200...200) during its capture in the mouse handler.
+	// Current modelview matrix brings them back to -300...300, but the value now
+	// is not with granularity +1, but with granularity 1/scale
 	glLineWidth(1);
 	glColor3f(1,0,0);
 	glBegin(GL_LINES);
@@ -154,7 +159,11 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 
 		if (state==GLUT_DOWN)
 		{
+			// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+			// The matrix is specially organized in a way the world coordinates (-300...300)
+			// become a peephole with N times greater precision than 1/(600)
 			m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
+			//printf("%5.3f\n", m_fSliderX);
 
 			bMouseButtonPressed = true;
 			return true;
@@ -172,12 +181,16 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 	return false;
 }
 
+
 bool VideoSlider::Drag(int x, int y)
 {
-	GUI_Element::Drag(x,y);
+	GUI_Element::Drag(x, y);
 
-	if (bMouseButtonPressed && (x<posx + m_iWidth + 1) && (x>posx - 1))
+	if (bMouseButtonPressed && (x > posx - 1) && (x < posx + m_iWidth + 1) )
 	{
+		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+		// The matrix is specially organized in a way the world coordinates (-300...300)
+		// become a peephole with N times greater precision than 1/(600)
 		m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
 
 		if (OnClickDrag != NULL) OnClickDrag();
@@ -186,6 +199,7 @@ bool VideoSlider::Drag(int x, int y)
 	}
 	return false;
 }
+
 
 bool VideoSlider::Hover(int x, int y)
 {
