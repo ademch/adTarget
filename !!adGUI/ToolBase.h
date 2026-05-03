@@ -2,7 +2,6 @@
 #ifndef TOOLBASE_H
 #define TOOLBASE_H
 
-#include "../../!!adGlobals/adOpenGLUtilities.h"
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
 

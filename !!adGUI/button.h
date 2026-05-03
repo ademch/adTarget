@@ -17,6 +17,7 @@ public:
 
    bool bFocused;
    bool bEnabled;
+
    std::string _text;
    std::string strHint;
 

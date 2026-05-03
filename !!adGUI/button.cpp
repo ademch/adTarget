@@ -36,27 +36,6 @@ Button::~Button()
 {
 }
 
-bool Button::Hover(int x, int y)
-{
-	GUI_Element::Hover(x, y);
-
-	if ((x < posx + m_Width)  && (x > posx) &&
-		(y < posy + m_Height) && (y > posy))
-	{
-		bFocused = bEnabled;
-
-		ToolTip::Get()->Schedule(strHint.c_str());
-
-		return true;
-	}
-
-	bFocused   = false;
-	iGUIpushed = 0;
-
-	return false;
-}
-
-
 void Button::Draw()
 {
 	GUI_Element::Draw();
@@ -80,6 +59,28 @@ void Button::Draw()
 	glLineWidth(1);
 	glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 4.5);
 }
+
+
+bool Button::Hover(int x, int y)
+{
+	GUI_Element::Hover(x, y);
+
+	if ((x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
+	{
+		bFocused = bEnabled;
+
+		ToolTip::Get()->Schedule(strHint.c_str());
+
+		return true;
+	}
+
+	bFocused   = false;
+	iGUIpushed = 0;
+
+	return false;
+}
+
 
 bool Button::Clicked(int button, int state, int x, int y)
 {
@@ -143,12 +144,15 @@ void ButtonImage::Draw()
 	else
 		glColor4fv(&vColor_defocused.X);
 
-	glBindTexture(GL_TEXTURE_2D, texDescr->m_uiTextureID);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	if (texDescr)
+	{
+		glBindTexture(GL_TEXTURE_2D, texDescr->m_uiTextureID);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	glEnable(GL_TEXTURE_2D);
-	glTexturedQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 6);
-	glDisable(GL_TEXTURE_2D);
+		glEnable(GL_TEXTURE_2D);
+			glTexturedQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 6);
+		glDisable(GL_TEXTURE_2D);
+	}
 
 	// draw frame
 	glLineWidth(1);
