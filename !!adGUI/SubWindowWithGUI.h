@@ -43,11 +43,11 @@ protected:
 	virtual void RenderGUI();
 	void ReshapeGUI(int iWidth, int iHeight);
 
-	bool PassiveMotionFuncGUI(int x, int y);
-	bool MouseFuncGUI(int button, int state, int x, int y);
-	void MotionFuncGUI(int x, int y);
-	bool MouseWheelFuncGUI(int state, int delta, int x, int y);
-	bool MouseHWheelFuncGUI(int state, int delta, int x, int y);
+	virtual bool PassiveMotionFuncGUI(int x, int y);
+	virtual bool MouseFuncGUI(int button, int state, int x, int y);
+	virtual void MotionFuncGUI(int x, int y);
+	virtual bool MouseWheelFuncGUI(int state, int delta, int x, int y);
+	virtual bool MouseHWheelFuncGUI(int state, int delta, int x, int y);
 
 
 private:

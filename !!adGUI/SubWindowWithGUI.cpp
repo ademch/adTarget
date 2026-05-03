@@ -118,25 +118,25 @@ void OpenGLSubWindowWithGUI::RenderGUI()
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
-	for (auto iterElement : liGUI_Elements)
-		iterElement->Draw();
+		for (auto iterElement : liGUI_Elements)
+			iterElement->Draw();
 }
 
 bool OpenGLSubWindowWithGUI::PassiveMotionFuncGUI(int x, int y)
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
-	Vec3d v3DCoords;
-	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		Vec3d v3DCoords;
+		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
-	bool bResult = false;
-	for (auto iterElement : liGUI_Elements)
-	{
-		bResult = iterElement->Hover(int(v3DCoords.X), int(v3DCoords.Y));
+		bool bResult = false;
+		for (auto iterElement : liGUI_Elements)
+		{
+			bResult = iterElement->Hover(int(v3DCoords.X), int(v3DCoords.Y));
 		
-		// Break if some GUI has handled hover
-		if (bResult) break;
-	}
+			// Break if some GUI has handled hover
+			if (bResult) break;
+		}
 
 	return bResult;
 }
@@ -145,14 +145,14 @@ bool OpenGLSubWindowWithGUI::MouseFuncGUI(int button, int state, int x, int y)
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
-	Vec3d v3DCoords;
-	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		Vec3d v3DCoords;
+		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
-	for (auto iterElement : liGUI_Elements)
-	{
-		if (iterElement->Clicked(button, state, int(v3DCoords.X), int(v3DCoords.Y)))
-			return true;
-	}
+		for (auto iterElement : liGUI_Elements)
+		{
+			if (iterElement->Clicked(button, state, int(v3DCoords.X), int(v3DCoords.Y)))
+				return true;
+		}
 
 	return false;
 }
@@ -161,25 +161,25 @@ void OpenGLSubWindowWithGUI::MotionFuncGUI(int x, int y)
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
-	Vec3d v3DCoords;
-	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		Vec3d v3DCoords;
+		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
-	for (auto iterElement : liGUI_Elements)
-		iterElement->Drag(int(v3DCoords.X), int(v3DCoords.Y));
+		for (auto iterElement : liGUI_Elements)
+			iterElement->Drag(int(v3DCoords.X), int(v3DCoords.Y));
 }
 
 bool OpenGLSubWindowWithGUI::MouseWheelFuncGUI(int state, int delta, int x, int y)
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
-	Vec3d v3DCoords;
-	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		Vec3d v3DCoords;
+		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
-	for (auto iterElement : liGUI_Elements)
-	{
-		if (iterElement->Wheel(state, delta, int(v3DCoords.X), int(v3DCoords.Y)))
-			return true;
-	}
+		for (auto iterElement : liGUI_Elements)
+		{
+			if (iterElement->Wheel(state, delta, int(v3DCoords.X), int(v3DCoords.Y)))
+				return true;
+		}
 
 	return false;
 }

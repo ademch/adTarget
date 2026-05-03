@@ -278,12 +278,11 @@ void RenderTexturedQuad(unsigned int tex,
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
-	glBindTexture(GL_TEXTURE_2D, tex);
+		glBindTexture(GL_TEXTURE_2D, tex);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glColor3f(0.0, 1.0, 0.0);
-	glTexturedQuad(fX_bottom, fY_bottom, fWidth, fHeight, fZ);
+		glColor3f(0.0, 1.0, 0.0);
+		glTexturedQuad(fX_bottom, fY_bottom, fWidth, fHeight, fZ);
 
 	glDisable(GL_TEXTURE_2D);
 }

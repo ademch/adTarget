@@ -27,6 +27,11 @@ protected:
 
 	std::vector<ToolBase*> liTools;
 
+	virtual void RenderGUI() override;
+	virtual bool PassiveMotionFuncGUI(int x, int y) override;
+	virtual bool MouseFuncGUI(int button, int state, int x, int y) override;
+	virtual void MotionFuncGUI(int x, int y) override;
+
 private:
 
 };
