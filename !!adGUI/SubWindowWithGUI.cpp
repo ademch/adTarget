@@ -95,11 +95,7 @@ bool OpenGLSubWindowWithGUI::MouseFunc(int button, int state, int x, int y)
 {
 	OpenGLSubWindow::MouseFunc(button, state, x, y);
 
-	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
-		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
-	{
-		if (MouseFuncGUI(button, state, x, y)) return true;
-	}
+	if (MouseFuncGUI(button, state, x, y)) return true;
 
 	return false;
 }
