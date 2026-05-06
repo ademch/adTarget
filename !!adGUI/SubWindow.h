@@ -51,6 +51,7 @@ public:
 	virtual bool MouseFunc(int button,int state,int x,int y);
 	virtual bool KeyboardFunc(unsigned char key, int x, int y) { return false; }
 	virtual bool MouseWheelFunc(int state,int delta,int x,int y);
+	virtual bool MouseHWheelFunc(int state,int delta,int x,int y)  { return false; }
 
 	// params are in window coordinates
 	virtual void Reshape(int iBottomLeftX,int iBottomLeftY, int iWidth,int iHeight)
@@ -87,12 +88,13 @@ protected:
 	float fUserScale;
 	Matr4 matrUserScale;
 
+	Vec3 vUserSceneTranslation;
+
 private:
 	float lastquat[4];
 	bool bMouseSceneRotationInProgress;			//used for quaternion camera rotation
 	int  iBeginRotateX, iBeginRotateY;
 
-	Vec3 vUserSceneTranslation;
 	bool bMouseSceneDragInProgress;
 	int  iBeginDragX, iBeginDragY;
 };

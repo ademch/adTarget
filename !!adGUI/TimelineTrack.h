@@ -28,14 +28,11 @@ public:
 	bool Clicked(int button, int state, int x, int y) override;
 	bool Drag(int x, int y) override;
 	bool Hover(int x, int y) override;
-	bool Wheel(int state,int delta,int x,int y) override;
 
 protected:
 
 	int m_iWidth;
 	int m_iHeight;
-
-	float m_fSliderX;
 
 	Vec3 vColor_focused;
 	Vec3 vColor_defocused;

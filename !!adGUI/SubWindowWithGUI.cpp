@@ -69,7 +69,7 @@ bool OpenGLSubWindowWithGUI::MouseWheelFunc(int state, int delta, int x, int y)
 
 bool OpenGLSubWindowWithGUI::MouseHWheelFunc(int state, int delta, int x, int y)
 {
-	if (OpenGLSubWindow::MouseWheelFunc(state, delta, x, y)) return true;
+	if (OpenGLSubWindow::MouseHWheelFunc(state, delta, x, y)) return true;
 
 	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
 		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
@@ -184,14 +184,14 @@ bool OpenGLSubWindowWithGUI::MouseHWheelFuncGUI(int state, int delta, int x, int
 {
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
-	Vec3d v3DCoords;
-	gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		Vec3d v3DCoords;
+		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
-	for (auto iterElement : liGUI_Elements)
-	{
-		if (iterElement->HWheel(state, delta, int(v3DCoords.X), int(v3DCoords.Y)))
-			return true;
-	}
+		for (auto iterElement : liGUI_Elements)
+		{
+			if (iterElement->HWheel(state, delta, int(v3DCoords.X), int(v3DCoords.Y)))
+				return true;
+		}
 
 	return false;
 }

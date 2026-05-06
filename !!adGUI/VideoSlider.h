@@ -4,6 +4,7 @@
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
 #include <functional>
+#include "VideoPositionMediator.h"
 
 
 class VideoSlider : public GUI_Element
@@ -11,18 +12,18 @@ class VideoSlider : public GUI_Element
 public:
 	bool bEnabled;
 
-	std::function<bool()>      OnClick;
-	std::function<bool(float)> OnDrawValue;
-	std::function<bool()>      OnClickDrag;
+	std::function<void(float)>      OnChange;
 
 	// non inverted Matrix is used to scale down the range and navigate with greater precision
 	// eg -300 300 can be scaled to -200 200 with greater resolution
 	Matr4 matrSliderNonInverted;
 
-	void SetValue(float _val, float _v_min, float _v_max);
-	int GetValue();
+	void SetPos(float _val);
+	void SetPosInit(float _val, float _v_min, float _v_max);
 
-	VideoSlider(int px, int py, float _v_min, float _v_max, float& _v_cur, int _height);
+	float GetValue();
+
+	VideoSlider(int px, int py, int _height, PositionMediator* mediator);
 
 	void Resize(int iWidth, int iHeight);
 
@@ -38,10 +39,11 @@ protected:
 	int m_iWidth;
 	int m_iHeight;
 
-	float& ref_fValue;
-	float m_fVal_min;
-	float m_fVal_max;
+	// those are values in seconds
+	int m_iValMin;
+	int m_iValMax;
 
+	// that is the value in internal World coordinates like -300...300
 	float m_fSliderX;
 
 	Vec3 vColor_focused;

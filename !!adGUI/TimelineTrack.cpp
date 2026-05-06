@@ -22,8 +22,6 @@ TimelineTrack::TimelineTrack(int px, int py, int _width, int _height):
 	iHPosShift = px;
 	iVPosShift = py;
 
-	m_fSliderX = 0.0;
-
 	bMouseButtonPressed = false;
 	bEnabled = true;
 
@@ -49,10 +47,10 @@ void TimelineTrack::Draw()
 	glQuad(posx, posy, m_iWidth, m_iHeight, 0);
 
 
-	//if (bFocused && bEnabled)
-	//	glColor3fv(&vColor_focused.X);
-	//else
-	glColor3fv(&vColor_defocused.X);
+	if (bFocused && bEnabled)
+		glColor3f(0.1, 0.5, 0.1);
+	else
+		glColor3f(0.075, 0.375, 0.075);
 	glWireRectangle(posx, posy, m_iWidth, m_iHeight, 3);
 
 
@@ -75,16 +73,17 @@ void TimelineTrack::Draw()
 void TimelineTrack::Resize(int iWidth, int iHeight)
 {
 	m_iWidth  = iWidth;
-	m_iHeight = iHeight;
+	//m_iHeight = iHeight;
 }
 
 bool TimelineTrack::Clicked(int button, int state, int x, int y)
 {
 	GUI_Element::Clicked(button, state, x, y);
 
-	// special case, component is symmetric along zero
-	if ((x > posx - 1) && (x < posx + m_iWidth + 1) &&
-		(y > posy - m_iHeight/2) && (y < posy + m_iHeight/2))
+	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
+
+	if ((vCoord.X < posx + m_iWidth)  && (vCoord.X > posx) &&
+		(vCoord.Y < posy + m_iHeight) && (vCoord.Y > posy))
 	{
 		if (!bEnabled) return false;
 
@@ -93,7 +92,7 @@ bool TimelineTrack::Clicked(int button, int state, int x, int y)
 			// Transform-scale input world coords of a slider using matrix from HorScrollBar.
 			// The matrix is specially organized in a way the world coordinates (-300...300)
 			// become a peephole with N times greater precision than 1/(600)
-			m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
+			//m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
 			//printf("%5.3f\n", m_fSliderX);
 
 			bMouseButtonPressed = true;
@@ -117,12 +116,14 @@ bool TimelineTrack::Drag(int x, int y)
 {
 	GUI_Element::Drag(x, y);
 
-	if (bMouseButtonPressed && (x > posx - 1) && (x < posx + m_iWidth + 1) )
+	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
+
+	if (bMouseButtonPressed && (vCoord.X < posx + m_iWidth)  && (vCoord.X > posx))
 	{
 		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
 		// The matrix is specially organized in a way the world coordinates (-300...300)
 		// become a peephole with N times greater precision than 1/(600)
-		m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
+		//m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
 
 		if (OnClickDrag != NULL) OnClickDrag();
 
@@ -136,8 +137,10 @@ bool TimelineTrack::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	if ((x < posx + m_iWidth + 1) && (x > posx - 1) &&
-		(y < posy + m_iHeight)    && (y > posy))
+	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
+
+	if ((vCoord.X < posx + m_iWidth)  && (vCoord.X > posx) &&
+		(vCoord.Y < posy + m_iHeight) && (vCoord.Y > posy))
 	{
 		bFocused = bEnabled;
 		return true;
@@ -146,17 +149,4 @@ bool TimelineTrack::Hover(int x, int y)
 	bFocused = false;
 
 	return false;
-}
-
-bool TimelineTrack::Wheel(int state,int delta,int x,int y)
-{ 
-	GUI_Element::Wheel(state, delta, x, y);
-
-	if (!bFocused) return false;
-
-	float fDelta = float(delta)/120.0;
-
-	if (OnClick != NULL) OnClick();
-
-	return true;
 }
