@@ -70,7 +70,9 @@ bool Button::Hover(int x, int y)
 	{
 		bFocused = bEnabled;
 
-		ToolTip::Get()->Schedule(strHint.c_str());
+		#ifdef _ENABLE_TOOLTIP
+			ToolTip::Get()->Schedule(strHint.c_str());
+		#endif
 
 		return true;
 	}
@@ -174,12 +176,12 @@ void ButtonImage::Draw()
 
 }
 
-void ButtonImage::LoadImage(const char* filename)
+void ButtonImage::LoadImg(const char* filename)
 {
 	texDescr = LoadTextureWinAPI(filename);
 }
 
-void ButtonImage::LoadImageDownState(const char* filename)
+void ButtonImage::LoadImgDownState(const char* filename)
 {
 	texDescrDownState = LoadTextureWinAPI(filename);
 }

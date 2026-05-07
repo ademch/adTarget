@@ -51,8 +51,8 @@ public:
 	ButtonImage(std::string caption, int px, int py, int width);
 	~ButtonImage();
 
-	void LoadImage(const char* filename);
-	void LoadImageDownState(const char* filename);
+	void LoadImg(const char* filename);
+	void LoadImgDownState(const char* filename);
 
 	TextureDescriptor* texDescr;
 	TextureDescriptor* texDescrDownState;
