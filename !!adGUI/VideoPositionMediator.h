@@ -7,6 +7,8 @@ class PositionMediator
 	unsigned int iEndSec;
 
 	float fPos;
+	float fPosSelectionStart;
+	float fPosSelectionEnd;
 
 	std::vector<std::function<void(void*, float)>> listenersPos;
 	std::vector<std::function<void(void*, float, unsigned int, unsigned int)>> listenersPosInit;
@@ -16,8 +18,11 @@ public:
 	PositionMediator()
 	{
 		iStartSec = 0;
-		iStartSec = 0;
+		iEndSec   = 0;
+
 		fPos = 0;
+		fPosSelectionStart = 0;
+		fPosSelectionEnd   = 0;
 	}
 
 	void SetPos(void* origin, float _fPos)
@@ -27,6 +32,16 @@ public:
 
 		for (auto& listener : listenersPos)
 			listener(origin, _fPos);
+	}
+
+	void SetSelection(void* origin, float _fSelectionStart, float _fSelectionEnd)
+	{
+		if ( fabs(_fSelectionStart - fPosSelectionStart) < 1e-6 &&
+			 fabs(_fSelectionEnd   - fPosSelectionEnd) < 1e-6 )
+			return;
+
+		//for (auto& listener : listenersPos)
+		//	listener(origin, _fPos);
 	}
 
 	void InitPos(void* origin, float _fPos, unsigned int _iStartSec, unsigned int _iEndSec)

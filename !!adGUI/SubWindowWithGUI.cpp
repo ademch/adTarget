@@ -87,6 +87,13 @@ bool OpenGLSubWindowWithGUI::PassiveMotionFunc(int x, int y)
 {
 	OpenGLSubWindow::PassiveMotionFunc(x, y);
 
+	if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+		  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
+	{
+		x = -1000000;
+		y = -1000000;
+	}
+
 	return PassiveMotionFuncGUI(x, y);
 }
 
@@ -94,6 +101,13 @@ bool OpenGLSubWindowWithGUI::PassiveMotionFunc(int x, int y)
 bool OpenGLSubWindowWithGUI::MouseFunc(int button, int state, int x, int y)
 {
 	OpenGLSubWindow::MouseFunc(button, state, x, y);
+
+	if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+		  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
+	{
+		x = -1000000;
+		y = -1000000;
+	}
 
 	if (MouseFuncGUI(button, state, x, y)) return true;
 
@@ -104,6 +118,13 @@ bool OpenGLSubWindowWithGUI::MouseFunc(int button, int state, int x, int y)
 void OpenGLSubWindowWithGUI::MotionFunc(int x, int y)
 {
 	OpenGLSubWindow::MotionFunc(x, y);
+
+	if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+		  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
+	{
+		x = -1000000;
+		y = -1000000;
+	}
 
 	MotionFuncGUI(x, y);
 }

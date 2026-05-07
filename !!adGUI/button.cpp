@@ -65,8 +65,8 @@ bool Button::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	if ((x < posx + m_Width)  && (x > posx) &&
-		(y < posy + m_Height) && (y > posy))
+	if ((x > posx)   && (x < posx + m_Width) && 
+		(y > posy-1) && (y < posy + m_Height))
 	{
 		bFocused = bEnabled;
 
@@ -89,7 +89,7 @@ bool Button::Clicked(int button, int state, int x, int y)
 	if (!bEnabled) return false;
 
 	if ((x < posx + m_Width)  && (x > posx) &&
-		(y < posy + m_Height) && (y > posy))
+		(y < posy + m_Height) && (y > posy-1))
 	{
 		if (button == GLUT_LEFT_BUTTON)
 		{
@@ -124,6 +124,9 @@ ButtonImage::ButtonImage(std::string caption, int px, int py, int width) :
 {
 	m_Height = width;
 	texDescr = NULL;
+	texDescrDownState = NULL;
+	bDrawFrame = true;
+	bDownState = false;
 }
 
 ButtonImage::~ButtonImage()
@@ -144,7 +147,7 @@ void ButtonImage::Draw()
 	else
 		glColor4fv(&vColor_defocused.X);
 
-	if (texDescr)
+	if (texDescr && !bDownState)
 	{
 		glBindTexture(GL_TEXTURE_2D, texDescr->m_uiTextureID);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -153,14 +156,65 @@ void ButtonImage::Draw()
 			glTexturedQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 6);
 		glDisable(GL_TEXTURE_2D);
 	}
+	else if (texDescrDownState && bDownState)
+	{
+		glBindTexture(GL_TEXTURE_2D, texDescrDownState->m_uiTextureID);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	// draw frame
-	glLineWidth(1);
-	glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 7);
+		glEnable(GL_TEXTURE_2D);
+		glTexturedQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 6);
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	if (bDrawFrame)
+	{
+		glLineWidth(1);
+		glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 7);
+	}
 
 }
 
 void ButtonImage::LoadImage(const char* filename)
 {
 	texDescr = LoadTextureWinAPI(filename);
+}
+
+void ButtonImage::LoadImageDownState(const char* filename)
+{
+	texDescrDownState = LoadTextureWinAPI(filename);
+}
+
+
+bool ButtonImage::Clicked(int button, int state, int x, int y)
+{
+	if (!bEnabled) return false;
+
+	if ((x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
+	{
+		if (button == GLUT_LEFT_BUTTON)
+		{
+			if (state == GLUT_DOWN)
+			{
+				iGUIpushed = 1;
+				return true;
+			}
+			// OnClick is going to happen only if mouse is released within the button boundaries
+			else
+			{
+				if (iGUIpushed)
+				{
+					if (OnClick != NULL) OnClick();
+
+					if (texDescrDownState) bDownState = !bDownState;
+
+					iGUIpushed = 0;
+					return true;
+				}
+			}
+		}
+	}
+
+	iGUIpushed = 0;
+	return false;
 }

@@ -12,9 +12,12 @@
 
 extern GLFONT font;
 
+// By delaut the first track is active
+int TimelineTrack::iSelected = 1;
 
-TimelineTrack::TimelineTrack(int px, int py, int _width, int _height):
-	                         m_iWidth(_width), m_iHeight(_height)
+
+TimelineTrack::TimelineTrack(int _id, int px, int py, int _width, int _height):
+	                         id(_id), m_iWidth(_width), m_iHeight(_height)
 {
 	posx = px;
 	posy = py;
@@ -43,15 +46,18 @@ void TimelineTrack::Draw()
 	glGetFloatv(GL_MODELVIEW_MATRIX,  &matrSliderInverted.m[0][0]);
 
 	// clear screen under control
-	glColor3f(0.023, 0.095, 0.023);
+	if ((iSelected == id) && bEnabled)
+		glColor3f(0.069, 0.3, 0.069);
+	else
+		glColor3f(0.046, 0.2, 0.046);
 	glQuad(posx, posy, m_iWidth, m_iHeight, 0);
 
 
-	if (bFocused && bEnabled)
-		glColor3f(0.1, 0.5, 0.1);
-	else
-		glColor3f(0.075, 0.375, 0.075);
-	glWireRectangle(posx, posy, m_iWidth, m_iHeight, 3);
+	//if (bFocused && bEnabled)
+	//	glColor3f(0.1, 0.5, 0.1);
+	//else
+	//	glColor3f(0.075, 0.375, 0.075);
+	//glWireRectangle(posx, posy, m_iWidth, m_iHeight, 3);
 
 
 	// draw slider line
@@ -95,18 +101,21 @@ bool TimelineTrack::Clicked(int button, int state, int x, int y)
 			//m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
 			//printf("%5.3f\n", m_fSliderX);
 
-			bMouseButtonPressed = true;
+			//bMouseButtonPressed = true;
+
+			iSelected = id;
+
 			return true;
 		}
 	}
 
-	if (bMouseButtonPressed)
-	{
-		if (OnClick != NULL) OnClick();
-		bMouseButtonPressed = false;
+	//if (bMouseButtonPressed)
+	//{
+	//	if (OnClick != NULL) OnClick();
+	//	bMouseButtonPressed = false;
 
-		return true;
-	}
+	//	return true;
+	//}
 
 	return false;
 }
@@ -118,17 +127,17 @@ bool TimelineTrack::Drag(int x, int y)
 
 	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
 
-	if (bMouseButtonPressed && (vCoord.X < posx + m_iWidth)  && (vCoord.X > posx))
-	{
-		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-		// The matrix is specially organized in a way the world coordinates (-300...300)
-		// become a peephole with N times greater precision than 1/(600)
-		//m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
+	//if (bMouseButtonPressed && (vCoord.X < posx + m_iWidth)  && (vCoord.X > posx))
+	//{
+	//	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+	//	// The matrix is specially organized in a way the world coordinates (-300...300)
+	//	// become a peephole with N times greater precision than 1/(600)
+	//	//m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
 
-		if (OnClickDrag != NULL) OnClickDrag();
+	//	if (OnClickDrag != NULL) OnClickDrag();
 
-		return true;
-	}
+	//	return true;
+	//}
 	return false;
 }
 
@@ -142,11 +151,11 @@ bool TimelineTrack::Hover(int x, int y)
 	if ((vCoord.X < posx + m_iWidth)  && (vCoord.X > posx) &&
 		(vCoord.Y < posy + m_iHeight) && (vCoord.Y > posy))
 	{
-		bFocused = bEnabled;
+		//bFocused = bEnabled;
 		return true;
 	}
 
-	bFocused = false;
+	//bFocused = false;
 
 	return false;
 }

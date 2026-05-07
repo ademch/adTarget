@@ -29,7 +29,7 @@ public:
 
    std::function<bool()> OnClick;
 
-   void Draw();
+   void Draw() override;
    virtual bool Hover(int x, int y);
    virtual bool Clicked(int button, int state, int x, int y);
 
@@ -52,10 +52,17 @@ public:
 	~ButtonImage();
 
 	void LoadImage(const char* filename);
+	void LoadImageDownState(const char* filename);
 
 	TextureDescriptor* texDescr;
+	TextureDescriptor* texDescrDownState;
 
-	void Draw();
+	void Draw() override;
+	bool Clicked(int button, int state, int x, int y) override;
+
+	bool bDrawFrame;
+
+	bool bDownState;
 
 protected:
 

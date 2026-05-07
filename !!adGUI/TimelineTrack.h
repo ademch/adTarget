@@ -16,10 +16,10 @@ public:
 	std::function<bool()>      OnClickDrag;
 
 	// non inverted Matrix is used to scale down the range and navigate with greater precision
-	// eg -300 300 can be scaled to -200 200 with greater resolution
+	// eg -300...300 can be scaled to -200...200 with greater resolution
 	Matr4 matrSliderNonInverted;
 
-	TimelineTrack(int px, int py, int _width, int _height);
+	TimelineTrack(int _id, int px, int py, int _width, int _height);
 
 	void Resize(int iWidth, int iHeight);
 
@@ -29,7 +29,12 @@ public:
 	bool Drag(int x, int y) override;
 	bool Hover(int x, int y) override;
 
+	static int iSelected;
+
 protected:
+
+	// 1 based unique id
+	int id;
 
 	int m_iWidth;
 	int m_iHeight;
