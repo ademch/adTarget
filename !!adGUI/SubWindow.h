@@ -5,6 +5,11 @@
 #include "../!!adGlobals/vector_math.h"
 #include "../!!adGlobals/trackball.h"
 
+#define ROTATION_ALLOWED_FALSE	0x01
+#define DRAG_ALLOWED_FALSE		0x02
+#define ZOOM_ALLOWED_FALSE		0x04
+#define GUI_DECORATION_FALSE	0x08
+
 class OpenGLSubWindow
 {
 public:
@@ -32,7 +37,6 @@ public:
 		bSceneRotationAllowed = true;
 		bSceneDragAllowed     = true;
 		bSceneZoomAllowed     = true;
-
 		bRenderGUIdecoration  = true;
 
 		fUserScale  = 1.f;
@@ -70,10 +74,21 @@ public:
 	bool bSceneRotationAllowed;
 	bool bSceneDragAllowed;
 	bool bSceneZoomAllowed;
-
 	bool bRenderGUIdecoration;
 
 	float fZoomFactor;
+
+	void SetFlags(int flags)
+	{
+		if (flags & ROTATION_ALLOWED_FALSE)
+			bSceneRotationAllowed = false;
+		if (flags & DRAG_ALLOWED_FALSE)
+			bSceneDragAllowed = false;
+		if (flags & ZOOM_ALLOWED_FALSE)
+			bSceneZoomAllowed = false;
+		if (flags & GUI_DECORATION_FALSE)
+			bRenderGUIdecoration = false;
+	}
 
 protected:
 	

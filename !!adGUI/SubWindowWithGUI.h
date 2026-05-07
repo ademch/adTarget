@@ -17,7 +17,11 @@ public:
 		                   float _fBottomLeftXperc, float _fBottomLeftYperc,
 		                   float _fWidthPerc, float _fHeightPerc);
 
-	virtual ~OpenGLSubWindowWithGUI() {}
+	virtual ~OpenGLSubWindowWithGUI()
+	{
+		for (auto* iterElement : liGUI_Elements)
+			delete iterElement;
+	}
 
 	virtual void Reshape(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight);
 
