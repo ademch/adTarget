@@ -313,6 +313,23 @@ float AngleBetweenVectors(Vec2 vec1, Vec2 vec2)
 	return acos(vec1^vec2);
 }
 
+
+float AngleBetweenVectorsCCW(Vec2 vec1, Vec2 vec2)
+{
+	vec1 = VecNormalize(vec1);
+	vec2 = VecNormalize(vec2);
+
+	float dot = vec1 ^ vec2;						// dot product
+	float det = vec1.X * vec2.Y - vec1.Y * vec2.X;  // 2D cross product (signed area)
+
+	float angle = atan2(det, dot);     // [-PI, PI]
+
+	if (angle < 0)
+		angle += 2.0f * float(M_PI);          // [0, 2PI]
+
+	return angle;
+}
+
 Vec3 TriangleLinearInterpolate(Vec3 v0, Vec3 v1, Vec3 v2, float u, float v)
 {
 	assert(u<1);	assert(u>0);
