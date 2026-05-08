@@ -537,6 +537,74 @@ Matr4 MatrTranspose(Matr4 m)
 //}
 
 
+Matr4 Mat4MakeTransformCoordSystem( const Vec3& v1,  const Vec3& v2,
+	                                const Vec3& v1n, const Vec3& v2n)
+{
+	// --- source basis ---
+	Vec3 b1 = VecNormalize(v1);
+	Vec3 b2 = VecNormalize(v2);
+	Vec3 b3 = VecNormalize(b1 * b2);
+
+	b2 = VecNormalize(b3 * b1);
+
+	Matr4 B = Matrc4(
+		Vecc4(b1.X, b1.Y, b1.Z, 0),
+		Vecc4(b2.X, b2.Y, b2.Z, 0),
+		Vecc4(b3.X, b3.Y, b3.Z, 0),
+		Vecc4(0,    0,    0,    1)
+	);
+
+	// --- target basis ---
+	Vec3 t1 = VecNormalize(v1n);
+	Vec3 t2 = VecNormalize(v2n);
+	Vec3 t3 = VecNormalize(t1 * t2);
+
+	t2 = VecNormalize(t3 * t1);
+
+	Matr4 T = Matrc4(
+		Vecc4(t1.X, t1.Y, t1.Z, 0),
+		Vecc4(t2.X, t2.Y, t2.Z, 0),
+		Vecc4(t3.X, t3.Y, t3.Z, 0),
+		Vecc4(0,    0,    0,    1)
+	);
+
+	// --- final transform ---
+	Matr4 B_inv;
+	gluInvertMatrix(&B.m[0][0], &B_inv.m[0][0]);
+
+	return T * B_inv;
+}
+
+// Prepare a matrix that transforms vectors v1, v2 -> v1n,v2n
+Matr4 Mat4MakeTransformFromVectors( const Vec3& v1,  const Vec3& v2,
+	                                const Vec3& v1n, const Vec3& v2n)
+{
+	// --- source basis ---
+	Vec3 v3 = v1 * v2;
+
+	Matr4 B = Matrc4(	Vecc4(v1.X, v1.Y, v1.Z, 0),
+						Vecc4(v2.X, v2.Y, v2.Z, 0),
+						Vecc4(v3.X, v3.Y, v3.Z, 0),
+						Vecc4(0,    0,    0,    1)
+					);
+
+	// --- target basis ---
+	Vec3 v3n = v1n * v2n;
+
+	Matr4 T = Matrc4(	Vecc4(v1n.X, v1n.Y, v1n.Z, 0),
+						Vecc4(v2n.X, v2n.Y, v2n.Z, 0),
+						Vecc4(v3n.X, v3n.Y, v3n.Z, 0),
+						Vecc4(0,    0,    0,       1)
+					);
+
+	// --- final transform ---
+	Matr4 B_inv;
+	gluInvertMatrix(&B.m[0][0], &B_inv.m[0][0]);
+
+	return T * B_inv;
+}
+
+
 void normalCalcPackSmooth(TriVertex* v0,TriVertex* v1, TriVertex* v2)
 {
 float x10,y10,z10,x12,y12,z12;

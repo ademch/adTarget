@@ -142,7 +142,6 @@ inline Matr4 Matrc4(Vec4 r0=Vecc4(1.0,0.0,0.0,0.0),
 
 Matr4 MatrTranspose(Matr4 m);
 
-
 // Vector operators single precision
 Vec3 operator+(Vec3 v1,Vec3 v2);
 Vec2 operator+(Vec2 v1, Vec2 v2);
@@ -233,6 +232,11 @@ Matr4  Mat4MakeRot( const float angle, const Vec3& axis );
 Matr4d Mat4dMakeRot( const double fAngleDeg, const Vec3d& axis );
 Matr4  Mat4MakeTrans( const float x, const float y, const float z );
 Matr4  Mat4MakeScale( const float x_scale, const float y_scale, const float z_scale );
+
+Matr4 Mat4MakeTransformCoordSystem( const Vec3& v1,  const Vec3& v2,
+                                    const Vec3& v1n, const Vec3& v2n);
+Matr4 Mat4MakeTransformFromVectors( const Vec3& v1,  const Vec3& v2,
+	                                const Vec3& v1n, const Vec3& v2n);
 
 void normalCalcPackSmooth(TriVertex* v0,TriVertex* v1, TriVertex* v2);
 void normalCalcPack(TriVertex* v0,TriVertex* v1, TriVertex* v2);

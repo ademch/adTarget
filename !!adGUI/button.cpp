@@ -134,6 +134,7 @@ ButtonImage::ButtonImage(std::string caption, int px, int py, int width) :
 ButtonImage::~ButtonImage()
 {
 	delete texDescr;
+	delete texDescrDownState;
 }
 
 
