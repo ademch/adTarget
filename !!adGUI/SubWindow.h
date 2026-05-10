@@ -54,6 +54,7 @@ public:
 	virtual bool PassiveMotionFunc(int x, int y) { return false; }
 	virtual bool MouseFunc(int button,int state,int x,int y);
 	virtual bool KeyboardFunc(unsigned char key, int x, int y) { return false; }
+	virtual void KeyboardAux(int key, int state, int x, int y) {}
 	virtual bool MouseWheelFunc(int state,int delta,int x,int y);
 	virtual bool MouseHWheelFunc(int state,int delta,int x,int y)  { return false; }
 

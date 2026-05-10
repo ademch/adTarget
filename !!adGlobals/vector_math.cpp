@@ -1229,45 +1229,41 @@ double numer,denom;
 return TRUE;
 }
 
-
-// Given the line defined by the points A(Ax,Ay,Az) and B(Bx,By,Bz),
-// and a point P(Px,Py,Pz) that is not on the line,
-// find the coordinates of the point P'(P'x,P'y,P'z) which is on the line such that PP' is perpendicular onto the line AB.
-//
-// We can define the point P' as:
-// P' = A + tAB
-// where t is a parameter
-//
-// The dot product of perpendicular vectors is zero:
-// AB • PP' = 0
-// AB • <P' - P> = 0
-// AB • <A + tAB - P> = 0
-// AB • <A - P> + t || AB ||^2 = 0
-// t || AB ||^2 = -AB • <A - P> 
-// t || AB ||^2 = AB • <P - A> = AB • AP
-//
-// t = (AB • AP) / || AB ||^2
-//
-// Plug in the value for parameter t:
-//P' = A + tAB
-//P' = A + {(AB • AP) / || AB ||^2} AB
+//       vnLineDir        
+//               ^
+//               |---o pt
+//               |  /
+//               | / v
+//               |
+//               o ptLine   
+//                
 Vec3 PointLineProject(Vec3 pt, Vec3 ptLine, Vec3 vnLineDir)
 {
 	assert(fabs(VecLengthSqr(vnLineDir)-1.0) < 0.0001);
 
-	Vec3 v = pt - ptLine;
-	return ptLine + (vnLineDir^v)*vnLineDir;
+	Vec3     v = pt - ptLine;
+	float fDot = vnLineDir^v;
+
+	return ptLine + fDot*vnLineDir;
+}
+
+// fDot is the length of prohection
+Vec3 PointLineProject(Vec3 pt, Vec3 ptLine, Vec3 vnLineDir, float& fDot)
+{
+	assert(fabs(VecLengthSqr(vnLineDir)-1.0) < 0.0001);
+
+	Vec3     v = pt - ptLine;
+	      fDot = vnLineDir^v;
+
+	return ptLine + fDot*vnLineDir;
 }
 
 Vec3 PointLineProject(Vec3 pt, Vec3 ptLine, Vec3 vnLineDir, bool& bPosProj)
 {
-Vec3 v;
-float fDot;
-
 	assert(fabs(VecLengthSqr(vnLineDir)-1.0) < 0.0001);
 
-	v = pt - ptLine;
-	fDot = vnLineDir^v;
+	Vec3     v = pt - ptLine;
+	float fDot = vnLineDir^v;
 
 	if (fDot > 0.0)
 		bPosProj = true;

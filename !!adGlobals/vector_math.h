@@ -281,6 +281,7 @@ Vec3 cpuPipelineVertex3fv(const Vec3& vCPU_in);	// just pass vector from 28Apr20
 bool LineLineIntersect3D( Vec3d p1,Vec3d p2,Vec3d p3,Vec3d p4, Vec3d *pa,Vec3d *pb, double *mua, double *mub);
 Vec3 PointLineProject(Vec3 pt, Vec3 ptLine, Vec3 vnLineDir);
 Vec3 PointLineProject(Vec3 pt, Vec3 ptLine, Vec3 vnLineDir, bool& bPosProj);
+Vec3 PointLineProject(Vec3 pt, Vec3 ptLine, Vec3 vnLineDir, float& fDot);
 
 // data array specific functions, added for backward compatibility during merge procedure
 void findPlane(double plane[4], double v0[3], double v1[3], double v2[3]);
