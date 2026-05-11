@@ -87,12 +87,12 @@ bool OpenGLSubWindowWithGUI::PassiveMotionFunc(int x, int y)
 {
 	OpenGLSubWindow::PassiveMotionFunc(x, y);
 
-	if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
-		  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
-	{
-		x = -1000000;
-		y = -1000000;
-	}
+	//if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+	//	  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
+	//{
+	//	x = -1000000;
+	//	y = -1000000;
+	//}
 
 	return PassiveMotionFuncGUI(x, y);
 }
@@ -102,14 +102,26 @@ bool OpenGLSubWindowWithGUI::MouseFunc(int button, int state, int x, int y)
 {
 	OpenGLSubWindow::MouseFunc(button, state, x, y);
 
-	if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
-		  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
+	//if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+	//	  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
+	//{
+	//	x = -1000000;
+	//	y = -1000000;
+	//}
+
+	bool bInside = false;
+	if ((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+		(y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight))
 	{
-		x = -1000000;
-		y = -1000000;
+		bInside = true;
 	}
 
-	if (MouseFuncGUI(button, state, x, y)) return true;
+	// Process in all cases if inside the window or if not then prevent mouse down but allow mouse up
+	// Otherwise GUI that is out of the viewport reacts
+	if (bInside || (state != GLUT_DOWN))
+	{
+		if (MouseFuncGUI(button, state, x, y)) return true;
+	}
 
 	return false;
 }
@@ -119,12 +131,12 @@ void OpenGLSubWindowWithGUI::MotionFunc(int x, int y)
 {
 	OpenGLSubWindow::MotionFunc(x, y);
 
-	if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
-		  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
-	{
-		x = -1000000;
-		y = -1000000;
-	}
+	//if (!((x > m_iBottomLeftX) && (x < m_iBottomLeftX + m_iWidth) &&
+	//	  (y > m_iBottomLeftY) && (y < m_iBottomLeftY + m_iHeight)))
+	//{
+	//	x = -1000000;
+	//	y = -1000000;
+	//}
 
 	MotionFuncGUI(x, y);
 }
