@@ -2,30 +2,26 @@
 #define VIDEOSLIDER_H
 
 #include "../!!adGlobals/vector_math.h"
-#include "gui_element.h"
+#include "gui_elementResizable.h"
 #include <functional>
 #include "VideoPositionMediator.h"
 
 
-class VideoSlider : public GUI_Element
+class VideoSlider : public GUI_ElementResizable
 {
 public:
 	bool bEnabled;
 
-	std::function<void(float)>      OnChange;
+	VideoSlider(int px, int py, int _height, PositionMediator* mediator);
 
-	// non inverted Matrix is used to scale down the range and navigate with greater precision
-	// eg -300 300 can be scaled to -200 200 with greater resolution
-	Matr4 matrSliderNonInverted;
+	std::function<void(float)>      OnChange;
 
 	void SetPos(float _val);
 	void SetPosInit(float _val, float _v_min, float _v_max);
 
 	float GetValue();
 
-	VideoSlider(int px, int py, int _height, PositionMediator* mediator);
-
-	void Resize(int iWidth, int iHeight);
+	void Resize(int iWidth, int iHeight) override;
 
 	void Draw() override;
 

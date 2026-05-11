@@ -56,6 +56,8 @@ public:
 
 //	int GetPos() const { return value; }
 
+	int GetEndSec() const { return iEndSec; }
+
 	void subscribeForPos(std::function<void(void*, float)> cb)
 	{
 		listenersPos.push_back(std::move(cb));
@@ -65,7 +67,6 @@ public:
 	{
 		listenersPosInit.push_back(std::move(cb));
 	}
-
 
 };
 

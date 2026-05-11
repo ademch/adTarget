@@ -2,15 +2,10 @@
 
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
-#include "glfont.h"
-#include <assert.h>
 #include "TimelineTrack.h"
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
-#include <string>
 #include <functional>
-
-extern GLFONT font;
 
 // By delaut the first track is active
 int TimelineTrack::iSelected = 1;
@@ -29,11 +24,8 @@ TimelineTrack::TimelineTrack(int _id, int px, int py, int _width, int _height):
 	bEnabled = true;
 
 	bFocused = false;
-	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);	// 0.04, 0.18, 0.04
-	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
-
-	matrSliderNonInverted = Mat4MakeIdent();
-
+	vColor_focused   = Vecc3(0.069, 0.3, 0.069);
+	vColor_defocused = Vecc3(0.046, 0.2, 0.046);
 }
 
 
@@ -47,32 +39,11 @@ void TimelineTrack::Draw()
 
 	// clear screen under control
 	if ((iSelected == id) && bEnabled)
-		glColor3f(0.069, 0.3, 0.069);
+		glColor3fv(&vColor_focused.X);
 	else
-		glColor3f(0.046, 0.2, 0.046);
+		glColor3fv(&vColor_defocused.X);
 	glQuad(posx, posy, m_iWidth, m_iHeight, 0);
 
-
-	//if (bFocused && bEnabled)
-	//	glColor3f(0.1, 0.5, 0.1);
-	//else
-	//	glColor3f(0.075, 0.375, 0.075);
-	//glWireRectangle(posx, posy, m_iWidth, m_iHeight, 3);
-
-
-	// draw slider line
-	//
-	// Slider coordinates are world coordinates in the range (eg -300...300)
-	// scaled to a range (eg -200...200) during its capture in the mouse handler.
-	// Current modelview matrix brings them back to -300...300, but the value now
-	// is not with granularity +1, but with granularity 1/scale
-	{
-		glColor3f(1,0,0);
-
-		glLineWidth(1);
-		//glLine( m_fSliderX, posy,
-		//	    m_fSliderX, posy - m_iHeight,     5);
-	}
 
 }
 
@@ -95,27 +66,11 @@ bool TimelineTrack::Clicked(int button, int state, int x, int y)
 
 		if (state==GLUT_DOWN)
 		{
-			// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-			// The matrix is specially organized in a way the world coordinates (-300...300)
-			// become a peephole with N times greater precision than 1/(600)
-			//m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
-			//printf("%5.3f\n", m_fSliderX);
-
-			//bMouseButtonPressed = true;
-
 			iSelected = id;
 
 			return true;
 		}
 	}
-
-	//if (bMouseButtonPressed)
-	//{
-	//	if (OnClick != NULL) OnClick();
-	//	bMouseButtonPressed = false;
-
-	//	return true;
-	//}
 
 	return false;
 }
@@ -127,17 +82,6 @@ bool TimelineTrack::Drag(int x, int y)
 
 	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
 
-	//if (bMouseButtonPressed && (vCoord.X < posx + m_iWidth)  && (vCoord.X > posx))
-	//{
-	//	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-	//	// The matrix is specially organized in a way the world coordinates (-300...300)
-	//	// become a peephole with N times greater precision than 1/(600)
-	//	//m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
-
-	//	if (OnClickDrag != NULL) OnClickDrag();
-
-	//	return true;
-	//}
 	return false;
 }
 
@@ -151,11 +95,8 @@ bool TimelineTrack::Hover(int x, int y)
 	if ((vCoord.X < posx + m_iWidth)  && (vCoord.X > posx) &&
 		(vCoord.Y < posy + m_iHeight) && (vCoord.Y > posy))
 	{
-		//bFocused = bEnabled;
 		return true;
 	}
-
-	//bFocused = false;
 
 	return false;
 }

@@ -2,26 +2,23 @@
 #define TRACKPANEL_H
 
 #include "../!!adGlobals/vector_math.h"
-#include "gui_element.h"
+#include "gui_elementResizable.h"
 #include <functional>
 
 
-class TimelineTrack : public GUI_Element
+class TimelineTrack : public GUI_ElementResizable
 {
 public:
+
+	TimelineTrack(int _id, int px, int py, int _width, int _height);
+
 	bool bEnabled;
 
 	std::function<bool()>      OnClick;
 	std::function<bool(float)> OnDrawValue;
 	std::function<bool()>      OnClickDrag;
 
-	// non inverted Matrix is used to scale down the range and navigate with greater precision
-	// eg -300...300 can be scaled to -200...200 with greater resolution
-	Matr4 matrSliderNonInverted;
-
-	TimelineTrack(int _id, int px, int py, int _width, int _height);
-
-	void Resize(int iWidth, int iHeight);
+	void Resize(int iWidth, int iHeight) override;
 
 	void Draw() override;
 

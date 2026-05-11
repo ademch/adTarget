@@ -1,16 +1,10 @@
 #include "stdafx.h"
-
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
-#include "glfont.h"
-#include <assert.h>
 #include "VideoSlider.h"
 #include "../!!adGlobals/vector_math.h"
 #include "gui_element.h"
-#include <string>
 #include <functional>
-
-extern GLFONT font;
 
 
 VideoSlider::VideoSlider(int px, int py, int _height, PositionMediator* mediator):
@@ -29,8 +23,6 @@ VideoSlider::VideoSlider(int px, int py, int _height, PositionMediator* mediator
 	bFocused = false;
 	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
-
-	matrSliderNonInverted = Mat4MakeIdent();
 
 }
 
@@ -151,7 +143,7 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 	GUI_Element::Clicked(button, state, x, y);
 
 	// special case, component is symmetric along zero
-	if ((x > posx - 1) && (x < posx + m_iWidth + 1) &&
+	if ((x > posx - 1)           && (x < posx + m_iWidth + 1) &&
 		(y > posy - m_iHeight/2) && (y < posy + m_iHeight/2))
 	{
 		if (!bEnabled) return false;
