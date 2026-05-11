@@ -604,6 +604,42 @@ Matr4 Mat4MakeTransformFromVectors( const Vec3& v1,  const Vec3& v2,
 	return T * B_inv;
 }
 
+Matr4 Mat4MakeTransformFromVectors( const Vec3& orig,  const Vec3& v1,  const Vec3& v2,
+									const Vec3& orign, const Vec3& v1n, const Vec3& v2n)
+{
+	// --- source basis ---
+	Vec3 v3 = v1 * v2;
+
+	Matr4 B = Matrc4(	Vecc4(v1.X, v1.Y, v1.Z, 0),
+						Vecc4(v2.X, v2.Y, v2.Z, 0),
+						Vecc4(v3.X, v3.Y, v3.Z, 0),
+						Vecc4(0,    0,    0,    1)
+					);
+
+	// --- target basis ---
+	Vec3 v3n = v1n * v2n;
+
+	Matr4 T = Matrc4(	Vecc4(v1n.X, v1n.Y, v1n.Z, 0),
+						Vecc4(v2n.X, v2n.Y, v2n.Z, 0),
+						Vecc4(v3n.X, v3n.Y, v3n.Z, 0),
+						Vecc4(0,    0,    0,       1)
+					);
+
+	// invert source basis
+	Matr4 B_inv;
+	gluInvertMatrix(&B.m[0][0], &B_inv.m[0][0]);
+
+	// basis mapping
+	Matr4 M_basis = T * B_inv;
+
+	// translation correction
+	Matr4 M = Mat4MakeTrans(orign) *
+			  M_basis *
+			  Mat4MakeTrans(-orig);
+
+	return M;
+}
+
 
 void normalCalcPackSmooth(TriVertex* v0,TriVertex* v1, TriVertex* v2)
 {
@@ -703,6 +739,18 @@ Matr4 u;
 	u.m[3][2] = z;
 
 return u;
+}
+
+Matr4  Mat4MakeTrans( const Vec3& dist )
+{
+	Matr4 u;
+	u = Mat4MakeIdent();
+
+	u.m[3][0] = dist.X;
+	u.m[3][1] = dist.Y;
+	u.m[3][2] = dist.Z;
+
+	return u;
 }
 
 Matr4 Mat4MakeScale( const float x_scale, const float y_scale, const float z_scale )

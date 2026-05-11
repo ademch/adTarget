@@ -22,10 +22,12 @@ public:
 	{
 		m_iBottomLeftX = iBottomLeftX;
 		m_iBottomLeftY = iBottomLeftY;
+
 		m_iWidth  = iWidth;
 		m_iHeight = iHeight;
 
 		m_strCaption[0] = 0;
+
 		clrBackground = Vecc3(0.1f, 0.1f, 0.1f);
 		clrFrame      = Vecc3(0.9f, 0.9f, 0.9f);
 
@@ -46,6 +48,7 @@ public:
 
 		matrUserScale = Mat4MakeIdent();
 	}
+
 	virtual ~OpenGLSubWindow() {}
 
 	virtual void Render();
@@ -71,6 +74,7 @@ public:
 	virtual void SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 	void ResetView();
+	void CopyView(OpenGLSubWindow* wnd);
 
 	bool bSceneRotationAllowed;
 	bool bSceneDragAllowed;
@@ -91,14 +95,18 @@ public:
 			bRenderGUIdecoration = false;
 	}
 
+	int Width()  { return m_iWidth;  }
+	int Height() { return m_iHeight; }
+
+
 protected:
-	
+
 	int m_iBottomLeftX;	// in window coords
 	int m_iBottomLeftY;	// in window coords
 
 	int m_iWidth;		// in window coords
 	int m_iHeight;		// in window coords
-
+	
 	float curquat[4];
 
 	float fUserScale;

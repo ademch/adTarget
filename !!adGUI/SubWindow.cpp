@@ -112,11 +112,21 @@ void OpenGLSubWindow::SetupGraphicsPipelineWithIdentityModelViewMatrix()
 
 void OpenGLSubWindow::ResetView()
 {
-	fUserScale = 1.f;
-
+	fUserScale            = 1.f;
 	vUserSceneTranslation = Vecc3();
-	matrUserScale = Mat4MakeIdent();
+	matrUserScale         = Mat4MakeIdent();
 	trackball(curquat, 0.0, 0.0, 0.0, 0.0);
+}
+
+
+void OpenGLSubWindow::CopyView(OpenGLSubWindow* wnd)
+{
+	if (wnd == this) return;
+
+	fUserScale            = wnd->fUserScale;
+	vUserSceneTranslation = wnd->vUserSceneTranslation;
+	matrUserScale         = wnd->matrUserScale;
+	memcpy(curquat, wnd->curquat, 4);
 }
 
 // Does not depend on any OpenGL matrix
