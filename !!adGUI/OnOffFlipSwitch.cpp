@@ -23,7 +23,6 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 	m_iBox_sep = 20;
 
 	bON = false;
-	bEnabled = true;
 
 	bPushButton = false;
 

@@ -20,7 +20,6 @@ HorScrollBar::HorScrollBar(std::string caption, int px, int py, int width, int h
 	m_ptHandleStartWorldCoords = Vecc3(-width/2.0, 0);
 	m_ptHandleEndWorldCoords   = Vecc3( width/2.0, 0);
 
-	bEnabled = true;
 	bFocused = false;
 	iGUIpushed = 0;
 
@@ -45,24 +44,6 @@ void HorScrollBar::Resize(int iWidth, int iHeight)
 
 	m_ptHandleStartWorldCoords = Vecc3(-iWidth/2.0, 0);
 	m_ptHandleEndWorldCoords   = Vecc3( iWidth/2.0, 0);
-}
-
-
-bool HorScrollBar::Hover(int x, int y)
-{
-	GUI_Element::Hover(x, y);
-
-	if ((x > posx) && (x < posx + m_Width) && 
-		(y > posy) && (y < posy + m_Height + 1))
-	{
-		bFocused = bEnabled;
-		return true;
-	}
-
-	bFocused = false;
-	iGUIpushed = 0;
-
-	return false;
 }
 
 
@@ -105,7 +86,23 @@ void HorScrollBar::Draw()
 			   m_Height-6,										// height
 			   5);												// zcoord
 	}
+}
 
+bool HorScrollBar::Hover(int x, int y)
+{
+	GUI_Element::Hover(x, y);
+
+	if ((x > posx) && (x < posx + m_Width) && 
+		(y > posy) && (y < posy + m_Height + 1))
+	{
+		bFocused = bEnabled;
+		return true;
+	}
+
+	bFocused = false;
+	iGUIpushed = 0;
+
+	return false;
 }
 
 bool HorScrollBar::Clicked(int button, int state, int x, int y)

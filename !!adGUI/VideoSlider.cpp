@@ -3,12 +3,11 @@
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "VideoSlider.h"
 #include "../!!adGlobals/vector_math.h"
-#include "gui_element.h"
-#include <functional>
+#include "VideoPositionMediator.h"
 
 
-VideoSlider::VideoSlider(int px, int py, int _height, PositionMediator* mediator):
-			             m_iValMin(0), m_iValMax(4000), m_fSliderX(0), 
+VideoSlider::VideoSlider(int px, int py, int _height):
+			             m_iValMax(4000), m_fSliderX(0), 
 	                     m_iHeight(_height), m_iWidth(250)
 {
 	posx = px;
@@ -18,7 +17,6 @@ VideoSlider::VideoSlider(int px, int py, int _height, PositionMediator* mediator
 	iVPosShift = py;
 
 	bMouseButtonPressed = false;
-	bEnabled = true;
 
 	bFocused = false;
 	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);
@@ -31,9 +29,8 @@ void VideoSlider::SetPos(float _val)
 	m_fSliderX = _val*m_iWidth - m_iWidth/2.0;
 }
 
-void VideoSlider::SetPosInit(float _val, float _v_min, float _v_max)
+void VideoSlider::SetPosInit(float _val, float _v_max)
 {
-	m_iValMin = _v_min;
 	m_iValMax = _v_max;
 
 	m_fSliderX = _val*m_iWidth - m_iWidth/2.0;
@@ -48,11 +45,13 @@ float VideoSlider::GetValue()
 
 void VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
 {
+	if (count < 1) return;
+	
 	float fTickStep = m_iWidth/count;
 
 	float vNew = matTransform.m[0][0] * fTickStep*iStep;
 
-	if ( vNew < 8) return;
+	if ( vNew < 7) return;
 
 	glLineWidth(fThickness);
 	glBegin(GL_LINES);
@@ -93,16 +92,16 @@ void VideoSlider::Draw()
 		DrawTicks(Count/3600.0f, 1, 3, 18, matrSliderInverted);
 
 		// quarters of hour
-		glColor3f(0.5*fHighlight, 0.7*fHighlight, 0.4*fHighlight);
-		DrawTicks(Count/60.0f, 15, 2, 14, matrSliderInverted);
+		//glColor3f(0.5*fHighlight, 0.7*fHighlight, 0.4*fHighlight);
+		//DrawTicks(Count/60.0f, 15, 2, 14, matrSliderInverted);
 
 		// minutes
 		glColor3f(0.2*fHighlight, 0.6*fHighlight, 0.2*fHighlight);
 		DrawTicks(Count/60.0f, 1, 2, 10, matrSliderInverted);
 
 		// quarters of seconds
-		glColor3f(0.7*fHighlight, 0.7*fHighlight, 0.0*fHighlight);
-		DrawTicks(Count/1.0f, 15, 2, 5, matrSliderInverted);
+		//glColor3f(0.7*fHighlight, 0.7*fHighlight, 0.0*fHighlight);
+		//DrawTicks(Count/1.0f, 15, 2, 5, matrSliderInverted);
 
 		// seconds
 		glColor3f(0.1*fHighlight, 0.6*fHighlight, 0.1*fHighlight);
@@ -142,19 +141,20 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 {
 	GUI_Element::Clicked(button, state, x, y);
 
+	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+	// The matrix is specially organized in a way the world coordinates (-300...300)
+	// become a peephole with N times greater precision than 1/(600)
+	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
+
 	// special case, component is symmetric along zero
-	if ((x > posx - 1)           && (x < posx + m_iWidth + 1) &&
-		(y > posy - m_iHeight/2) && (y < posy + m_iHeight/2))
+	if ((ptPeep.X > posx)               && (ptPeep.X < posx + m_iWidth) &&
+		(ptPeep.Y > posy - m_iHeight/2) && (ptPeep.Y < posy + m_iHeight/2))
 	{
 		if (!bEnabled) return false;
 
 		if (state==GLUT_DOWN)
 		{
-			// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-			// The matrix is specially organized in a way the world coordinates (-300...300)
-			// become a peephole with N times greater precision than 1/(600)
-			m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
-			//printf("%5.3f\n", m_fSliderX);
+			m_fSliderX = ptPeep.X;
 
 			if (OnChange != NULL) OnChange(GetValue());
 
@@ -173,12 +173,14 @@ bool VideoSlider::Drag(int x, int y)
 {
 	GUI_Element::Drag(x, y);
 
-	if (bMouseButtonPressed && (x > posx - 1) && (x < posx + m_iWidth + 1) )
+	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+	// The matrix is specially organized in a way the world coordinates (-300...300)
+	// become a peephole with N times greater precision than 1/(600)
+	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
+
+	if (bMouseButtonPressed && (ptPeep.X > posx) && (ptPeep.X < posx + m_iWidth) )
 	{
-		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-		// The matrix is specially organized in a way the world coordinates (-300...300)
-		// become a peephole with N times greater precision than 1/(600)
-		m_fSliderX = (matrSliderNonInverted * Vecc3(x)).X;
+		m_fSliderX = ptPeep.X;
 
 		if (OnChange != NULL) OnChange(GetValue());
 
@@ -192,9 +194,14 @@ bool VideoSlider::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
+	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+	// The matrix is specially organized in a way the world coordinates (-300...300)
+	// become a peephole with N times greater precision than 1/(600)
+	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
+
 	// special case, component is symmetric along zero
-	if ((x > posx - 1)           && (x < posx + m_iWidth + 1) &&
-		(y > posy - m_iHeight/2) && (y < posy + m_iHeight/2))
+	if ((ptPeep.X > posx)               && (ptPeep.X < posx + m_iWidth) &&
+		(ptPeep.Y > posy - m_iHeight/2) && (ptPeep.Y < posy + m_iHeight/2))
 	{
 		bFocused = bEnabled;
 		return true;
@@ -203,17 +210,4 @@ bool VideoSlider::Hover(int x, int y)
 	bFocused = false;
 
 	return false;
-}
-
-bool VideoSlider::Wheel(int state,int delta, int x,int y)
-{ 
-	GUI_Element::Wheel(state, delta, x, y);
-
-	if (!bFocused) return false;
-
-	float fDelta = float(delta)/120.0;
-
-	//if (OnClick != NULL) OnClick();
-
-	return true;
 }

@@ -13,23 +13,19 @@ enum ClipType  {
 class TrackClip : public GUI_ElementResizable
 {
 public:
-	bool bEnabled;
 
 	std::function<bool()>      OnClick;
 	std::function<bool(float)> OnDrawValue;
 	std::function<bool()>      OnClickDrag;
 
-	float m_fHandleStartTX;
-	float m_fHandleEndTX;
-
 	TrackClip(int _id, int px, int py, int _width, int _height);
 
 	void Resize(int iWidth, int iHeight) override;
 
-	void SetPos(float _fStart, float _fEnd)
+	void SetPos(int _iStart, int _iLength)
 	{
-		m_fHandleStartTX = _fStart;
-		m_fHandleEndTX   = _fEnd;
+		m_iLength   = _iLength;
+		m_iStartPos = _iStart;
 	}
 
 	void Draw() override;
@@ -40,8 +36,10 @@ public:
 
 	static int iSelected;
 
-	int iTrack;
+	int      iTrack;
 	ClipType type;
+	int      m_iLength;
+	int      m_iStartPos;
 
 protected:
 
@@ -56,6 +54,10 @@ protected:
 
 	bool bFocused;
 	bool bMouseButtonPressed;
+
+	float iBeginDragX, iBeginDragY;
+
+	float xImmediateTranslate;
 };
 
 

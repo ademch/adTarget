@@ -4,20 +4,18 @@
 #include "../!!adGlobals/vector_math.h"
 #include "gui_elementResizable.h"
 #include <functional>
-#include "VideoPositionMediator.h"
 
 
 class VideoSlider : public GUI_ElementResizable
 {
 public:
-	bool bEnabled;
 
-	VideoSlider(int px, int py, int _height, PositionMediator* mediator);
+	VideoSlider(int px, int py, int _height);
 
 	std::function<void(float)>      OnChange;
 
 	void SetPos(float _val);
-	void SetPosInit(float _val, float _v_min, float _v_max);
+	void SetPosInit(float _val, float _v_max);
 
 	float GetValue();
 
@@ -28,7 +26,6 @@ public:
 	bool Clicked(int button, int state, int x, int y) override;
 	bool Drag(int x, int y) override;
 	bool Hover(int x, int y) override;
-	bool Wheel(int state,int delta,int x,int y) override;
 
 protected:
 
@@ -36,7 +33,6 @@ protected:
 	int m_iHeight;
 
 	// those are values in seconds
-	int m_iValMin;
 	int m_iValMax;
 
 	// that is the value in internal World coordinates like -300...300

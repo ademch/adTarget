@@ -23,7 +23,6 @@ Button::Button(std::string caption, int px, int py, int width, float size)
 
 	strHint = "";
 
-	bEnabled = true;
 	bFocused = false;
 	iGUIpushed = 0;
 

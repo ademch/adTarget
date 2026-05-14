@@ -27,7 +27,6 @@ ListBox::ListBox(std::string caption, int px, int py, int width, int count, floa
 
 	fScrollBarWidth = 1.3f*m_Height;
 
-	bEnabled = true;
 	bVisible = true;
 
 	iArrowDownPushed = 0;

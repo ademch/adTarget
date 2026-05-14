@@ -19,7 +19,7 @@ template <SliderType SlType>
 class Slider : public GUI_Element
 {
 public:
-	bool bEnabled;
+
 	bool bDrawComment;
 
 	float fTickGranularity;
@@ -43,7 +43,7 @@ public:
 	}
 
 	Slider(std::string strCaption, int px, int py, float _v_min, float _v_max, float* _v_cur, float scale):
-	 _text(strCaption), size(scale), ptr_fVal_cur(_v_cur),m_fVal_min(_v_min),m_fVal_max(_v_max)
+	       _text(strCaption), size(scale), ptr_fVal_cur(_v_cur),m_fVal_min(_v_min),m_fVal_max(_v_max)
 	{
 		assert(_v_min < _v_max);
 		assert(_v_max >= *_v_cur);
@@ -60,7 +60,6 @@ public:
 		m_iBox_sep  =20;
 
 		bMouseButtonPressed = false;
-		bEnabled = true;
 		bDrawComment = true;
 
 		fTickGranularity = 1.0f;

@@ -16,7 +16,6 @@ public:
 	Vec3 m_ptHandleEndWorldCoords;
 
 	bool bFocused;
-	bool bEnabled;
 
 	Vec4 vColor_focused;
 	Vec4 vColor_defocused;

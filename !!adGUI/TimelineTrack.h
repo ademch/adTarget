@@ -12,8 +12,6 @@ public:
 
 	TimelineTrack(int _id, int px, int py, int _width, int _height);
 
-	bool bEnabled;
-
 	std::function<bool()>      OnClick;
 	std::function<bool(float)> OnDrawValue;
 	std::function<bool()>      OnClickDrag;
@@ -23,8 +21,6 @@ public:
 	void Draw() override;
 
 	bool Clicked(int button, int state, int x, int y) override;
-	bool Drag(int x, int y) override;
-	bool Hover(int x, int y) override;
 
 	static int iSelected;
 

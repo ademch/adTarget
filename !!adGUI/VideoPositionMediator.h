@@ -3,26 +3,30 @@
 
 class PositionMediator
 {
-	unsigned int iStartSec;
-	unsigned int iEndSec;
+	unsigned int iDuration;
 
 	float fPos;
 	float fPosSelectionStart;
 	float fPosSelectionEnd;
 
 	std::vector<std::function<void(void*, float)>> listenersPos;
-	std::vector<std::function<void(void*, float, unsigned int, unsigned int)>> listenersPosInit;
-
-public:
+	std::vector<std::function<void(void*, float, unsigned int)>> listenersPosInit;
 
 	PositionMediator()
 	{
-		iStartSec = 0;
-		iEndSec   = 0;
+		iDuration   = 0;
 
 		fPos = 0;
 		fPosSelectionStart = 0;
 		fPosSelectionEnd   = 0;
+	}
+
+public:
+
+	static PositionMediator* Get()
+	{
+		static PositionMediator mediator;
+		return &mediator;
 	}
 
 	void SetPos(void* origin, float _fPos)
@@ -44,30 +48,30 @@ public:
 		//	listener(origin, _fPos);
 	}
 
-	void InitPos(void* origin, float _fPos, unsigned int _iStartSec, unsigned int _iEndSec)
+	void InitPos(void* origin, float _fPos, unsigned int _iDuration)
 	{
 		fPos      = _fPos;
-		iStartSec = _iStartSec;
-		iEndSec   = _iEndSec;
+		iDuration = _iDuration;
 
 		for (auto& listener : listenersPosInit)
-			listener(origin, _fPos, _iStartSec, _iEndSec);
+			listener(origin, _fPos, _iDuration);
 	}
 
 //	int GetPos() const { return value; }
 
-	int GetEndSec() const { return iEndSec; }
+	int Duration()  { return iDuration; }
 
 	void subscribeForPos(std::function<void(void*, float)> cb)
 	{
 		listenersPos.push_back(std::move(cb));
 	}
 
-	void subscribeForPosInit(std::function<void(void*, float, unsigned int, unsigned int)> cb)
+	void subscribeForPosInit(std::function<void(void*, float, unsigned int)> cb)
 	{
 		listenersPosInit.push_back(std::move(cb));
 	}
 
 };
+
 
 #endif

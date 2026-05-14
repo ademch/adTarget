@@ -18,6 +18,9 @@ enum VerticalAlignment {
 class GUI_Element
 {
 public:
+
+	bool bEnabled;
+
 	GUI_Element()
 	{
 		posx = 0;
@@ -28,6 +31,8 @@ public:
 
 		iHPosShift = 0;
 		iVPosShift = 0;
+
+		bEnabled = true;
 	}
 	virtual ~GUI_Element() {}
 

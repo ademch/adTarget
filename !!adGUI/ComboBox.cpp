@@ -22,7 +22,6 @@ ComboBox::ComboBox(std::string caption, int px, int py, int width, float size)
 
 	iListPixelShift = 5;
 
-	bEnabled   = true;
 	bVisible   = true;
 	bFocused   = false;
 	iGUIpushed = 0;

@@ -21,6 +21,7 @@ public:
    void Draw();
 
 protected:
+
    float _size;
 
 };

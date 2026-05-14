@@ -17,7 +17,6 @@ public:
 
    unsigned int iSelected;
 
-   bool  bEnabled;
    bool  bVisible;
    
    Vec4 vColor_focused;

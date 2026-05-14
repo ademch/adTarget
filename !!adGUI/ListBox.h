@@ -19,7 +19,7 @@ public:
 
 	bool bFocusedUp;
 	bool bFocusedDown;
-	bool bEnabled;
+
 	bool bVisible;
 
 	// global selection in items

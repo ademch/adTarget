@@ -12,7 +12,6 @@ public:
    float _text_width;
    float _text_height;
 
-   bool bEnabled;
    bool bON;
    bool bPushButton;
 

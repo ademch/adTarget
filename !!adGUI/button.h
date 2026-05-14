@@ -16,7 +16,6 @@ public:
    int   m_Width;
 
    bool bFocused;
-   bool bEnabled;
 
    std::string _text;
    std::string strHint;

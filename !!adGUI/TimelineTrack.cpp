@@ -4,8 +4,7 @@
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "TimelineTrack.h"
 #include "../!!adGlobals/vector_math.h"
-#include "gui_element.h"
-#include <functional>
+
 
 // By delaut the first track is active
 int TimelineTrack::iSelected = 1;
@@ -21,10 +20,9 @@ TimelineTrack::TimelineTrack(int _id, int px, int py, int _width, int _height):
 	iVPosShift = py;
 
 	bMouseButtonPressed = false;
-	bEnabled = true;
 
 	bFocused = false;
-	vColor_focused   = Vecc3(0.069, 0.3, 0.069);
+	vColor_focused   = Vecc3(0.069, 0.35, 0.069);
 	vColor_defocused = Vecc3(0.046, 0.2, 0.046);
 }
 
@@ -34,16 +32,12 @@ void TimelineTrack::Draw()
 {
 	GUI_Element::Draw();
 
-	Matr4 matrSliderInverted;
-	glGetFloatv(GL_MODELVIEW_MATRIX,  &matrSliderInverted.m[0][0]);
-
 	// clear screen under control
 	if ((iSelected == id) && bEnabled)
 		glColor3fv(&vColor_focused.X);
 	else
 		glColor3fv(&vColor_defocused.X);
 	glQuad(posx, posy, m_iWidth, m_iHeight, 0);
-
 
 }
 
@@ -57,10 +51,10 @@ bool TimelineTrack::Clicked(int button, int state, int x, int y)
 {
 	GUI_Element::Clicked(button, state, x, y);
 
-	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
+	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
-	if ((vCoord.X < posx + m_iWidth)  && (vCoord.X > posx) &&
-		(vCoord.Y < posy + m_iHeight) && (vCoord.Y > posy))
+	if ((ptPeep.X < posx + m_iWidth)  && (ptPeep.X > posx) &&
+		(ptPeep.Y < posy + m_iHeight) && (ptPeep.Y > posy))
 	{
 		if (!bEnabled) return false;
 
@@ -68,7 +62,7 @@ bool TimelineTrack::Clicked(int button, int state, int x, int y)
 		{
 			iSelected = id;
 
-			return true;
+			return false;
 		}
 	}
 
@@ -76,27 +70,3 @@ bool TimelineTrack::Clicked(int button, int state, int x, int y)
 }
 
 
-bool TimelineTrack::Drag(int x, int y)
-{
-	GUI_Element::Drag(x, y);
-
-	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
-
-	return false;
-}
-
-
-bool TimelineTrack::Hover(int x, int y)
-{
-	GUI_Element::Hover(x, y);
-
-	Vec3 vCoord = matrSliderNonInverted*Vecc3(x,y);
-
-	if ((vCoord.X < posx + m_iWidth)  && (vCoord.X > posx) &&
-		(vCoord.Y < posy + m_iHeight) && (vCoord.Y > posy))
-	{
-		return true;
-	}
-
-	return false;
-}
