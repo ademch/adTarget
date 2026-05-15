@@ -63,7 +63,9 @@ protected:
 
 	float iBeginDragX, iBeginDragY;
 
-	float xImmediateTranslate;
+	float xImmTransl;
+	float xImmBeg;
+	float xImmEnd;
 
 	StateClip_enum stateClip;
 };

@@ -12,8 +12,8 @@ Label::Label(std::string caption, int px, int py, float size)
 	iHPosShift = px;
 	iVPosShift = py;
 
-	_text=caption;
-	_size=size;
+	_text = caption;
+	_size = size;
 
 	vColor = Vecc4(0.1f, 0.6f, 0.1f, 1.0f);
 }

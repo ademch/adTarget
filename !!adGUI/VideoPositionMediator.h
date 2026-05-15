@@ -59,7 +59,7 @@ public:
 			listener(origin, _fPos, _iDuration);
 	}
 
-//	int GetPos() const { return value; }
+	float Pos01() { return fPos0_1; }
 
 	int Duration()  { return iDuration; }
 

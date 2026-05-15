@@ -28,10 +28,10 @@ void VideoSlider::SetPos0_1(float _val)
 	m_fPos01 = _val;
 }
 
-void VideoSlider::SetPosInit(float _val, float _v_max)
+void VideoSlider::SetPosInit(float _val0_1, float _v_max)
 {
-	m_iValMax  = _v_max;
-	m_fPos01     = _val;
+	m_fPos01  = _val0_1;
+	m_iValMax = _v_max;
 }
 
 bool VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
