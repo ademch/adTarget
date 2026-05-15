@@ -5,9 +5,9 @@
 #include "../!!adGlobals/vector_math.h"
 #include "VideoPositionMediator.h"
 
+TrackClip* dragNdrop_Clip = NULL;
 
-// By delaut the first track is active
-int TrackClip::iSelected = 1;
+int TrackClip::iSelected = 0;
 
 
 TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
@@ -43,30 +43,26 @@ void TrackClip::Draw()
 	float fPPS = float(m_iWidth)/PositionMediator::Get()->Duration();
 
 	// draw control background
-	if ((iSelected == id) && bEnabled)
-		glColor3f(0.69, 0.69, 0.069);
-	else
-		glColor3f(0.1, 0.1, 0.1);
+	glColor3f(0.69, 0.69, 0.069);
 	glQuad(posx + m_iStartPos*fPPS + xImmTransl + xImmBeg, posy, m_iLength*fPPS - xImmBeg + xImmEnd, m_iHeight, 10);
 
-	if (bFocused)
+	if (iSelected == id)
 	{
-		glLineWidth(3.0);
 		glColor3f(0.92, 0.8, 0.0);
 		float fStart = posx + m_iStartPos*fPPS + xImmTransl + xImmBeg;
-		//glWireRectangle(fStart, posy+1, m_iLength*fPPS, m_iHeight-2, 11);
+
+		glLineWidth(1.0);
+		glLine(fStart,										posy,
+			   fStart+ m_iLength*fPPS - xImmBeg + xImmEnd,  posy, 12);
+		glLine(fStart,                                      posy + m_iHeight-1,
+			   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight-1, 12);
+
+		if (bFocused) glLineWidth(3.0);
 
 		glLine(fStart,                  posy,
 			   fStart,                  posy + m_iHeight, 12);
 		glLine(fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy,
 			   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight, 12);
-
-		glLineWidth(1.0);
-		glLine(fStart,										posy,
-			   fStart+ m_iLength*fPPS - xImmBeg + xImmEnd,  posy, 12);
-
-		glLine(fStart,                                      posy + m_iHeight-1,
-			   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight-1, 12);
 	}
 
 }
@@ -171,6 +167,8 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 		if (OnClick != NULL) OnClick();
 		stateClip = STATE_CLIP_IDLE;
 
+		dragNdrop_Clip = NULL;
+
 		return true;
 	}
 
@@ -232,6 +230,8 @@ bool TrackClip::Drag(int x, int y)
 
 			//printf("xImm=%5.3f\n", xImmTransl);
 		}
+
+		dragNdrop_Clip = this;
 
 		if (OnClickDrag != NULL) OnClickDrag();
 

@@ -4,6 +4,11 @@
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "TimelineTrack.h"
 #include "../!!adGlobals/vector_math.h"
+#include "TrackClip.h"
+
+
+extern const int g_iClipPadding;
+extern TrackClip* dragNdrop_Clip;
 
 
 // By delaut the first track is active
@@ -49,6 +54,8 @@ void TimelineTrack::Resize(int iWidth, int iHeight)
 
 bool TimelineTrack::Clicked(int button, int state, int x, int y)
 {
+	if (!bEnabled) return false;
+
 	GUI_Element::Clicked(button, state, x, y);
 
 	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
@@ -56,11 +63,43 @@ bool TimelineTrack::Clicked(int button, int state, int x, int y)
 	if ((ptPeep.X < posx + m_iWidth)  && (ptPeep.X > posx) &&
 		(ptPeep.Y < posy + m_iHeight) && (ptPeep.Y > posy))
 	{
-		if (!bEnabled) return false;
-
 		if (state==GLUT_DOWN)
 		{
 			iSelected = id;
+
+			return false;
+		}
+	}
+
+	return false;
+}
+
+
+bool TimelineTrack::Drag(int x, int y)
+{
+	if (!bEnabled) return false;
+
+	GUI_Element::Drag(x, y);
+
+	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
+
+	if ((ptPeep.X < posx + m_iWidth)  && (ptPeep.X > posx) &&
+		(ptPeep.Y < posy + m_iHeight) && (ptPeep.Y > posy))
+	{
+		if (dragNdrop_Clip)
+		{
+			if (dragNdrop_Clip->iTrack != id)
+			{
+				dragNdrop_Clip->iTrack = id;
+				iSelected = id;
+
+				dragNdrop_Clip->iHPosShift = iHPosShift;
+				dragNdrop_Clip->iVPosShift = iVPosShift + g_iClipPadding;
+
+				int px, py;
+				dragNdrop_Clip->GetPosition(px, py);
+				dragNdrop_Clip->Reposition(px, posy + g_iClipPadding);
+			}
 
 			return false;
 		}

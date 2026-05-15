@@ -48,10 +48,9 @@ public:
 	int      m_iLength;
 	int      m_iStartPos;
 
-protected:
+	int		 id;
 
-	// 1 based unique id
-	int id;
+protected:
 
 	int m_iWidth;
 	int m_iHeight;
