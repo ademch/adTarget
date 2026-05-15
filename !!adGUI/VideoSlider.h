@@ -14,7 +14,7 @@ public:
 
 	std::function<void(float)>      OnChange;
 
-	void SetPos(float _val);
+	void SetPos0_1(float _val);
 	void SetPosInit(float _val, float _v_max);
 
 	float GetValue();
@@ -44,7 +44,7 @@ protected:
 	bool bFocused;
 	bool bMouseButtonPressed;
 
-	void DrawTicks(float count, int iStep, float fThickness, float fHeight, const Matr4& matTransform);
+	bool DrawTicks(float count, int iStep, float fThickness, float fHeight, const Matr4& matTransform);
 };
 
 

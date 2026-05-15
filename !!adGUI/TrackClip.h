@@ -10,6 +10,13 @@ enum ClipType  {
 	CLIP_VIDEO
 };
 
+enum StateClip_enum {
+	STATE_CLIP_IDLE,
+	STATE_CLIP_DRAG_POS,
+	STATE_CLIP_DRAG_BEG,
+	STATE_CLIP_DRAG_END
+};
+
 class TrackClip : public GUI_ElementResizable
 {
 public:
@@ -22,10 +29,10 @@ public:
 
 	void Resize(int iWidth, int iHeight) override;
 
-	void SetPos(int _iStart, int _iLength)
+	void SetAttr(int _iStart, int _iLength)
 	{
-		m_iLength   = _iLength;
 		m_iStartPos = _iStart;
+		m_iLength   = _iLength;
 	}
 
 	void Draw() override;
@@ -53,11 +60,12 @@ protected:
 	Vec3 vColor_defocused;
 
 	bool bFocused;
-	bool bMouseButtonPressed;
 
 	float iBeginDragX, iBeginDragY;
 
 	float xImmediateTranslate;
+
+	StateClip_enum stateClip;
 };
 
 

@@ -5,7 +5,7 @@ class PositionMediator
 {
 	unsigned int iDuration;
 
-	float fPos;
+	float fPos0_1;
 	float fPosSelectionStart;
 	float fPosSelectionEnd;
 
@@ -16,7 +16,7 @@ class PositionMediator
 	{
 		iDuration   = 0;
 
-		fPos = 0;
+		fPos0_1 = 0;
 		fPosSelectionStart = 0;
 		fPosSelectionEnd   = 0;
 	}
@@ -31,8 +31,10 @@ public:
 
 	void SetPos(void* origin, float _fPos)
 	{
-		if ( fabs(_fPos - fPos) < 1e-6)
+		if ( fabs(_fPos - fPos0_1) < 1e-6)
 			return;
+
+		fPos0_1 = _fPos;
 
 		for (auto& listener : listenersPos)
 			listener(origin, _fPos);
@@ -48,9 +50,9 @@ public:
 		//	listener(origin, _fPos);
 	}
 
-	void InitPos(void* origin, float _fPos, unsigned int _iDuration)
+	void Init(void* origin, float _fPos, unsigned int _iDuration)
 	{
-		fPos      = _fPos;
+		fPos0_1   = _fPos;
 		iDuration = _iDuration;
 
 		for (auto& listener : listenersPosInit)

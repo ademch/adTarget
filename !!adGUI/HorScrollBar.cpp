@@ -6,7 +6,7 @@
 
 const unsigned int g_minZoomOutIndex = -20;
 
-HorScrollBar::HorScrollBar(std::string caption, int px, int py, int width, int height)
+HorScrollBar::HorScrollBar(std::string caption, int px, int py)
 {
 	posx = px;
 	posy = py;
@@ -14,11 +14,11 @@ HorScrollBar::HorScrollBar(std::string caption, int px, int py, int width, int h
 	iHPosShift = px;
 	iVPosShift = py;
 
-	m_Width  = width;
-	m_Height = height;
+	m_Width  = 250;
+	m_Height = 15;
 
-	m_ptHandleStartWorldCoords = Vecc3(-width/2.0, 0);
-	m_ptHandleEndWorldCoords   = Vecc3( width/2.0, 0);
+	m_ptHandleStartWorldCoords = Vecc3(-m_Width/2.0, 0);
+	m_ptHandleEndWorldCoords   = Vecc3( m_Width/2.0, 0);
 
 	bFocused = false;
 	iGUIpushed = 0;

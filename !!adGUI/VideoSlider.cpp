@@ -24,9 +24,9 @@ VideoSlider::VideoSlider(int px, int py, int _height):
 
 }
 
-void VideoSlider::SetPos(float _val)
+void VideoSlider::SetPos0_1(float _val)
 {
-	m_fSliderX = _val*m_iWidth - m_iWidth/2.0;
+	m_fSliderX = (_val - 0.5)*m_iWidth;
 }
 
 void VideoSlider::SetPosInit(float _val, float _v_max)
@@ -43,15 +43,15 @@ float VideoSlider::GetValue()
 	return t;
 }
 
-void VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
+bool VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
 {
-	if (count < 1) return;
+	if (count < 1) return false;
 	
 	float fTickStep = m_iWidth/count;
 
 	float vNew = matTransform.m[0][0] * fTickStep*iStep;
 
-	if ( vNew < 7) return;
+	if ( vNew < 7) return false;
 
 	glLineWidth(fThickness);
 	glBegin(GL_LINES);
@@ -64,6 +64,8 @@ void VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCal
 			glVertex3f(posx + fCurrentVal,  posy - fCaliper/2.0*(m_iHeight/20.0f), 4);
 		}
 	glEnd();
+
+	return true;
 }
 
 void VideoSlider::Draw()
@@ -88,24 +90,34 @@ void VideoSlider::Draw()
 	{
 		unsigned int Count = int(m_iValMax);
 
+		bool bDrawn;
+
 		// hours
 		DrawTicks(Count/3600.0f, 1, 3, 18, matrSliderInverted);
 
-		// quarters of hour
-		//glColor3f(0.5*fHighlight, 0.7*fHighlight, 0.4*fHighlight);
-		//DrawTicks(Count/60.0f, 15, 2, 14, matrSliderInverted);
-
 		// minutes
 		glColor3f(0.2*fHighlight, 0.6*fHighlight, 0.2*fHighlight);
-		DrawTicks(Count/60.0f, 1, 2, 10, matrSliderInverted);
+		bDrawn = DrawTicks(Count/60.0f, 1, 2, 10, matrSliderInverted);
 
-		// quarters of seconds
-		//glColor3f(0.7*fHighlight, 0.7*fHighlight, 0.0*fHighlight);
-		//DrawTicks(Count/1.0f, 15, 2, 5, matrSliderInverted);
+		if (!bDrawn)
+		{
+			// quarters of hour
+			glColor3f(0.5*fHighlight, 0.7*fHighlight, 0.4*fHighlight);
+			DrawTicks(Count/60.0f, 15, 2, 14, matrSliderInverted);
+		}
+
 
 		// seconds
 		glColor3f(0.1*fHighlight, 0.6*fHighlight, 0.1*fHighlight);
-		DrawTicks(Count/1.0f, 1, 2, 3, matrSliderInverted);
+		bDrawn = DrawTicks(Count/1.0f, 1, 2, 3, matrSliderInverted);
+
+		if (!bDrawn)
+		{
+			// quarters of seconds
+			glColor3f(0.7*fHighlight, 0.7*fHighlight, 0.0*fHighlight);
+			DrawTicks(Count/1.0f, 15, 2, 5, matrSliderInverted);
+		}
+
 	}
 
 	// draw slider line

@@ -23,7 +23,7 @@ public:
 	float fZoomFactor;
 	int8_t iZoomIndex;
 
-	HorScrollBar(std::string caption, int px, int py, int width, int height);
+	HorScrollBar(std::string caption, int px, int py);
 	~HorScrollBar() {}
 
 	std::function<void(Matr4)> OnChange;

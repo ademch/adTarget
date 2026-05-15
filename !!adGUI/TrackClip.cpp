@@ -19,8 +19,6 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
 	iHPosShift = px;
 	iVPosShift = py;
 
-	bMouseButtonPressed = false;
-
 	bFocused = false;
 	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);	// 0.04, 0.18, 0.04
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
@@ -29,6 +27,8 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
 	m_iLength   = 0.0;
 
 	xImmediateTranslate = 0.0f;
+
+	stateClip = STATE_CLIP_IDLE;
 }
 
 
@@ -40,7 +40,7 @@ void TrackClip::Draw()
 	// Pixels per Second
 	float fPPS = float(m_iWidth)/PositionMediator::Get()->Duration();
 
-	// clear screen under control
+	// draw control background
 	if ((iSelected == id) && bEnabled)
 		glColor3f(0.69, 0.69, 0.069);
 	else
@@ -49,9 +49,16 @@ void TrackClip::Draw()
 
 	if (bFocused)
 	{
-		glLineWidth(2.0);
+		glLineWidth(3.0);
 		glColor3f(0.92, 0.8, 0.0);
-		glWireRectangle(posx + m_iStartPos*fPPS + xImmediateTranslate, posy, m_iLength*fPPS, m_iHeight, 11);
+		float fStart = posx + m_iStartPos*fPPS + xImmediateTranslate;
+		//glWireRectangle(fStart, posy+1, m_iLength*fPPS, m_iHeight-2, 11);
+
+		glLine(fStart,                  posy, fStart,                  posy + m_iHeight, 12);
+		glLine(fStart + m_iLength*fPPS, posy, fStart + m_iLength*fPPS, posy + m_iHeight, 12);
+
+		//glLineWidth(3.0);
+		//glLine(fStart, posy, fStart, posy + m_iHeight, 12);
 	}
 
 }
@@ -96,6 +103,8 @@ bool TrackClip::Hover(int x, int y)
 
 bool TrackClip::Clicked(int button, int state, int x, int y)
 {
+	if (!bEnabled) return false;
+
 	GUI_ElementResizable::Clicked(button, state, x, y);
 
 	float fPPS = float(m_iWidth)/PositionMediator::Get()->Duration();
@@ -105,14 +114,12 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 	if ((ptPeep.X > posx + m_iStartPos*fPPS) && (ptPeep.X < posx + (m_iStartPos + m_iLength)*fPPS) &&
 		(ptPeep.Y > posy)                    && (ptPeep.Y < posy + m_iHeight))
 	{
-		if (!bEnabled) return false;
-
 		if ((button == GLUT_RIGHT_BUTTON) && (state == GLUT_DOWN))
 		{
 			iBeginDragX = x;
 			iBeginDragY = y;
 
-			bMouseButtonPressed = true;
+			stateClip = STATE_CLIP_DRAG_POS;
 
 			iSelected = id;
 
@@ -120,13 +127,13 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 		}
 	}
 
-	if (bMouseButtonPressed)
+	if (stateClip == STATE_CLIP_DRAG_POS)
 	{
 		m_iStartPos += round(xImmediateTranslate/fPPS);
 		xImmediateTranslate = 0.0f;
 
 		if (OnClick != NULL) OnClick();
-		bMouseButtonPressed = false;
+		stateClip = STATE_CLIP_IDLE;
 
 		return true;
 	}
@@ -141,7 +148,7 @@ bool TrackClip::Drag(int x, int y)
 
 	float fPPS = float(m_iWidth)/PositionMediator::Get()->Duration();
 
-	if (bMouseButtonPressed)
+	if (stateClip == STATE_CLIP_DRAG_POS)
 	{
 		if (abs(x - iBeginDragX) < 1) return false;
 
