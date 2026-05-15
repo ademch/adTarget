@@ -17,8 +17,6 @@ public:
 	void SetPos0_1(float _val);
 	void SetPosInit(float _val, float _v_max);
 
-	float GetValue();
-
 	void Resize(int iWidth, int iHeight) override;
 
 	void Draw() override;
@@ -35,8 +33,7 @@ protected:
 	// those are values in seconds
 	int m_iValMax;
 
-	// that is the value in internal World coordinates like -300...300
-	float m_fSliderX;
+	float m_fPos01;
 
 	Vec3 vColor_focused;
 	Vec3 vColor_defocused;

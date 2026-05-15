@@ -7,7 +7,7 @@
 
 
 VideoSlider::VideoSlider(int px, int py, int _height):
-			             m_iValMax(4000), m_fSliderX(0), 
+			             m_iValMax(4000), m_fPos01(0.0),
 	                     m_iHeight(_height), m_iWidth(250)
 {
 	posx = px;
@@ -21,26 +21,17 @@ VideoSlider::VideoSlider(int px, int py, int _height):
 	bFocused = false;
 	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
-
 }
 
 void VideoSlider::SetPos0_1(float _val)
 {
-	m_fSliderX = (_val - 0.5)*m_iWidth;
+	m_fPos01 = _val;
 }
 
 void VideoSlider::SetPosInit(float _val, float _v_max)
 {
-	m_iValMax = _v_max;
-
-	m_fSliderX = _val*m_iWidth - m_iWidth/2.0;
-}
-
-float VideoSlider::GetValue()
-{
-	float t = (m_fSliderX + m_iWidth/2.0) / m_iWidth;
-
-	return t;
+	m_iValMax  = _v_max;
+	m_fPos01     = _val;
 }
 
 bool VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
@@ -127,18 +118,20 @@ void VideoSlider::Draw()
 	// Current modelview matrix brings them back to -300...300, but the value now
 	// is not with granularity +1, but with granularity 1/scale
 	{
+		float m_fSliderX = m_fPos01*m_iWidth;
+
 		glColor3f(1,0,0);
 
 		// triangle headshape simulated with lines
 		glLineWidth(1);
-		glLine( m_fSliderX, posy,
-				m_fSliderX, posy - m_iHeight/2,     5);
+		glLine( posx + m_fSliderX, posy,
+				posx + m_fSliderX, posy - m_iHeight/2,     5);
 		glLineWidth(3);
-		glLine (m_fSliderX, posy + m_iHeight/2 - 4,
-			    m_fSliderX, posy - m_iHeight/2 + 3, 5);
+		glLine (posx + m_fSliderX, posy + m_iHeight/2 - 4,
+				posx + m_fSliderX, posy - m_iHeight/2 + 3, 5);
 		glLineWidth(5);
-		glLine( m_fSliderX, posy + m_iHeight/2 - 4,
-			    m_fSliderX, posy - m_iHeight/2 + 5, 5);
+		glLine( posx + m_fSliderX, posy + m_iHeight/2 - 4,
+				posx + m_fSliderX, posy - m_iHeight/2 + 5, 5);
 	}
 
 }
@@ -166,9 +159,9 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 
 		if (state==GLUT_DOWN)
 		{
-			m_fSliderX = ptPeep.X;
+			m_fPos01 = (ptPeep.X + m_iWidth/2.0) / m_iWidth;
 
-			if (OnChange != NULL) OnChange(GetValue());
+			if (OnChange != NULL) OnChange(m_fPos01);
 
 			bMouseButtonPressed = true;
 			return true;
@@ -192,9 +185,9 @@ bool VideoSlider::Drag(int x, int y)
 
 	if (bMouseButtonPressed && (ptPeep.X > posx) && (ptPeep.X < posx + m_iWidth) )
 	{
-		m_fSliderX = ptPeep.X;
+		m_fPos01 = (ptPeep.X + m_iWidth/2.0) / m_iWidth;
 
-		if (OnChange != NULL) OnChange(GetValue());
+		if (OnChange != NULL) OnChange(m_fPos01);
 
 		return true;
 	}
