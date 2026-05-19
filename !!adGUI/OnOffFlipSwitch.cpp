@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "OnOffFlipSwitch.h"
 #include "../!!adGlobals/glut/glut.h"
+#include "../!!adGlobals/adOpenGLUtilities.h"
 #include "glfont.h"
 
 extern GLFONT font;
@@ -20,7 +21,7 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 	_text = strCaption;
 
 	m_iBox_width = 40;
-	m_iBox_sep = 20;
+	m_iBox_sep   = 20;
 
 	bON = false;
 
@@ -29,11 +30,11 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 	vColor_focused   = Vecc4(0.1, 0.8, 0.1, 0.7);
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
 	
-	bFocused=false;
+	bFocused   = false;
 	iGUIpushed = 0;
 }
 
-OnOffFlipSwitch::~OnOffFlipSwitch() { }
+
 
 bool OnOffFlipSwitch::Hover(int x, int y)
 {
@@ -45,6 +46,7 @@ bool OnOffFlipSwitch::Hover(int x, int y)
 	}
 
 	bFocused=false;
+
 	return false;
 }
 
@@ -59,31 +61,27 @@ void OnOffFlipSwitch::Draw()
 		glColor4fv(&vColor_defocused.X);
 
 	glEnable(GL_TEXTURE_2D);
-	glFontBegin(&font);
-		glFontTextOut("I", posx + m_iBox_width + 5, posy, 4, _size);
-		glFontTextOut("0", posx - 14,               posy, 4, _size);
-		glFontTextOut(_text.c_str(), posx + m_iBox_width + m_iBox_sep, posy, 4, _size);
+		glFontBegin(&font);
+			glFontTextOut("I", posx + m_iBox_width + 5, posy, 4, _size);
+			glFontTextOut("0", posx - 14,               posy, 4, _size);
+			glFontTextOut(_text.c_str(), posx + m_iBox_width + m_iBox_sep, posy, 4, _size);
 		glFontEnd();
 	glDisable(GL_TEXTURE_2D);
 
 	float fBoxHeightScale = 1.0;
 
+	// draw frame
 	glLineWidth(1);
-	glBegin(GL_LINE_LOOP);
-		glVertex3f(posx, posy, 4);
-		glVertex3f(posx + m_iBox_width, posy, 4);
-		glVertex3f(posx + m_iBox_width, posy + _text_height*fBoxHeightScale, 4);
-		glVertex3f(posx, posy + _text_height*fBoxHeightScale, 4);
-	glEnd();
+	glWireRectangle(posx, posy, m_iBox_width, _text_height*fBoxHeightScale, 4);
+
 
 	if (bON)
 	{
-		glBegin(GL_QUADS);
-			glVertex3f(posx + 3+m_iBox_width*0.5 + iGUIpushed, posy + 3 - iGUIpushed,                4);
-			glVertex3f(posx +   m_iBox_width-4 + iGUIpushed,   posy + 3 - iGUIpushed,                4);
-			glVertex3f(posx +   m_iBox_width-4 + iGUIpushed,   posy + _text_height - 3 - iGUIpushed, 4);
-			glVertex3f(posx + 3+m_iBox_width*0.5 + iGUIpushed, posy + _text_height - 3 - iGUIpushed, 4);
-		glEnd();
+		glQuad( posx + 3 + m_iBox_width/2.0 + iGUIpushed,
+			    posy + 3 - iGUIpushed,
+			    m_iBox_width/2.0 - 7,
+			    _text_height - 6,
+				4 );
 
 		glColor3f(0,0.3,0);
 		glBegin(GL_LINES);
@@ -93,12 +91,11 @@ void OnOffFlipSwitch::Draw()
 	}
 	else
 	{
-		glBegin(GL_QUADS);
-			glVertex3f(posx+3 + iGUIpushed,                    posy + 3 - iGUIpushed,                4);
-			glVertex3f(posx + m_iBox_width*0.5-4 + iGUIpushed, posy + 3 - iGUIpushed,                4);
-			glVertex3f(posx + m_iBox_width*0.5-4 + iGUIpushed, posy + _text_height - 3 - iGUIpushed, 4);
-			glVertex3f(posx+3 + iGUIpushed,                    posy + _text_height - 3 - iGUIpushed, 4);
-		glEnd();
+		glQuad(	posx + 3 + iGUIpushed, 
+			    posy + 3 - iGUIpushed,
+			    m_iBox_width/2.0 - 7,
+			    _text_height - 6,
+			    4 );
 
 		glColor3f(0, 0.3, 0);
 		glBegin(GL_LINES);
@@ -116,15 +113,16 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 	if (!bEnabled) return false;
 
 	if ((state == GLUT_DOWN) &&
-		(x < posx + m_iBox_width) && (x > posx) && (y < posy + _text_height) && (y > posy))
+		(x < posx + m_iBox_width) && (x > posx) &&
+		(y < posy + _text_height) && (y > posy))
 	{
 		iGUIpushed = 1;
 
 		if (bPushButton)
 		{
-			if (OnPreClick != NULL) {
-				if (OnPreClick(!bON))
-					bON = !bON;
+			if (OnPreClick)
+			{
+				if (OnPreClick(!bON)) bON = !bON;
 			}
 			else
 				bON = !bON;
@@ -136,14 +134,16 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 	{
 		if (iGUIpushed)
 		{
-			if ( ((x < posx + m_iBox_width) && (x > posx) && (y < posy + _text_height) && (y > posy) ) ||
+			// release inside or anywhere for pushbutton behaviour
+			if (((x < posx + m_iBox_width) && (x > posx) &&
+				 (y < posy + _text_height) && (y > posy)) ||
 				 bPushButton )
 			{
 				// on/off is triggered on mouse up
 
-				if (OnPreClick != NULL) {
-					if (OnPreClick(!bON))
-						bON = !bON;
+				if (OnPreClick)
+				{
+					if (OnPreClick(!bON)) bON = !bON;
 				}
 				else
 					bON = !bON;
@@ -151,6 +151,7 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 				iGUIpushed = 0;
 				return true;
 			}
+
 			iGUIpushed = 0;
 		}
 	}
@@ -158,13 +159,15 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 	return false;
 }
 
-void OnOffFlipSwitch::SetOnOff(bool _bOn, bool bCallCallback)
+
+// Called from outside with ability to trigger callback
+void OnOffFlipSwitch::SetOnOff(bool _bOn, bool bTriggerAction)
 {
-	if (bCallCallback) {
-		if ((OnPreClick != NULL) && (_bOn != bON))
+	if (bTriggerAction)
+	{
+		if ((OnPreClick) && (_bOn != bON))
 		{
-			if (OnPreClick(_bOn))
-				bON = _bOn;
+			if (OnPreClick(_bOn)) bON = _bOn;
 		}
 	}
 	else

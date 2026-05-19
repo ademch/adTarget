@@ -24,7 +24,7 @@ public:
    Vec4 vColor_defocused;
 
    Button(std::string caption, int px, int py, int width, float size);
-   virtual ~Button();
+   virtual ~Button() {};
 
    std::function<bool()> OnClick;
 
@@ -65,7 +65,28 @@ public:
 
 protected:
 
+};
+
+
+class PushButtonImage : public Button
+{
+public:
+
+	PushButtonImage(std::string caption, int px, int py, int width);
+	~PushButtonImage();
+
+	void LoadImg(const char* filename);
+
+	TextureDescriptor* texDescr;
+
+	void Draw() override;
+	bool Clicked(int button, int state, int x, int y) override;
+
+	bool bPushed;
+
+protected:
 
 };
+
 
 #endif

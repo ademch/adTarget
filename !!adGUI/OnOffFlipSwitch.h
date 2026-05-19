@@ -3,7 +3,6 @@
 
 #include "gui_element.h"
 #include "../!!adGlobals/vector_math.h"
-#include "../!!adGUI/SubWindow.h"
 #include <functional>
 
 class OnOffFlipSwitch : public GUI_Element
@@ -21,7 +20,7 @@ public:
    Vec4 vColor_defocused;
 
    OnOffFlipSwitch(std::string strCaption, int px, int py, float size);
-   ~OnOffFlipSwitch();
+   ~OnOffFlipSwitch() {}
 
    void Draw();
    virtual bool Hover(int x, int y);

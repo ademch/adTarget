@@ -31,9 +31,6 @@ Button::Button(std::string caption, int px, int py, int width, float size)
 
 }
 
-Button::~Button()
-{
-}
 
 void Button::Draw()
 {
@@ -209,6 +206,95 @@ bool ButtonImage::Clicked(int button, int state, int x, int y)
 					if (OnClick != NULL) OnClick();
 
 					if (texDescrDownState) bDownState = !bDownState;
+
+					iGUIpushed = 0;
+					return true;
+				}
+			}
+		}
+	}
+
+	iGUIpushed = 0;
+	return false;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+PushButtonImage::PushButtonImage(std::string caption, int px, int py, int width) :
+				 Button(caption, px, py, width, 0)
+{
+	m_Height = width;
+	texDescr = NULL;
+	bPushed  = false;
+}
+
+PushButtonImage::~PushButtonImage()
+{
+	delete texDescr;
+}
+
+
+
+void PushButtonImage::Draw()
+{
+	// clear screen under button
+	glColor3f(0, 0, 0);
+	glQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 0);
+
+	if (bPushed && bEnabled)
+		glColor4fv(&vColor_focused.X);
+	else
+		glColor4fv(&vColor_defocused.X);
+
+	if (texDescr)
+	{
+		glBindTexture(GL_TEXTURE_2D, texDescr->m_uiTextureID);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+		glEnable(GL_TEXTURE_2D);
+			glTexturedQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 6);
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	if (bFocused)
+	{
+		glLineWidth(2);
+		glColor4fv(&vColor_focused.X);
+		glWireRectangle(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height-1, 7);
+	}
+
+}
+
+void PushButtonImage::LoadImg(const char* filename)
+{
+	texDescr = LoadTextureWinAPI(filename);
+}
+
+
+
+bool PushButtonImage::Clicked(int button, int state, int x, int y)
+{
+	if (!bEnabled) return false;
+
+	if ((x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
+	{
+		if (button == GLUT_LEFT_BUTTON)
+		{
+			if (state == GLUT_DOWN)
+			{
+				iGUIpushed = 1;
+				return true;
+			}
+			// OnClick is going to happen only if mouse is released within the button boundaries
+			else
+			{
+				if (iGUIpushed)
+				{
+					if (OnClick != NULL) OnClick();
+
+					//bPushed = !bPushed;
 
 					iGUIpushed = 0;
 					return true;
