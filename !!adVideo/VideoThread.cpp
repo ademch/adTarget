@@ -16,6 +16,24 @@ VideoCacheThread::VideoCacheThread(FFMS_VideoSource* _videoSource, int maxItems,
 	atomic_bRunning = false;
 }
 
+VideoCacheThread::~VideoCacheThread()
+{
+	// free cached frames
+	for (auto it = m_cache.begin(); it != m_cache.end(); )
+	{
+		delete [] it->second->data;
+		delete it->second;
+		it = m_cache.erase(it);
+	}
+
+	// free frames from pool
+	for (auto it = liFreeFrames.begin(); it != liFreeFrames.end(); )
+	{
+		delete [] (*it)->data;
+		delete *it;
+	}
+}
+
 
 void VideoCacheThread::Start()
 {
@@ -72,12 +90,10 @@ void VideoCacheThread::MaintainWindow(int index)
 	// 1. EVICT outside window
 	for (auto it = m_cache.begin(); it != m_cache.end(); )
 	{
-		if (it->index < iLow || it->index > iHigh)
+		if (it->first < iLow || it->first > iHigh)
 		{
 			// return FrameItem to the pull of buffers
-			liFreeFrames.push_back(it->FrameItem);
-
-			m_lookup.erase(it->index);
+			liFreeFrames.emplace_back(it->second);
 			it = m_cache.erase(it);
 		}
 		else
@@ -103,23 +119,17 @@ void VideoCacheThread::MaintainWindow(int index)
 
 bool VideoCacheThread::ExistsInCache(int i)
 {
-	return m_lookup.find(i) != m_lookup.end();
+	return m_cache.find(i) != m_cache.end();
 }
+
 
 void VideoCacheThread::InsertIntoCache(int index)
 {
-	// find insertion place to keep list ordered by index
-	auto it = m_cache.begin();
-	while (it != m_cache.end() && it->index < index)
-	{
-		++it;
-	}
-
 	FrameItem* frameItem = LoadFrameFromStream(index);
 
-	auto inserted = m_cache.insert(it, { index, frameItem });
-	m_lookup[index] = inserted;
+	m_cache[index] = frameItem;
 }
+
 
 FrameItem* VideoCacheThread::LoadFrameFromStream(int index)
 {
@@ -152,11 +162,11 @@ FrameItem* VideoCacheThread::GetFrame(int index)
 {
 	SetPlayhead(index);
 
-	auto it = m_lookup.find(index);
-	if (it == m_lookup.end())
+	auto it = m_cache.find(index);
+	if (it == m_cache.end())
 		return nullptr;
 
-	return it->second->FrameItem;
+	return it->second;
 }
 
 

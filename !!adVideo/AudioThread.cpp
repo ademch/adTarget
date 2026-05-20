@@ -50,7 +50,7 @@ AudioThread::AudioThread(FFMS_AudioSource* _audioSource, ALuint _mSource, int _i
 	mSndSource       = _mSource;
 	iDynBufferCount  = _iDynBufferCount;
 
-	i64CurrentSample = 0;
+	i64TailSample = 0;
 }
 
 void AudioThread::ParseSourceProperties()
@@ -77,6 +77,22 @@ void AudioThread::Stop()
 		Thread.join();
 }
 
+float AudioThread::GetCurrentSecond()
+{
+	// Reading AL_SAMPLE_OFFSET and AL_BUFFERS_QUEUED is a single transaction
+	std::unique_lock<std::mutex> lock(_mutex);
+
+		ALint iSampleOffset;
+		alGetSourcei(mSndSource, AL_SAMPLE_OFFSET, &iSampleOffset);
+
+		ALint queued = 0;
+		alGetSourcei(mSndSource, AL_BUFFERS_QUEUED, &queued);
+
+	lock.unlock();
+
+	return (i64TailSample - queued*iSamplesPerChunk + iSampleOffset)/float(iSampleRate);
+}
+
 void AudioThread::EnqueueInitialBuffers()
 {
 	char errmsg[1024];
@@ -99,14 +115,13 @@ void AudioThread::EnqueueInitialBuffers()
 			return;
 		}
 
-		if ( FFMS_GetAudio(audioSource, pcmFloat.data(), i64CurrentSample, iSamplesPerChunk, &err) )
+		if ( FFMS_GetAudio(audioSource, pcmFloat.data(), i64TailSample, iSamplesPerChunk, &err) )
 		{
 			printf("FFMS audio error: %s\n", errmsg);
 
 			atomic_bRunning = false;
 			break;
 		}
-		i64CurrentSample += iSamplesPerChunk;
 
 		int iCalls = iSamplesPerChunk * iChannels;
 		for (int i = 0; i < iCalls; i+=4)
@@ -117,13 +132,20 @@ void AudioThread::EnqueueInitialBuffers()
 		int chunkBytes = iSamplesPerChunk * iChannels * sizeof(int16_t);
 		alBufferData(buffer_id, iChannels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcmInt16.data(), chunkBytes, iSampleRate);
 
-		// Place buffer to queue
-		alSourceQueueBuffers(mSndSource, 1, &buffer_id);
-		if (!SoundAL::CheckALError())
-		{	
-			printf("Error occured while queueing buffers\n");
-			return;
-		}
+		// buffer queuing + i64TailSample update is a single transaction
+		std::unique_lock<std::mutex> lock(_mutex);
+
+			// Place buffer to queue
+			alSourceQueueBuffers(mSndSource, 1, &buffer_id);
+			if (!SoundAL::CheckALError())
+			{	
+				printf("Error occured while queuing buffers\n");
+				return;
+			}
+			i64TailSample += iSamplesPerChunk;
+
+		lock.unlock();
+
 	}
 }
 
@@ -144,17 +166,13 @@ void AudioThread::Worker()
 
 		while (processed > 0)
 		{
-			ALuint buf = 0;
-			alSourceUnqueueBuffers(mSndSource, 1, &buf);
-
-			if ( FFMS_GetAudio(audioSource, pcmFloat.data(), i64CurrentSample, iSamplesPerChunk, &err) )
+			if ( FFMS_GetAudio(audioSource, pcmFloat.data(), i64TailSample, iSamplesPerChunk, &err) )
 			{
 				printf("FFMS audio error: %s\n", errmsg);
 
 				atomic_bRunning = false;
 				break;
 			}
-			i64CurrentSample += iSamplesPerChunk;
 
 			int iCalls = iSamplesPerChunk * iChannels;
 			for (int i = 0; i < iCalls; i+=4)
@@ -162,10 +180,20 @@ void AudioThread::Worker()
 				Float4ToInt16_SSE(&pcmFloat[i], &pcmInt16[i]);
 			}
 
-			int chunkBytes = iSamplesPerChunk * iChannels * 2;
-			alBufferData( buf, iChannels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcmInt16.data(), chunkBytes, iSampleRate);
+			// buffer unqueuing + buffer queuing + i64TailSample update is a single transaction
+			std::unique_lock<std::mutex> lock(_mutex);
 
-			alSourceQueueBuffers( mSndSource, 1, &buf);
+				ALuint buf = 0;
+				alSourceUnqueueBuffers(mSndSource, 1, &buf);
+
+				int chunkBytes = iSamplesPerChunk * iChannels * 2;
+				alBufferData( buf, iChannels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcmInt16.data(), chunkBytes, iSampleRate);
+
+				alSourceQueueBuffers( mSndSource, 1, &buf);
+
+				i64TailSample += iSamplesPerChunk;
+
+			lock.unlock();
 
 			processed--;
 		}
@@ -181,6 +209,7 @@ void AudioThread::Worker()
 			if (queued > 0)
 				alSourcePlay(mSndSource);
 		}
+
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}

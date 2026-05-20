@@ -250,7 +250,7 @@ void glTexturedQuad(float fX_bottom, float fY_bottom, float fWidth, float fHeigh
 
 void glTexturedQuadMesh(float fX_bottom, float fY_bottom, float fWidth, float fHeight, float fZ, int iHorSlices, int iVertSlices)
 {
-	for(int j=0; j<iVertSlices; j++)
+	for (int j=0; j<iVertSlices; j++)
 	{			
 		glBegin(GL_TRIANGLE_STRIP);
 
@@ -271,9 +271,9 @@ void glTexturedQuadMesh(float fX_bottom, float fY_bottom, float fWidth, float fH
 }
 
 void RenderTexturedQuad(unsigned int tex,
-	                   float fX_bottom, float fY_bottom,
-	                   float fWidth, float fHeight,
-	                   float fZ)
+	                    float fX_bottom, float fY_bottom,
+	                    float fWidth, float fHeight,
+	                    float fZ)
 {
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
@@ -296,12 +296,12 @@ void RenderTexturedQuadMesh(unsigned int tex,
 	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
 
-	glBindTexture(GL_TEXTURE_2D, tex);
+		glBindTexture(GL_TEXTURE_2D, tex);
 
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-	glColor3f(0.0, 1.0, 0.0);
-	glTexturedQuadMesh(fX_bottom, fY_bottom, fWidth, fHeight, fZ, iHorSlices, iVertSlices);
+		glColor3f(0.0, 1.0, 0.0);
+		glTexturedQuadMesh(fX_bottom, fY_bottom, fWidth, fHeight, fZ, iHorSlices, iVertSlices);
 
 	glDisable(GL_TEXTURE_2D);
 }

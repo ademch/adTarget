@@ -6,9 +6,7 @@
 #include <thread>
 #include <atomic>
 #include <vector>
-
-#include <list>
-#include <unordered_map>
+#include <map>
 #include <mutex>
 #include <condition_variable>
 
@@ -19,34 +17,13 @@ struct FrameItem
 	uint8_t* data;
 };
 
-struct CacheItem
-{
-	int index;
-	FrameItem* FrameItem;
-};
 
 class VideoCacheThread
 {
 public:
 
 	VideoCacheThread(FFMS_VideoSource* _videoSource, int _iBehind, int _iAhead);
-	~VideoCacheThread()
-	{
-		for (auto it = m_cache.begin(); it != m_cache.end(); )
-		{
-			delete [] it->FrameItem->data;
-
-			m_lookup.erase(it->index);
-			it = m_cache.erase(it);
-		}
-
-		for (auto it = liFreeFrames.begin(); it != liFreeFrames.end(); )
-		{
-			delete [] (*it)->data;
-			delete *it;
-		}
-
-	}
+	~VideoCacheThread();
 
 	void Start();
 	void Stop();
@@ -76,8 +53,7 @@ protected:
 
 	std::vector<FrameItem*> liFreeFrames;
 
-	std::list<CacheItem> m_cache;
-	std::unordered_map<int, std::list<CacheItem>::iterator> m_lookup;
+	std::map<int, FrameItem*> m_cache;
 
 private:
 

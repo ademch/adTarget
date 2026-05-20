@@ -6,6 +6,7 @@
 
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include "SoundAL.h"
 
 
@@ -24,6 +25,8 @@ public:
 	void Start();
 	void Stop();
 
+	float GetCurrentSecond();
+
 protected:
 
 	int iSampleRate;
@@ -32,7 +35,9 @@ protected:
 
 	int iSamplesPerChunk;
 
-	int64_t i64CurrentSample;
+	int64_t i64TailSample;
+
+	std::mutex _mutex;
 
 private:
 

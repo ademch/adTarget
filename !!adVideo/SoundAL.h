@@ -37,6 +37,7 @@ namespace SoundAL
 
 	extern ALCdevice*  pDevice;
 	extern ALCcontext* pContext;
-
 }
+
+
 #endif

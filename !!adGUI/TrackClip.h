@@ -10,7 +10,7 @@ enum ClipType  {
 	CLIP_VIDEO
 };
 
-enum StateClip_enum {
+enum StateClipDrag_enum {
 	STATE_CLIP_IDLE,
 	STATE_CLIP_DRAG_POS,
 	STATE_CLIP_DRAG_BEG,
@@ -42,13 +42,15 @@ public:
 	bool Hover(int x, int y) override;
 
 	static int iSelected;
+	int		 id;
 
+	// the track this ckip belongs to
 	int      iTrack;
+
 	ClipType type;
 	int      m_iLength;
 	int      m_iStartPos;
 
-	int		 id;
 
 protected:
 
@@ -66,7 +68,7 @@ protected:
 	float xImmBeg;
 	float xImmEnd;
 
-	StateClip_enum stateClip;
+	StateClipDrag_enum stateClip;
 };
 
 

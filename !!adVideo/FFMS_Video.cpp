@@ -2,6 +2,29 @@
 #include "FFMS_VIdeo.h"
 
 
+
+FFMS_Video::FFMS_Video()
+{
+	videoSource = NULL;
+	audioSource = NULL;
+}
+
+
+FFMS_Video::~FFMS_Video()
+{
+	videoCacheThread->Stop();
+	delete videoCacheThread;
+
+	audioThread->Stop();
+	delete audioThread;
+
+	if (audioSource)
+		FFMS_DestroyAudioSource(audioSource);
+	if (videoSource)
+		FFMS_DestroyVideoSource(videoSource);
+}
+
+
 void FFMS_Video::Initialize()
 {
 	printf("Initializing FFMS2...\n");
@@ -13,10 +36,6 @@ void FFMS_Video::Initialize()
 											(v >> 16) & 0xFF,
 											(v >> 8)  & 0xFF,
 											(v >> 0)  & 0xFF);
-
-	// Create source
-	alGenSources(1, &idSndSource);
-	SoundAL::SetSourceDefaultParams(idSndSource);
 }
 
 void FFMS_Video::LoadMPEG(const char* _filename)
@@ -34,14 +53,17 @@ void FFMS_Video::LoadMPEG(const char* _filename)
 	audioSource = LoadMPEG_CreateAudioSource(_filename, index);
 	LoadMPEG_PrepareAudioFormat(audioSource);
 
+	// Create sound source
+	alGenSources(1, &idSndSource);
+	SoundAL::SetSourceDefaultParams(idSndSource);
 
 	audioThread = new AudioThread(audioSource, idSndSource, 4);
 	audioThread->ParseSourceProperties();
 	audioThread->EnqueueInitialBuffers();
+	audioThread->Start();
 
-	videoCacheThread = new VideoCacheThread(videoSource, 10, 10);
+	videoCacheThread = new VideoCacheThread(videoSource, 20, 10);
 	videoCacheThread->Start();
-
 
 }
 

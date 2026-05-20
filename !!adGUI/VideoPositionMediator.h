@@ -59,9 +59,15 @@ public:
 			listener(origin, _fPos, _iDuration);
 	}
 
-	float Pos01() { return fPos0_1; }
+	float Pos01()
+	{
+		return fPos0_1;
+	}
 
-	int Duration()  { return iDuration; }
+	int Duration()
+	{
+		return iDuration;
+	}
 
 	void subscribeForPos(std::function<void(void*, float)> cb)
 	{

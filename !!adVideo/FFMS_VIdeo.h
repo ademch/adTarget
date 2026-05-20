@@ -13,27 +13,16 @@ class FFMS_Video
 {
 public:
 
-	FFMS_Video()
-	{
-		videoSource = NULL;
-		audioSource = NULL;
-	}
-	~FFMS_Video()
-	{
-		videoCacheThread->Stop();
-		delete videoCacheThread;
+	FFMS_Video();
+	~FFMS_Video();
 
-		audioThread->Stop();
-		delete audioThread;
-
-		if (audioSource) FFMS_DestroyAudioSource(audioSource);
-		if (videoSource) FFMS_DestroyVideoSource(videoSource);
-	}
-
-	void Initialize();
+	static void Initialize();
 
 	void LoadMPEG(const char* _filename);
 	
+	AudioThread*      audioThread;
+	VideoCacheThread* videoCacheThread;
+
 protected:
 
 	FFMS_VideoSource* videoSource;
@@ -47,12 +36,8 @@ protected:
 	void LoadMPEG_PrepareVideoFormat(FFMS_VideoSource* videosource);
 	void LoadMPEG_PrepareAudioFormat(FFMS_AudioSource* audiosource);
 
-protected:
-
 	ALuint idSndSource;
 
-	AudioThread*      audioThread;
-	VideoCacheThread* videoCacheThread;
 };
 
 #endif
