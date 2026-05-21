@@ -45,27 +45,33 @@ void TrackClip::Draw()
 	float fPPS = float(m_iWidth)/PositionMediator::Get()->Duration();
 
 	// draw control background
-	glColor3f(0.69, 0.69, 0.069);
+	if (iSelected == id)
+		glColor3f(0.92, 0.8, 0.0);
+	else
+		glColor3f(0.46, 0.4, 0.0);
 	glQuad(posx + m_iStartPos*fPPS + xImmTransl + xImmBeg, posy, m_iLength*fPPS - xImmBeg + xImmEnd, m_iHeight, 10);
 
-	if (iSelected == id)
-	{
-		glColor3f(0.92, 0.8, 0.0);
+	//if (iSelected == id)
+	//{
+	//	glColor3f(0.92, 0.8, 0.0);
 		float fStart = posx + m_iStartPos*fPPS + xImmTransl + xImmBeg;
 
-		glLineWidth(1.0);
-		glLine(fStart,										posy,
-			   fStart+ m_iLength*fPPS - xImmBeg + xImmEnd,  posy, 12);
-		glLine(fStart,                                      posy + m_iHeight-1,
-			   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight-1, 12);
+	//	glLineWidth(1.0);
+	//	glLine(fStart,										posy,
+	//		   fStart+ m_iLength*fPPS - xImmBeg + xImmEnd,  posy, 12);
+	//	glLine(fStart,                                      posy + m_iHeight-1,
+	//		   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight-1, 12);
 
-		if (bFocused) glLineWidth(3.0);
-
-		glLine(fStart,                  posy,
-			   fStart,                  posy + m_iHeight, 12);
-		glLine(fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy,
-			   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight, 12);
-	}
+		if (bFocused)
+		{
+			glColor3f(0.69, 0.0, 0.0);
+			glLineWidth(3.0);
+			glLine(fStart,										posy,
+				   fStart,										posy + m_iHeight, 12);
+			glLine(fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy,
+				   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight, 12);
+		}
+	//}
 
 }
 
@@ -125,9 +131,7 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			iBeginDragX = x;
 			iBeginDragY = y;
 
-			//stateClip = STATE_CLIP_DRAG_POS;
-
-			OnClipChange(windowTool);
+			stateClip = STATE_CLIP_DRAG_POS;
 
 			iSelected = id;
 
@@ -156,6 +160,15 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			iBeginDragY = y;
 
 			stateClip = STATE_CLIP_DRAG_TAIL;
+
+			iSelected = id;
+
+			return true;
+		}
+		else if ((ptPeep.X > posx + m_iStartPos*fPPS) && (ptPeep.X < posx + (m_iStartPos + m_iLength)*fPPS) &&
+				 (ptPeep.Y > posy)                    && (ptPeep.Y < posy + m_iHeight))
+		{
+			OnClipChange(windowTool);
 
 			iSelected = id;
 

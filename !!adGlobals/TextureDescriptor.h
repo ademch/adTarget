@@ -1,9 +1,9 @@
-
 #ifndef TEXTURE_DESCRIPTOR_H
 #define TEXTURE_DESCRIPTOR_H
 
 #include <map>
 #include <string>
+
 
 class TextureDescriptor
 {
@@ -56,12 +56,10 @@ public:
 
 protected:
 
-
 };
 
 TextureDescriptor* LoadTexture(int iWidth, int iHeight, unsigned char *data);
 TextureDescriptor* LoadTextureWinAPI(const char* filename);
-
 
 
 #endif

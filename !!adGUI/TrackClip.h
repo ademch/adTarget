@@ -58,7 +58,6 @@ public:
 
 	OpenGLSubWindowWithGUI*    windowTool;
 
-
 	std::function<bool()>      OnClick;
 	std::function<bool(float)> OnDrawValue;
 	std::function<bool()>      OnClickDrag;

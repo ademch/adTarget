@@ -6,5 +6,6 @@
 char* getProjectDir();
 char* FullPathToFile(const char* fileName);
 char* GetFileExtension(const char* fileName);
+char* GetFileName(const char* fileName);
 
 #endif

@@ -27,7 +27,7 @@ TimelineTrack::TimelineTrack(int _id, int px, int py, int _width, int _height):
 	bMouseButtonPressed = false;
 
 	bFocused = false;
-	vColor_focused   = Vecc3(0.069, 0.35, 0.069);
+	vColor_focused   = Vecc3(0.069, 0.4, 0.069);
 	vColor_defocused = Vecc3(0.046, 0.2, 0.046);
 }
 

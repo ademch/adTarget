@@ -7,7 +7,7 @@
 
 extern GLFONT font;
 
-// 3D scene setup for children
+// 3D scene setup for children:
 // 1. setup viewport
 // 2. Draw frame
 // 3. Setup modelview and projection matrices for 3D objects
@@ -51,7 +51,7 @@ GLfloat m[4][4];
 				glEnd();
 
 				glFontBegin(&font);
-					glFontTextOut(m_strCaption, -m_iWidth/2.0, -m_iHeight/2.0, 0, 7);
+					glFontTextOut(m_strCaption, -m_iWidth/2.0 + 5, -m_iHeight/2.0 + 5, 0, 7);
 				glFontEnd();
 
 				glDisable(GL_TEXTURE_2D);

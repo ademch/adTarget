@@ -83,3 +83,14 @@ char* GetFileExtension(const char* fileName)
 
 	return strcpy(strFileExt, extPos);
 }
+
+char* GetFileName(const char* fileName)
+{
+	static char strFileName[512];
+
+	const char* extPos = strrchr(fileName, '\\');
+	if (extPos == NULL) return strcpy(strFileName, fileName);
+
+	return strcpy(strFileName, extPos+1);
+}
+
