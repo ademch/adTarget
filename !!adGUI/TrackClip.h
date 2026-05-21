@@ -3,6 +3,7 @@
 
 #include "../!!adGlobals/vector_math.h"
 #include "gui_elementResizable.h"
+#include "SubWindowWithGUI.h"
 #include <functional>
 
 enum ClipType  {
@@ -10,20 +11,24 @@ enum ClipType  {
 	CLIP_VIDEO
 };
 
+//class ClipMedia
+//{
+//public:
+//	ClipType type;
+//
+//	void* window;
+//};
+
 enum StateClipDrag_enum {
 	STATE_CLIP_IDLE,
 	STATE_CLIP_DRAG_POS,
-	STATE_CLIP_DRAG_BEG,
-	STATE_CLIP_DRAG_END
+	STATE_CLIP_DRAG_HEAD,
+	STATE_CLIP_DRAG_TAIL
 };
 
 class TrackClip : public GUI_ElementResizable
 {
 public:
-
-	std::function<bool()>      OnClick;
-	std::function<bool(float)> OnDrawValue;
-	std::function<bool()>      OnClickDrag;
 
 	TrackClip(int _id, int px, int py, int _width, int _height);
 
@@ -51,6 +56,14 @@ public:
 	int      m_iLength;
 	int      m_iStartPos;
 
+	OpenGLSubWindowWithGUI*    windowTool;
+
+
+	std::function<bool()>      OnClick;
+	std::function<bool(float)> OnDrawValue;
+	std::function<bool()>      OnClickDrag;
+
+	std::function<void(OpenGLSubWindowWithGUI*)> OnClipChange;
 
 protected:
 

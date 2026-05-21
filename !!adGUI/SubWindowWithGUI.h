@@ -7,6 +7,7 @@
 
 #include <vector>
 
+
 class OpenGLSubWindowWithGUI : public OpenGLSubWindow
 {
 public:
@@ -44,6 +45,7 @@ protected:
 
 	std::vector<GUI_Element*> liGUI_Elements;
 
+	virtual void PopulateGUI() = 0;
 	virtual void RenderGUI();
 	void ReshapeGUI(int iWidth, int iHeight);
 

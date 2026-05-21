@@ -1,14 +1,15 @@
-
 #ifndef OPENGLSUBWINDOW_H
 #define OPENGLSUBWINDOW_H
 
 #include "../!!adGlobals/vector_math.h"
 #include "../!!adGlobals/trackball.h"
 
+
 #define ROTATION_ALLOWED_FALSE	0x01
 #define DRAG_ALLOWED_FALSE		0x02
 #define ZOOM_ALLOWED_FALSE		0x04
 #define GUI_DECORATION_FALSE	0x08
+
 
 class OpenGLSubWindow
 {
@@ -17,6 +18,8 @@ public:
 
 	Vec3 clrBackground;
 	Vec3 clrFrame;
+
+	bool bActive;
 
 	OpenGLSubWindow(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
 	{
@@ -30,6 +33,8 @@ public:
 
 		clrBackground = Vecc3(0.1f, 0.1f, 0.1f);
 		clrFrame      = Vecc3(0.9f, 0.9f, 0.9f);
+
+		bActive = true;
 
 		bMouseSceneRotationInProgress = false;
 
@@ -116,11 +121,11 @@ protected:
 
 private:
 	float lastquat[4];
-	bool bMouseSceneRotationInProgress;			//used for quaternion camera rotation
-	int  iBeginRotateX, iBeginRotateY;
+	bool  bMouseSceneRotationInProgress;			//used for quaternion camera rotation
+	int   iBeginRotateX, iBeginRotateY;
 
-	bool bMouseSceneDragInProgress;
-	int  iBeginDragX, iBeginDragY;
+	bool  bMouseSceneDragInProgress;
+	int   iBeginDragX, iBeginDragY;
 };
 
 

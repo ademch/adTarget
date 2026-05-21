@@ -31,6 +31,8 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
 	xImmEnd    = 0.0f;
 
 	stateClip = STATE_CLIP_IDLE;
+
+	windowTool = NULL;
 }
 
 
@@ -123,7 +125,9 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			iBeginDragX = x;
 			iBeginDragY = y;
 
-			stateClip = STATE_CLIP_DRAG_POS;
+			//stateClip = STATE_CLIP_DRAG_POS;
+
+			OnClipChange(windowTool);
 
 			iSelected = id;
 
@@ -139,7 +143,7 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			iBeginDragX = x;
 			iBeginDragY = y;
 
-			stateClip = STATE_CLIP_DRAG_BEG;
+			stateClip = STATE_CLIP_DRAG_HEAD;
 
 			iSelected = id;
 
@@ -151,7 +155,7 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			iBeginDragX = x;
 			iBeginDragY = y;
 
-			stateClip = STATE_CLIP_DRAG_END;
+			stateClip = STATE_CLIP_DRAG_TAIL;
 
 			iSelected = id;
 
@@ -172,7 +176,7 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 		return true;
 	}
 
-	if (stateClip == STATE_CLIP_DRAG_BEG)
+	if (stateClip == STATE_CLIP_DRAG_HEAD)
 	{
 		m_iStartPos += round(xImmBeg/fPPS);
 		m_iLength   -= round(xImmBeg/fPPS);
@@ -183,7 +187,7 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 
 		return true;
 	}
-	if (stateClip == STATE_CLIP_DRAG_END)
+	if (stateClip == STATE_CLIP_DRAG_TAIL)
 	{
 		m_iLength += round(xImmEnd/fPPS);
 		xImmEnd = 0.0f;
@@ -237,7 +241,7 @@ bool TrackClip::Drag(int x, int y)
 
 		return true;
 	}
-	else if (stateClip == STATE_CLIP_DRAG_BEG)
+	else if (stateClip == STATE_CLIP_DRAG_HEAD)
 	{
 
 		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
@@ -265,7 +269,7 @@ bool TrackClip::Drag(int x, int y)
 
 		return true;
 	}
-	else if (stateClip == STATE_CLIP_DRAG_END)
+	else if (stateClip == STATE_CLIP_DRAG_TAIL)
 	{
 
 		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
