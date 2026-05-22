@@ -73,7 +73,7 @@ void VideoSlider::Draw()
 
 	float fHighlight = 1.0f;
 	if (bFocused && bEnabled)
-		fHighlight = 1.15f;
+		fHighlight = 1.25f;
 
 	glColor3f(0.1*fHighlight, 0.5*fHighlight, 0.1*fHighlight);
 

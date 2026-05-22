@@ -102,6 +102,10 @@ PFNGLGENERATEMIPMAPPROC                        glGenerateMipmapEXT;
 PFNGLGENBUFFERSPROC                            glGenBuffers;
 PFNGLGETUNIFORMBLOCKINDEXPROC                  glGetUniformBlockIndex;
 
+PFNWGLCREATECONTEXTATTRIBSARBPROC			   wglCreateContextAttribsARB;
+PFNGLDEBUGMESSAGECALLBACKARBPROC               glDebugMessageCallback;
+PFNGLDEBUGMESSAGECONTROLARBPROC                glDebugMessageControl;
+
 
 bool isExtensionSupported(const char *extension)
 {
@@ -114,7 +118,8 @@ bool isExtensionSupported(const char *extension)
 
 	if (where || *extension == '\0') return 0;
 
-	extensions=glGetString(GL_EXTENSIONS);
+	extensions = glGetString(GL_EXTENSIONS);
+	//printf("%s\n", extensions);
 
 	/* It takes a bit of care to be fool-proof about parsing the
 	OpenGL extensions string. Don't be fooled by sub-strings, etc. */
@@ -248,6 +253,9 @@ void linkExtensions()
 	glFramebufferRenderbufferEXT	= (PFNGLFRAMEBUFFERRENDERBUFFERPROC)	wglGetProcAddress("glFramebufferRenderbufferEXT");
 	glGetFramebufferAttachmentParameterivEXT= (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)   wglGetProcAddress("glGetFramebufferAttachmentParameterivEXT");
 	glGenerateMipmapEXT				= (PFNGLGENERATEMIPMAPPROC)	            wglGetProcAddress("glGenerateMipmapEXT");
+
+	glDebugMessageCallback          = (PFNGLDEBUGMESSAGECALLBACKARBPROC)    wglGetProcAddress("glDebugMessageCallback");
+	glDebugMessageControl           = (PFNGLDEBUGMESSAGECONTROLARBPROC)     wglGetProcAddress("glDebugMessageControl");
 }
 
 
@@ -357,5 +365,15 @@ bool CheckExtensions()
 		return false;
 	}
 
+	printf("Is GL_ARB_debug_output...");
+	if (isExtensionSupported("GL_ARB_debug_output"))
+		printf("yes\n");
+	else
+	{
+		printf("no\n");		//by default FALSE
+		return false;
+	}
+
 return true;
 }
+
