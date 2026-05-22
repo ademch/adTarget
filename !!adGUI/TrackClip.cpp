@@ -32,7 +32,8 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
 
 	stateClip = STATE_CLIP_IDLE;
 
-	windowTool = NULL;
+	windowTool      = NULL;
+	extern_textureIcon = NULL;
 }
 
 
@@ -44,34 +45,43 @@ void TrackClip::Draw()
 	// Pixels per Second
 	float fPPS = float(m_iWidth)/PositionMediator::Get()->Duration();
 
-	// draw control background
+	float fStartX = posx + m_iStartPos*fPPS + xImmTransl + xImmBeg;
+
+	// draw control rectangle
 	if (iSelected == id)
 		glColor3f(0.92, 0.8, 0.0);
 	else
 		glColor3f(0.46, 0.4, 0.0);
-	glQuad(posx + m_iStartPos*fPPS + xImmTransl + xImmBeg, posy, m_iLength*fPPS - xImmBeg + xImmEnd, m_iHeight, 10);
+	glQuad(fStartX, posy, m_iLength*fPPS - xImmBeg + xImmEnd, m_iHeight, 10);
 
 	//if (iSelected == id)
 	//{
 	//	glColor3f(0.92, 0.8, 0.0);
-		float fStart = posx + m_iStartPos*fPPS + xImmTransl + xImmBeg;
 
 	//	glLineWidth(1.0);
-	//	glLine(fStart,										posy,
-	//		   fStart+ m_iLength*fPPS - xImmBeg + xImmEnd,  posy, 12);
-	//	glLine(fStart,                                      posy + m_iHeight-1,
-	//		   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight-1, 12);
+	//	glLine(fStartX,										posy,
+	//		   fStartX+ m_iLength*fPPS - xImmBeg + xImmEnd,  posy, 12);
+	//	glLine(fStartX,                                      posy + m_iHeight-1,
+	//		   fStartX + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight-1, 12);
 
 		if (bFocused)
 		{
 			glColor3f(0.69, 0.0, 0.0);
 			glLineWidth(3.0);
-			glLine(fStart,										posy,
-				   fStart,										posy + m_iHeight, 12);
-			glLine(fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy,
-				   fStart + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight, 12);
+			glLine(fStartX,										posy,
+				   fStartX,										posy + m_iHeight, 12);
+			glLine(fStartX + m_iLength*fPPS - xImmBeg + xImmEnd, posy,
+				   fStartX + m_iLength*fPPS - xImmBeg + xImmEnd, posy + m_iHeight, 12);
 		}
 	//}
+
+	float fIconAspect = float(extern_textureIcon->m_width)/float(extern_textureIcon->m_height);
+	RenderTexturedQuad(extern_textureIcon->m_uiTextureID,				// id
+					   fStartX + 1*matrSliderNonInverted.m[0][0],		// x
+					   posy + 1,										// y
+					   24*fIconAspect*matrSliderNonInverted.m[0][0],	// width
+					   24,												// height
+					   11 );											// z
 
 }
 
@@ -133,6 +143,8 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 
 			stateClip = STATE_CLIP_DRAG_POS;
 
+			OnClipChange(windowTool);
+
 			iSelected = id;
 
 			return true;
@@ -148,6 +160,8 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			iBeginDragY = y;
 
 			stateClip = STATE_CLIP_DRAG_HEAD;
+			
+			OnClipChange(windowTool);
 
 			iSelected = id;
 
@@ -160,6 +174,8 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			iBeginDragY = y;
 
 			stateClip = STATE_CLIP_DRAG_TAIL;
+
+			OnClipChange(windowTool);
 
 			iSelected = id;
 

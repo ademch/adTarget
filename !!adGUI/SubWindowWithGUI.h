@@ -45,7 +45,7 @@ protected:
 
 	std::vector<GUI_Element*> liGUI_Elements;
 
-	virtual void PopulateGUI() = 0;
+	virtual void PopulateGUI() {}
 	virtual void RenderGUI();
 	void ReshapeGUI(int iWidth, int iHeight);
 

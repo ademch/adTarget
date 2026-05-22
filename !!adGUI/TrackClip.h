@@ -3,6 +3,7 @@
 
 #include "../!!adGlobals/vector_math.h"
 #include "gui_elementResizable.h"
+#include "../!!adGlobals/TextureDescriptor.h"
 #include "SubWindowWithGUI.h"
 #include <functional>
 
@@ -57,6 +58,7 @@ public:
 	int      m_iStartPos;
 
 	OpenGLSubWindowWithGUI*    windowTool;
+	TextureDescriptor*         extern_textureIcon;
 
 	std::function<bool()>      OnClick;
 	std::function<bool(float)> OnDrawValue;

@@ -20,6 +20,8 @@ public:
 	Vec3 clrFrame;
 
 	bool bActive;
+	// lower values result in higher visibility (final zBuffer [0->1])
+	int zOrder;
 
 	OpenGLSubWindow(int iBottomLeftX, int iBottomLeftY, int iWidth, int iHeight)
 	{
@@ -35,6 +37,8 @@ public:
 		clrFrame      = Vecc3(0.9f, 0.9f, 0.9f);
 
 		bActive = true;
+
+		zOrder = 0;
 
 		bMouseSceneRotationInProgress = false;
 

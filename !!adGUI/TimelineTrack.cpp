@@ -90,8 +90,9 @@ bool TimelineTrack::Drag(int x, int y)
 		{
 			if (dragNdrop_Clip->iTrack != id)
 			{
-				dragNdrop_Clip->iTrack = id;
-				iSelected = id;
+				dragNdrop_Clip->iTrack = id;				// update clip-track relation
+				dragNdrop_Clip->windowTool->zOrder = id;	// update related window zOrder
+				iSelected = id;								// update which track is selected
 
 				dragNdrop_Clip->iHPosShift = iHPosShift;
 				dragNdrop_Clip->iVPosShift = iVPosShift + g_iClipPadding;
