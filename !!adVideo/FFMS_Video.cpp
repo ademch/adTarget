@@ -38,6 +38,7 @@ void FFMS_Video::Initialize()
 											(v >> 0)  & 0xFF);
 }
 
+
 void FFMS_Video::LoadMPEG(const char* _filename)
 {
 	printf("Loading %s...\n", _filename);

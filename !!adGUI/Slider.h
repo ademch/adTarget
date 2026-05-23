@@ -88,7 +88,7 @@ public:
 		if (bDrawComment)
 		{
 			float fValue = *ptr_fVal_cur;
-			if (OnDrawValue != NULL)
+			if (OnDrawValue)
 				fValue = OnDrawValue(fValue);
 
 			if (SlType == SL_FLOAT)
@@ -114,11 +114,11 @@ public:
 		// Render min max values
 		glFontBegin(&font);
 			float fValueMin = m_fVal_min;
-			if (OnDrawValue != NULL)
+			if (OnDrawValue)
 				fValueMin = OnDrawValue(fValueMin);
 
 			float fValueMax = m_fVal_max;
-			if (OnDrawValue != NULL)
+			if (OnDrawValue)
 				fValueMax = OnDrawValue(fValueMax);
 
 			if (SlType == SL_INT) {
@@ -207,7 +207,7 @@ public:
 		
 		if (bMouseButtonPressed)
 		{
-			if (OnClick != NULL) OnClick();
+			if (OnClick) OnClick();
 			bMouseButtonPressed = false;
 
 			return true;
@@ -242,7 +242,7 @@ public:
 				*ptr_fVal_cur = (*ptr_fVal_cur) - fRemainder;
 			}
 
-			if (OnClickDrag != NULL) OnClickDrag();
+			if (OnClickDrag) OnClickDrag();
 
 			return true;
 		}
@@ -281,7 +281,7 @@ public:
 		if (*ptr_fVal_cur < m_fVal_min )
 			*ptr_fVal_cur = m_fVal_min;
 
-		if (OnClick != NULL) OnClick();
+		if (OnClick) OnClick();
 
 		return true;
 	}
