@@ -35,10 +35,10 @@ public:
 
 	void Resize(int iWidth, int iHeight) override;
 
-	void SetAttr(int _iStart, int _iLength)
+	void SetAttr(int _iStartPosFrame, int _iLengthFrames)
 	{
-		m_iStartPos = _iStart;
-		m_iLength   = _iLength;
+		m_iStartPosFrame = _iStartPosFrame;
+		m_iLengthFrames  = _iLengthFrames;
 	}
 
 	void Draw() override;
@@ -50,12 +50,12 @@ public:
 	static int iSelected;
 	int		 id;
 
-	// the track this ckip belongs to
+	// the track this clip belongs to
 	int      iTrack;
 
 	ClipType type;
-	int      m_iLength;
-	int      m_iStartPos;
+	int      m_iLengthFrames;
+	int      m_iStartPosFrame;
 
 	OpenGLSubWindowWithGUI*    windowTool;
 	TextureDescriptor*         extern_textureIcon;
@@ -65,6 +65,10 @@ public:
 	std::function<bool()>      OnClickDrag;
 
 	std::function<void(OpenGLSubWindowWithGUI*)> OnClipChange;
+
+	static std::vector<TrackClip*> liClips;
+
+	float ClipsFitsIntoGapOnTrackImmediate(int iTrack);
 
 protected:
 
@@ -83,6 +87,12 @@ protected:
 	float xImmEnd;
 
 	StateClipDrag_enum stateClip;
+
+	float fPPF;
+
+	float FindLastClipOnTrackBefore_TailPx(int iTrack, int pix);
+	float FindFirstClipOnTrackAfter_HeadPx(int iTrack, int pix);
+
 };
 
 

@@ -9,16 +9,17 @@
 class Label: public GUI_Element
 {
 public:
-   std::string _text;
-   
-   Vec4 vColor;
 
    Label(std::string caption, int px, int py, float size);
    ~Label();
 
+   std::string _text;
+
+   Vec4 vColor;
+
    void UpdateCaption(std::string caption);
 
-   void Draw();
+   void Draw() override;
 
 protected:
 

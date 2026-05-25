@@ -3,7 +3,7 @@
 
 class PositionMediator
 {
-	unsigned int iDuration;
+	unsigned int iDurationFrames;
 
 	float fPos0_1;
 	float fPosSelectionStart;
@@ -14,7 +14,7 @@ class PositionMediator
 
 	PositionMediator()
 	{
-		iDuration   = 0;
+		iDurationFrames   = 0;
 
 		fPos0_1 = 0;
 		fPosSelectionStart = 0;
@@ -29,7 +29,7 @@ public:
 		return &mediator;
 	}
 
-	void SetPos(void* origin, float _fPos)
+	void SetPos0_1(void* origin, float _fPos)
 	{
 		if ( fabs(_fPos - fPos0_1) < 1e-6)
 			return;
@@ -47,16 +47,16 @@ public:
 			return;
 
 		//for (auto& listener : listenersPos)
-		//	listener(origin, _fPos);
+		//	listener(origin, _fPos0_1);
 	}
 
-	void Init(void* origin, float _fPos, unsigned int _iDuration)
+	void Init(void* origin, float _fPos0_1, unsigned int _iDurationFrames)
 	{
-		fPos0_1   = _fPos;
-		iDuration = _iDuration;
+		fPos0_1 = _fPos0_1;
+		iDurationFrames = _iDurationFrames;
 
 		for (auto& listener : listenersPosInit)
-			listener(origin, _fPos, _iDuration);
+			listener(origin, _fPos0_1, _iDurationFrames);
 	}
 
 	float Pos01()
@@ -64,9 +64,9 @@ public:
 		return fPos0_1;
 	}
 
-	int Duration()
+	int DurationFrames()
 	{
-		return iDuration;
+		return iDurationFrames;
 	}
 
 	void subscribeForPos(std::function<void(void*, float)> cb)

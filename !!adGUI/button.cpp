@@ -16,10 +16,12 @@ Button::Button(std::string caption, int px, int py, int width, float size)
 	iVPosShift = py;
 
 	glFontGetLength(caption.c_str(),&font, m_TextWidth, m_Height, size);
+	
+	m_Height += 2;
+	m_Width    = max(width, m_TextWidth);
 
 	m_TextSize = size;
 	_text      = caption;
-	m_Width    = width;
 
 	strHint = "";
 
@@ -46,7 +48,11 @@ void Button::Draw()
 		glColor4fv(&vColor_defocused.X);
 
 	glFontBegin(&font);
-		glFontTextOut(_text.c_str(), posx+ (m_Width-m_TextWidth)/2.0 + iGUIpushed,posy - iGUIpushed, 4,m_TextSize);
+		glFontTextOut(	_text.c_str(),
+						posx + (m_Width-m_TextWidth)/2.0 + iGUIpushed,
+						posy - iGUIpushed + 1,
+						4,
+						m_TextSize);
 	glFontEnd();
 
 	glDisable(GL_TEXTURE_2D);

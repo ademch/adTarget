@@ -8,13 +8,11 @@
 class OnOffFlipSwitch : public GUI_Element
 {
 public:
-   float _text_width;
-   float _text_height;
-
    bool bON;
    bool bPushButton;
 
    std::string _text;
+   std::string strHint;
    
    Vec4 vColor_focused;
    Vec4 vColor_defocused;
@@ -23,16 +21,19 @@ public:
    ~OnOffFlipSwitch() {}
 
    void Draw();
-   virtual bool Hover(int x, int y);
-   virtual bool Clicked(int button, int state, int x, int y);
+   bool Hover(int x, int y) override;
+   bool Clicked(int button, int state, int x, int y) override;
 
    std::function<bool(bool bON_Request)> OnPreClick;
 
    void SetOnOff(bool _bOn, bool bCallCallback);
 
 protected:
+	float _text_width;
+	float m_Height;
+
 	float _size;
-	int   m_iBox_width;
+	int   m_Width;
 	int   m_iBox_sep;
 
 	bool  bFocused;

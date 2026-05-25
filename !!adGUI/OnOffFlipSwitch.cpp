@@ -3,6 +3,7 @@
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "glfont.h"
+#include "../!!adGlobals/globalToolTip.h"
 
 extern GLFONT font;
 
@@ -15,12 +16,13 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 	iHPosShift = px;
 	iVPosShift = py;
 
-	glFontGetLength(strCaption.c_str(), &font, _text_width, _text_height, scale);
+	glFontGetLength(strCaption.c_str(), &font, _text_width, m_Height, scale);
 
 	_size = scale;
 	_text = strCaption;
 
-	m_iBox_width = 40;
+	// box width
+	m_Width      = 40;
 	m_iBox_sep   = 20;
 
 	bON = false;
@@ -38,9 +40,14 @@ OnOffFlipSwitch::OnOffFlipSwitch(std::string strCaption, int px, int py, float s
 
 bool OnOffFlipSwitch::Hover(int x, int y)
 {
-	if ((x < posx + m_iBox_width) && (x > posx) &&
-		(y < posy + _text_height) && (y > posy))
+	if ((x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
 	{
+		
+		#ifdef _ENABLE_TOOLTIP
+			ToolTip::Get()->Schedule(strHint.c_str());
+		#endif
+
 		bFocused = bEnabled;
 		return true;
 	}
@@ -62,9 +69,9 @@ void OnOffFlipSwitch::Draw()
 
 	glEnable(GL_TEXTURE_2D);
 		glFontBegin(&font);
-			glFontTextOut("I", posx + m_iBox_width + 5, posy, 4, _size);
-			glFontTextOut("0", posx - 14,               posy, 4, _size);
-			glFontTextOut(_text.c_str(), posx + m_iBox_width + m_iBox_sep, posy, 4, _size);
+			glFontTextOut("I", posx + m_Width + 5, posy, 4, _size);
+			glFontTextOut("0", posx - 14,          posy, 4, _size);
+			glFontTextOut(_text.c_str(), posx + m_Width + m_iBox_sep, posy, 4, _size);
 		glFontEnd();
 	glDisable(GL_TEXTURE_2D);
 
@@ -72,35 +79,35 @@ void OnOffFlipSwitch::Draw()
 
 	// draw frame
 	glLineWidth(1);
-	glWireRectangle(posx, posy, m_iBox_width, _text_height*fBoxHeightScale, 4);
+	glWireRectangle(posx, posy, m_Width, m_Height*fBoxHeightScale, 4);
 
 
 	if (bON)
 	{
-		glQuad( posx + 3 + m_iBox_width/2.0 + iGUIpushed,
+		glQuad( posx + 3 + m_Width/2.0 + iGUIpushed,
 			    posy + 3 - iGUIpushed,
-			    m_iBox_width/2.0 - 7,
-			    _text_height - 6,
+			    m_Width/2.0 - 7,
+			    m_Height - 6,
 				4 );
 
 		glColor3f(0,0.3,0);
 		glBegin(GL_LINES);
-			glVertex3f(posx + (3 + m_iBox_width*0.5 + m_iBox_width - 4 )/2.0 + iGUIpushed, posy + 3 - iGUIpushed,                5);
-			glVertex3f(posx + (3 + m_iBox_width*0.5 + m_iBox_width - 4) /2.0 + iGUIpushed, posy + _text_height - 3 - iGUIpushed, 5);
+			glVertex3f(posx + (3 + m_Width*0.5 + m_Width - 4 )/2.0 + iGUIpushed, posy + 3 - iGUIpushed,                5);
+			glVertex3f(posx + (3 + m_Width*0.5 + m_Width - 4) /2.0 + iGUIpushed, posy + m_Height - 3 - iGUIpushed, 5);
 		glEnd();
 	}
 	else
 	{
 		glQuad(	posx + 3 + iGUIpushed, 
 			    posy + 3 - iGUIpushed,
-			    m_iBox_width/2.0 - 7,
-			    _text_height - 6,
+			    m_Width/2.0 - 7,
+			    m_Height - 6,
 			    4 );
 
 		glColor3f(0, 0.3, 0);
 		glBegin(GL_LINES);
-			glVertex3f(posx + (3 + m_iBox_width*0.5 - 4) / 2.0 + iGUIpushed, posy + 3 - iGUIpushed, 5);
-			glVertex3f(posx + (3 + m_iBox_width*0.5 - 4) / 2.0 + iGUIpushed, posy + _text_height - 3 - iGUIpushed, 5);
+			glVertex3f(posx + (3 + m_Width*0.5 - 4) / 2.0 + iGUIpushed, posy + 3 - iGUIpushed, 5);
+			glVertex3f(posx + (3 + m_Width*0.5 - 4) / 2.0 + iGUIpushed, posy + m_Height - 3 - iGUIpushed, 5);
 		glEnd();
 	}
 }
@@ -113,8 +120,8 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 	if (!bEnabled) return false;
 
 	if ((state == GLUT_DOWN) &&
-		(x < posx + m_iBox_width) && (x > posx) &&
-		(y < posy + _text_height) && (y > posy))
+		(x < posx + m_Width)  && (x > posx) &&
+		(y < posy + m_Height) && (y > posy))
 	{
 		iGUIpushed = 1;
 
@@ -135,8 +142,8 @@ bool OnOffFlipSwitch::Clicked(int button, int state, int x, int y)
 		if (iGUIpushed)
 		{
 			// release inside or anywhere for pushbutton behaviour
-			if (((x < posx + m_iBox_width) && (x > posx) &&
-				 (y < posy + _text_height) && (y > posy)) ||
+			if (((x < posx + m_Width) && (x > posx) &&
+				 (y < posy + m_Height) && (y > posy)) ||
 				 bPushButton )
 			{
 				// on/off is triggered on mouse up

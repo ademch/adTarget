@@ -11,10 +11,6 @@
 class Button : public GUI_Element
 {
 public:
-   float m_TextWidth;
-   float m_Height;
-   int   m_Width;
-
    bool bFocused;
 
    std::string _text;
@@ -33,6 +29,10 @@ public:
    virtual bool Clicked(int button, int state, int x, int y);
 
 protected:
+	float m_TextWidth;
+	float m_Height;
+	int   m_Width;
+
 	float m_TextSize;
 
 	int iGUIpushed;

@@ -6,7 +6,6 @@
 #include "../!!adGlobals/vector_math.h"
 #include "TrackClip.h"
 
-
 extern const int g_iClipPadding;
 extern TrackClip* dragNdrop_Clip;
 
@@ -90,6 +89,8 @@ bool TimelineTrack::Drag(int x, int y)
 		{
 			if (dragNdrop_Clip->iTrack != id)
 			{
+				if (!dragNdrop_Clip->ClipsFitsIntoGapOnTrackImmediate(id)) return true;
+
 				dragNdrop_Clip->iTrack = id;				// update clip-track relation
 				dragNdrop_Clip->windowTool->zOrder = id;	// update related window zOrder
 				iSelected = id;								// update which track is selected
@@ -100,6 +101,8 @@ bool TimelineTrack::Drag(int x, int y)
 				int px, py;
 				dragNdrop_Clip->GetPosition(px, py);
 				dragNdrop_Clip->Reposition(px, posy + g_iClipPadding);
+
+				return true;
 			}
 
 			return false;
