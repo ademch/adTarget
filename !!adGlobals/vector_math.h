@@ -124,14 +124,14 @@ VecUB3 VeccUB3(unsigned char R=0,unsigned char G=0,unsigned char B=0);//construc
 Vec3 Vecc3(float x=0.0,float y=0.0,float z=0.0);			    //constructor
 Vec3 Vecc3(Vec2 v, float z = 0.0);								//constructor
 Vec4 Vecc4(float x=0.0,float y=0.0,float z=0.0,float w=1.0);	//constructor
-Vec4 Vecc4(Vec3 v3=Vecc3(0.0,0.0,0.0), float w=1.0);			//constructor
+Vec4 Vecc4(const Vec3& v3=Vecc3(0.0,0.0,0.0), float w=1.0);		//constructor
 Vec4 Vecp4(float a[4]);											//pointer caster
 
 // double precision
-Vec2  Vecc2(Vec3 vec);
-Vec2  Vecc2(Vec3d vec);
-Vec3  Vecc3(Vec3d vec);				                            //caster
-Vec3d Vecc3d(Vec3 vec);				                            //caster
+Vec2  Vecc2(const Vec3& vec);
+Vec2  Vecc2(const Vec3d& vec);
+Vec3  Vecc3(const Vec3d& vec);				                    //caster
+Vec3d Vecc3d(const Vec3& vec);				                    //caster
 Vec3d Vecc3d(double x=0.0,double y=0.0,double z=0.0);			//constructor
 
 
@@ -228,7 +228,7 @@ inline Matr4 operator*(const Matr4& m1, const Matr4& m2);
 
 // Matrix generators
 Matr4  Mat4MakeIdent();
-Matr4  Mat4MakeRot( const float angle, const Vec3& axis );
+Matr4  Mat4MakeRot( const float fAngleDeg, const Vec3& axis );
 Matr4d Mat4dMakeRot( const double fAngleDeg, const Vec3d& axis );
 Matr4  Mat4MakeTrans( const float x, const float y, const float z );
 Matr4  Mat4MakeTrans( const Vec3& dist );

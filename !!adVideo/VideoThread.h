@@ -10,10 +10,11 @@
 #include <mutex>
 #include <condition_variable>
 
+
 struct FrameItem
 {
-	int width;
-	int height;
+	int      width;
+	int      height;
 	uint8_t* data;
 };
 
@@ -62,9 +63,9 @@ private:
 
 	void InsertIntoCache(int index);
 	bool ExistsInCache(int i);
+
 	FrameItem* LoadFrameFromStream(int index);
 };
-
 
 
 #endif

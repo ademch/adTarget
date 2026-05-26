@@ -27,6 +27,7 @@ public:
 
 typedef std::map<std::string, TextureDescriptor*>::iterator typeTexBankIter;
 
+
 class TextureBank
 {
 public:

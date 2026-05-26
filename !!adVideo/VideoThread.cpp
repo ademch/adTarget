@@ -1,17 +1,19 @@
 #include "stdafx.h"
 #include "VideoThread.h"
+#include <assert.h>
 
 
 VideoCacheThread::VideoCacheThread(FFMS_VideoSource* _videoSource, int maxItems, int hysteresis)
 {   
-	videoSource = _videoSource;
+	videoSource    = _videoSource;
 
 	m_halfWindow   = maxItems/2;
 	m_hysteresis   = hysteresis;
 	m_center       = 0;
+
 	m_bCacheInitialized  = false;
 
-	idxPlayhead = 0;
+	idxPlayhead	   = 0;
 
 	atomic_bRunning = false;
 }
@@ -47,8 +49,11 @@ void VideoCacheThread::Stop()
 	cvFrameIdChanged.notify_all();
 
 	if (Thread.joinable())
+	{
 		Thread.join();
+	}
 }
+
 
 void VideoCacheThread::SetPlayhead(int _idxPlayhead)
 {
@@ -58,6 +63,7 @@ void VideoCacheThread::SetPlayhead(int _idxPlayhead)
 	idxPlayhead = _idxPlayhead;
 	cvFrameIdChanged.notify_all();
 }
+
 
 void VideoCacheThread::Worker()
 {
@@ -72,6 +78,7 @@ void VideoCacheThread::Worker()
 
 void VideoCacheThread::UpdateCacheWindow(int index)
 {
+
 	if (!m_bCacheInitialized)
 	{
 		m_center = index;
@@ -119,7 +126,7 @@ void VideoCacheThread::UpdateCacheWindow(int index)
 
 bool VideoCacheThread::ExistsInCache(int i)
 {
-	return m_cache.find(i) != m_cache.end();
+	return (m_cache.find(i) != m_cache.end());
 }
 
 
@@ -143,15 +150,24 @@ FrameItem* VideoCacheThread::LoadFrameFromStream(int index)
 	const FFMS_Frame* frame = FFMS_GetFrame(videoSource, index, &err);
 
 	FrameItem* frameItem;
-	// try to reuse frames from the pool of free frames
 	if (!liFreeFrames.empty())
+	{
+		// reuse frame from the pool of free frames
 		frameItem = liFreeFrames.back();
+		liFreeFrames.pop_back();
+
+		assert(frameItem->width*4*frameItem->height == frame->Linesize[0]*frame->ScaledHeight);
+	}
 	else
+	{
 		frameItem = new FrameItem();
 
-	frameItem->width  = frame->ScaledWidth;
-	frameItem->height = frame->ScaledHeight;
-	frameItem->data = new uint8_t[frame->Linesize[0]*frame->ScaledHeight];
+		frameItem->width  = frame->ScaledWidth;
+		frameItem->height = frame->ScaledHeight;
+		frameItem->data = new uint8_t[frame->Linesize[0]*frame->ScaledHeight];
+	}
+
+	printf("liFreeFrames %d\n", liFreeFrames.size());
 
 	memcpy(frameItem->data, frame->Data[0], frame->Linesize[0]*frame->ScaledHeight);
 

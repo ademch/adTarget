@@ -23,10 +23,10 @@ public:
 	AudioThread*      audioThread;
 	VideoCacheThread* videoCacheThread;
 
-protected:
-
 	FFMS_VideoSource* videoSource;
 	FFMS_AudioSource* audioSource;
+
+protected:
 
 	FFMS_Index* LoadMPEG_CreateIndex(const char* sourcefile);
 

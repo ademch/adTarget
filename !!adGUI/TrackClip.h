@@ -1,10 +1,9 @@
 #ifndef TRACKCLIP_H
 #define TRACKCLIP_H
 
-#include "../!!adGlobals/vector_math.h"
 #include "gui_elementResizable.h"
+#include "../!!adGlobals/vector_math.h"
 #include "../!!adGlobals/TextureDescriptor.h"
-#include "SubWindowWithGUI.h"
 #include <functional>
 
 enum ClipType  {
@@ -27,11 +26,16 @@ enum StateClipDrag_enum {
 	STATE_CLIP_DRAG_TAIL
 };
 
+class FFMS_Video;
+class OpenGLSubWindowWithGUI;
+
+
 class TrackClip : public GUI_ElementResizable
 {
 public:
 
 	TrackClip(int _id, int px, int py, int _width, int _height);
+	~TrackClip();
 
 	void Resize(int iWidth, int iHeight) override;
 
@@ -58,7 +62,8 @@ public:
 	int      m_iStartPosFrame;
 
 	OpenGLSubWindowWithGUI*    windowTool;
-	TextureDescriptor*         extern_textureIcon;
+	TextureDescriptor*         textureIcon;
+	FFMS_Video*                video;
 
 	std::function<bool()>      OnClick;
 	std::function<bool(float)> OnDrawValue;

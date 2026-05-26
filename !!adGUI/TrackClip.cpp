@@ -4,31 +4,38 @@
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "../!!adGlobals/vector_math.h"
 #include "VideoPositionMediator.h"
+#include "../!!adVideo/FFMS_VIdeo.h"
+
 
 TrackClip* dragNdrop_Clip = NULL;
 
 int TrackClip::iSelected = 0;
 std::vector<TrackClip*> TrackClip::liClips;
 
+
 constexpr int const_iSnapPx       = 8;
 constexpr int const_iDragRadiusPx = 5;
 
 
-TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
-	                 id(_id), m_iWidth(_width), m_iHeight(_height)
+TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 {
+	id   = _id;
+
 	posx = px;
 	posy = py;
 
 	iHPosShift = px;
 	iVPosShift = py;
 
+	m_iWidth  = _width;
+	m_iHeight = _height;
+
 	bFocused = false;
 	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);	// 0.04, 0.18, 0.04
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
 
 	m_iStartPosFrame = 0.0;
-	m_iLengthFrames   = 0.0;
+	m_iLengthFrames  = 0.0;
 
 	xImmTransl = 0.0f;
 	xImmBeg    = 0.0f;
@@ -36,10 +43,18 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
 
 	stateClip = STATE_CLIP_IDLE;
 
-	windowTool      = NULL;
-	extern_textureIcon = NULL;
+	windowTool  = NULL;
+	textureIcon = NULL;
 
 	fPPF = 1.0;
+
+	video = NULL;
+}
+
+TrackClip::~TrackClip()
+{
+	delete textureIcon;
+	delete video;
 }
 
 
@@ -70,8 +85,8 @@ void TrackClip::Draw()
 	}
 
 	// Draw icon
-	float fIconAspRatio = float(extern_textureIcon->m_width)/float(extern_textureIcon->m_height);
-	RenderTexturedQuad(extern_textureIcon->m_uiTextureID,				// id
+	float fIconAspRatio = float(textureIcon->m_width)/float(textureIcon->m_height);
+	RenderTexturedQuad(textureIcon->m_uiTextureID,						// id
 					   fStartX + 1*matrSliderNonInverted.m[0][0],		// x
 					   posy + 1,										// y
 					   24*fIconAspRatio*matrSliderNonInverted.m[0][0],	// width

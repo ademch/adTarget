@@ -3,6 +3,7 @@
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "TimelineTrack.h"
+#include "SubWindowWithGUI.h"
 #include "../!!adGlobals/vector_math.h"
 #include "TrackClip.h"
 

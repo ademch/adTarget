@@ -100,60 +100,49 @@ Vec3 u;
 return u;
 }			   
 
-Vec2 Vecc2(Vec3d vec)
+Vec2 Vecc2(const Vec3d& vec)
 {
-	return Vecc2((float)vec.X, (float)vec.Y);
+	return {(float)vec.X, (float)vec.Y};
 }
 
-Vec2 Vecc2(Vec3 vec)
+Vec2 Vecc2(const Vec3& vec)
 {
-	return Vecc2(vec.X, vec.Y);
+	return {vec.X, vec.Y};
 }
 
-Vec3 Vecc3(Vec3d vec)
-{	return Vecc3((float)vec.X, (float)vec.Y, (float)vec.Z);}	   
+Vec3 Vecc3(const Vec3d& vec)
+{	
+	return { (float)vec.X, (float)vec.Y, (float)vec.Z };
+}
 
 Vec3d Vecc3d(double x,double y,double z)
 {
-Vec3d u;	
-	u.X = x; 	u.Y = y; 	u.Z = z;
-
-return u;
+	return {x, y, z};
 }			   
 
-Vec3d Vecc3d(Vec3 v)
+Vec3d Vecc3d(const Vec3& v)
 {
-	return Vecc3d(v.X, v.Y, v.Z);
+	return {v.X, v.Y, v.Z};
 }			   
 
 Vec4 Vecc4(float x,float y,float z,float w)
 {
-Vec4 u;	
-	u.X = x;	u.Y = y;	u.Z = z;	u.W = w;
-
-return u;
+	return {x, y, z, w};
 }
 
-Vec4 Vecc4(Vec3 v3, float w)
+Vec4 Vecc4(const Vec3& v3, float w)
 {
-Vec4 u;	
-	u.X = v3.X;	u.Y = v3.Y;	u.Z = v3.Z;	u.W = w;
-
-return u;
+	return {v3.X, v3.Y, v3.Z, w};
 }
 
 Vec3 Vecc3(Vec2 v, float z)
 {
-	Vec3 u;
-	u.X = v.X;	u.Y = v.Y;	u.Z = z;
-
-	return u;
+	return {v.X, v.Y, z};
 }
 
 Vec4 Vecp4(float a[4])
 {
-	Vec4 u = Vecc4(a[0],a[1],a[2],a[3]);
-	return u;
+	return {a[0],a[1],a[2],a[3]};
 }
 
 Matr4 Matrc4(Vec4 r0, Vec4 r1, Vec4 r2, Vec4 r3)
