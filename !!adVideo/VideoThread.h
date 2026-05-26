@@ -29,6 +29,7 @@ public:
 	void Stop();
 
 	FrameItem* GetFrame(int index);
+	void UpdateCacheWindow(int index);
 
 protected:
 
@@ -59,7 +60,6 @@ private:
 
 	void Worker();
 
-	void MaintainWindow(int index);
 	void InsertIntoCache(int index);
 	bool ExistsInCache(int i);
 	FrameItem* LoadFrameFromStream(int index);

@@ -53,7 +53,7 @@ public:
 	// the track this clip belongs to
 	int      iTrack;
 
-	ClipType type;
+	ClipType mediaType;
 	int      m_iLengthFrames;
 	int      m_iStartPosFrame;
 
@@ -90,8 +90,8 @@ protected:
 
 	float fPPF;
 
-	float FindLastClipOnTrackBefore_TailPx(int iTrack, int pix);
-	float FindFirstClipOnTrackAfter_HeadPx(int iTrack, int pix);
+	float FindClipOnTrackBeforeFrame_TailPx(int iTrack, int iFrame);
+	float FindClipOnTrackAfterFrame_HeadPx(int iTrack, int iFrame);
 
 };
 

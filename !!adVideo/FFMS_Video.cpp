@@ -61,10 +61,11 @@ void FFMS_Video::LoadMPEG(const char* _filename)
 	audioThread = new AudioThread(audioSource, idSndSource, 4);
 	audioThread->ParseSourceProperties();
 	audioThread->EnqueueInitialBuffers();
-	audioThread->Start();
+	//audioThread->Start();
 
 	videoCacheThread = new VideoCacheThread(videoSource, 20, 10);
-	videoCacheThread->Start();
+	videoCacheThread->UpdateCacheWindow(0);
+	//videoCacheThread->Start();
 
 }
 
@@ -182,7 +183,7 @@ void FFMS_Video::LoadMPEG_PrepareVideoFormat(FFMS_VideoSource* videosource)
 
 	/* A -1 terminated list of the acceptable output formats. */
 	int pixfmts[2];
-	pixfmts[0] = FFMS_GetPixFmt("bgra");
+	pixfmts[0] = FFMS_GetPixFmt("rgba");
 	pixfmts[1] = -1;
 
 	if (FFMS_SetOutputFormatV2( videosource,

@@ -10,6 +10,9 @@ TrackClip* dragNdrop_Clip = NULL;
 int TrackClip::iSelected = 0;
 std::vector<TrackClip*> TrackClip::liClips;
 
+constexpr int const_iSnapPx       = 8;
+constexpr int const_iDragRadiusPx = 5;
+
 
 TrackClip::TrackClip(int _id, int px, int py, int _width, int _height) :
 	                 id(_id), m_iWidth(_width), m_iHeight(_height)
@@ -54,18 +57,9 @@ void TrackClip::Draw()
 		glColor3f(0.46, 0.4, 0.0);
 	glQuad(fStartX, posy, m_iLengthFrames*fPPF - xImmBeg + xImmEnd, m_iHeight, 10);
 
-	//if (iSelected == id)
-	//{
-	//	glColor3f(0.92, 0.8, 0.0);
-
-	//	glLineWidth(1.0);
-	//	glLine(fStartX,												posy,
-	//		   fStartX+ m_iLengthFrames*fPPF - xImmBeg + xImmEnd,   posy, 12);
-	//	glLine(fStartX,												posy + m_iHeight-1,
-	//		   fStartX + m_iLengthFrames*fPPF - xImmBeg + xImmEnd,  posy + m_iHeight-1, 12);
 
 	float f1PxCorrection = matrSliderNonInverted.m[0][0];
-	if (bFocused)
+	if (bFocused && (iSelected == id))
 	{
 		glColor3f(0.69, 0.0, 0.0);
 		glLineWidth(3.0);
@@ -74,8 +68,8 @@ void TrackClip::Draw()
 		glLine( fStartX + m_iLengthFrames*fPPF - xImmBeg + xImmEnd - f1PxCorrection, posy,
 				fStartX + m_iLengthFrames*fPPF - xImmBeg + xImmEnd - f1PxCorrection, posy + m_iHeight, 12);
 	}
-	//}
 
+	// Draw icon
 	float fIconAspRatio = float(extern_textureIcon->m_width)/float(extern_textureIcon->m_height);
 	RenderTexturedQuad(extern_textureIcon->m_uiTextureID,				// id
 					   fStartX + 1*matrSliderNonInverted.m[0][0],		// x
@@ -96,7 +90,7 @@ void TrackClip::Resize(int iWidth, int iHeight)
 }
 
 
-float TrackClip::FindLastClipOnTrackBefore_TailPx(int iTrack, int pix)
+float TrackClip::FindClipOnTrackBeforeFrame_TailPx(int iTrack, int iPosFrame)
 {
 	float iMax = -m_iWidth/2.0;
 	for (auto iterEl : liClips)
@@ -104,22 +98,17 @@ float TrackClip::FindLastClipOnTrackBefore_TailPx(int iTrack, int pix)
 		if (iterEl->iTrack != iTrack) continue;		// skip clip from the other track
 		if (iterEl == this)           continue;		// skip ourselves
 		
-		// skip tracks that start after pix (pix can be already inside the body, thats why check against start- not end)
-		if (iterEl->m_iStartPosFrame*fPPF /*+ iterEl->m_iLengthFrames*fPPF*/ > pix) continue;
-
-		//printf("Last start pix=%f ", iterEl->m_iStartPosFrame*fPPF);
-		//printf("Input pix=%d\n", pix);
+		// skip tracks that start after iPosFrame (iPosFrame can be already inside the body, thats why check against start, not end)
+		if (iterEl->m_iStartPosFrame /*+ iterEl->m_iLengthFrames*fPPF*/ > iPosFrame) continue;
 
 		iMax = max(iMax, posx + iterEl->m_iStartPosFrame*fPPF + iterEl->m_iLengthFrames*fPPF);
 	}
-
-	//printf("Tail returned %f\n", iMax);
 
 	return iMax;
 }
 
 
-float TrackClip::FindFirstClipOnTrackAfter_HeadPx(int iTrack, int pix)
+float TrackClip::FindClipOnTrackAfterFrame_HeadPx(int iTrack, int iPosFrame)
 {
 	float iMin = m_iWidth/2.0;
 	for (auto iterEl : liClips)
@@ -128,22 +117,20 @@ float TrackClip::FindFirstClipOnTrackAfter_HeadPx(int iTrack, int pix)
 		if (iterEl->iTrack != iTrack) continue;
 		// skip ourselves
 		if (iterEl == this) continue;
-		if (iterEl->m_iStartPosFrame*fPPF + iterEl->m_iLengthFrames*fPPF - fPPF < pix) continue;
+		if (iterEl->m_iStartPosFrame + iterEl->m_iLengthFrames - 1 < iPosFrame) continue;
 
 		iMin = min(iMin, posx + iterEl->m_iStartPosFrame*fPPF);
 	}
-
-	//printf("Tail returned %f\n", iMin);
 
 	return iMin;
 }
 
 float TrackClip::ClipsFitsIntoGapOnTrackImmediate(int iTrack)
 {
-	float fLeftWallPix  = dragNdrop_Clip->FindLastClipOnTrackBefore_TailPx(iTrack, m_iStartPosFrame*fPPF + xImmTransl);
-	float fRightWallPix = dragNdrop_Clip->FindFirstClipOnTrackAfter_HeadPx(iTrack, m_iStartPosFrame*fPPF + xImmTransl);
+	float fLeftWallPix  = dragNdrop_Clip->FindClipOnTrackBeforeFrame_TailPx(iTrack, m_iStartPosFrame + xImmTransl/fPPF);
+	float fRightWallPix = dragNdrop_Clip->FindClipOnTrackAfterFrame_HeadPx(iTrack, m_iStartPosFrame + xImmTransl/fPPF);
 
-	if ((fRightWallPix - fLeftWallPix) <= m_iLengthFrames*fPPF)
+	if (fRightWallPix - fLeftWallPix - m_iLengthFrames*fPPF < -0.0001)
 		return false;
 
 	return true; 
@@ -157,19 +144,27 @@ bool TrackClip::Hover(int x, int y)
 	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
 	if ((ptPeep.X > posx + m_iStartPosFrame*fPPF - 1) && (ptPeep.X < posx + (m_iStartPosFrame + m_iLengthFrames)*fPPF + 1) &&
-		(ptPeep.Y > posy)                              && (ptPeep.Y < posy + m_iHeight))
+		(ptPeep.Y > posy)                             && (ptPeep.Y < posy + m_iHeight))
 	{
+		if (iSelected != id) return false;
+		
 		bFocused = bEnabled;
 
-		if (abs(ptPeep.X - posx - m_iStartPosFrame*fPPF) < 3.0*matrSliderNonInverted.m[0][0])
+		if (abs(ptPeep.X - posx - m_iStartPosFrame*fPPF) < const_iDragRadiusPx*matrSliderNonInverted.m[0][0])
+		{
 			glutSetCursor(GLUT_CURSOR_LEFT_RIGHT);
+			return true;
+		}
 		else
-		if (abs(ptPeep.X - posx - (m_iStartPosFrame + m_iLengthFrames)*fPPF) < 3.0*matrSliderNonInverted.m[0][0])
+		if (abs(ptPeep.X - posx - (m_iStartPosFrame + m_iLengthFrames)*fPPF) < const_iDragRadiusPx*matrSliderNonInverted.m[0][0])
+		{
 			glutSetCursor(GLUT_CURSOR_LEFT_RIGHT);
+			return true;
+		}
 		else
 			glutSetCursor(GLUT_CURSOR_INHERIT);
 
-		return true;
+		return false;
 	}
 
 	bFocused = false;
@@ -205,9 +200,10 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 	}
 	else if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN))
 	{
-		if ((abs(ptPeep.X - posx - m_iStartPosFrame*fPPF) < 3.0*matrSliderNonInverted.m[0][0]) &&
+		if ((abs(ptPeep.X - posx - m_iStartPosFrame*fPPF) < const_iDragRadiusPx*matrSliderNonInverted.m[0][0]) &&
 	        (ptPeep.Y > posy) && (ptPeep.Y < posy + m_iHeight))
 		{
+			if (iSelected != id) return false;
 
 			iBeginDragX = x;
 			iBeginDragY = y;
@@ -220,9 +216,11 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 
 			return true;
 		}
-		else if ((abs(ptPeep.X - posx - (m_iStartPosFrame + m_iLengthFrames)*fPPF) < 3.0*matrSliderNonInverted.m[0][0]) &&
+		else if ((abs(ptPeep.X - posx - (m_iStartPosFrame + m_iLengthFrames)*fPPF) < const_iDragRadiusPx*matrSliderNonInverted.m[0][0]) &&
 				 (ptPeep.Y > posy) && (ptPeep.Y < posy + m_iHeight))
 		{
+			if (iSelected != id) return false;
+
 			iBeginDragX = x;
 			iBeginDragY = y;
 
@@ -300,29 +298,27 @@ bool TrackClip::Drag(int x, int y)
 
 		// Precalculate how far handle goes out of the window after current drag and move it back
 		{
-			float fLeftWallPix  = FindLastClipOnTrackBefore_TailPx(iTrack, m_iStartPosFrame*fPPF + fDeltaX);
-			float fRightWallPix = FindFirstClipOnTrackAfter_HeadPx(iTrack, m_iStartPosFrame*fPPF + fDeltaX);
+			float fLeftWallPix  = FindClipOnTrackBeforeFrame_TailPx(iTrack, m_iStartPosFrame + fDeltaX/fPPF);
+			float fRightWallPix = FindClipOnTrackAfterFrame_HeadPx(iTrack,  m_iStartPosFrame + fDeltaX/fPPF);
 
-			if ((fRightWallPix - fLeftWallPix) < m_iLengthFrames*fPPF) return true;
+			if (fRightWallPix - fLeftWallPix - m_iLengthFrames*fPPF < -0.0001)
+			{	
+				// not enough space to fit
+				return true;
+			}
 
 			float fUnderflow = fLeftWallPix - (posx + m_iStartPosFrame*fPPF + fDeltaX);
 			float fOverflow  =                (posx + m_iStartPosFrame*fPPF + m_iLengthFrames*fPPF + fDeltaX) - fRightWallPix;
 
-			printf("fLeftWallPix %f\n",  fLeftWallPix);
-			printf("fRightWallPix %f\n", fRightWallPix);
-
-			printf("fUnderflow %f\n", fUnderflow);
-			printf("fOverflow %f\n", fOverflow);
-
 			// Accumulate translation in float type param and then move it on mouseUp into int
-			if (fUnderflow > 0)
+			if (fUnderflow > -const_iSnapPx * matrSliderNonInverted.m[0][0])
 				xImmTransl = fDeltaX + fUnderflow;
-			else if (fOverflow > 0)
+			else if (fOverflow > -const_iSnapPx * matrSliderNonInverted.m[0][0])
 				xImmTransl = fDeltaX - fOverflow;
 			else
 				xImmTransl = fDeltaX;
 
-			printf("xImmTransl=%5.3f\n\n", xImmTransl);
+			//printf("xImmTransl=%5.3f\n\n", xImmTransl);
 		}
 
 		dragNdrop_Clip = this;
@@ -341,16 +337,13 @@ bool TrackClip::Drag(int x, int y)
 
 		// Precalculate how far handle goes out of the window after current drag and move it back
 		{
-			float fLeftWallPix  = FindLastClipOnTrackBefore_TailPx(iTrack, m_iStartPosFrame*fPPF + fDeltaX);
+			float fLeftWallPix = FindClipOnTrackBeforeFrame_TailPx(iTrack, m_iStartPosFrame);
 
 			float fUnderflow = fLeftWallPix - (posx + m_iStartPosFrame*fPPF + fDeltaX);
 			float fOverflow  =                 fDeltaX - m_iLengthFrames*fPPF;
 
-			printf("fUnderflow %f\n", fUnderflow);
-			printf("fOverflow %f\n", fOverflow);
-
 			// Accumulate translation in float type param and then move it on mouseUp into int
-			if (fUnderflow > 0)
+			if (fUnderflow > -const_iSnapPx * matrSliderNonInverted.m[0][0])
 				xImmBeg = fDeltaX + fUnderflow;
 			else if (fOverflow > -fPPF)	// limit to 1 frame
 				xImmBeg = fDeltaX - fOverflow - fPPF;
@@ -372,21 +365,17 @@ bool TrackClip::Drag(int x, int y)
 		// become a peephole with N times greater precision than 1/(600)
 		float fDeltaX = matrSliderNonInverted.m[0][0] * (x - iBeginDragX);
 
-		float fRightWallPix = FindFirstClipOnTrackAfter_HeadPx(iTrack, m_iStartPosFrame*fPPF + m_iLengthFrames*fPPF + fDeltaX);
+		float fRightWallPix = FindClipOnTrackAfterFrame_HeadPx(iTrack, m_iStartPosFrame*fPPF + m_iLengthFrames*fPPF);
 
 		// Precalculate how far handle goes out of the window after current drag and move it back
 		{
 			float fUnderflow =                                -m_iLengthFrames*fPPF - fDeltaX;	// tail should not be earlier than head
 			float fOverflow  = (posx + m_iStartPosFrame*fPPF + m_iLengthFrames*fPPF + fDeltaX) - fRightWallPix;
 
-			printf("fUnderflow %f\n", fUnderflow);
-			printf("fOverflow %f\n", fOverflow);
-
-
 			// Accumulate translation in float type param and then move it on mouseUp into int
 			if (fUnderflow > -fPPF)	// limit to 1 frame
 				xImmEnd = fDeltaX + fUnderflow + fPPF;
-			else if (fOverflow > 0)
+			else if (fOverflow > -const_iSnapPx * matrSliderNonInverted.m[0][0])
 				xImmEnd = fDeltaX - fOverflow;
 			else
 				xImmEnd = fDeltaX;

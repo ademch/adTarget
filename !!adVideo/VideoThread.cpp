@@ -66,11 +66,11 @@ void VideoCacheThread::Worker()
 		std::unique_lock<std::mutex> lock(_mutex);
 		cvFrameIdChanged.wait_for(lock, std::chrono::milliseconds(10));
 
-		MaintainWindow(idxPlayhead);
+		UpdateCacheWindow(idxPlayhead);
 	}
 }
 
-void VideoCacheThread::MaintainWindow(int index)
+void VideoCacheThread::UpdateCacheWindow(int index)
 {
 	if (!m_bCacheInitialized)
 	{
@@ -133,6 +133,8 @@ void VideoCacheThread::InsertIntoCache(int index)
 
 FrameItem* VideoCacheThread::LoadFrameFromStream(int index)
 {
+	std::cout << "Loading " << index << "\n";
+
 	char errmsg[1024];
 	FFMS_ErrorInfo err;
 	err.Buffer     = errmsg;
@@ -153,7 +155,6 @@ FrameItem* VideoCacheThread::LoadFrameFromStream(int index)
 
 	memcpy(frameItem->data, frame->Data[0], frame->Linesize[0]*frame->ScaledHeight);
 
-	std::cout << "Loading " << index << "\n";
 	return frameItem;
 }
 
