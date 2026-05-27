@@ -7,6 +7,8 @@ FFMS_Video::FFMS_Video()
 {
 	videoSource = NULL;
 	audioSource = NULL;
+
+	iCurrentFrame = 0;
 }
 
 

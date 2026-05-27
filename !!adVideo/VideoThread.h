@@ -5,16 +5,16 @@
 
 #include <thread>
 #include <atomic>
-#include <vector>
+#include <list>
 #include <map>
 #include <mutex>
-#include <condition_variable>
 
 
 struct FrameItem
 {
 	int      width;
 	int      height;
+	float    seconds;
 	uint8_t* data;
 };
 
@@ -41,11 +41,11 @@ protected:
 	int idxPlayhead;
 
 	std::atomic<bool> atomic_bRunning;
+	std::atomic<bool> atomic_bNewRequest;
 
 	std::thread Thread;
 
-	std::mutex _mutex;
-	std::condition_variable cvFrameIdChanged;
+	std::mutex _mutex_mapExclusiveAccess;
 
 	int m_halfWindow;
 	int m_hysteresis;
@@ -53,7 +53,7 @@ protected:
 	int m_center;
 	bool m_bCacheInitialized;
 
-	std::vector<FrameItem*> liFreeFrames;
+	std::list<FrameItem*> liFreeFrames;
 
 	std::map<int, FrameItem*> m_cache;
 

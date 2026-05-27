@@ -16,6 +16,7 @@ VideoCacheThread::VideoCacheThread(FFMS_VideoSource* _videoSource, int maxItems,
 	idxPlayhead	   = 0;
 
 	atomic_bRunning = false;
+	atomic_bNewRequest = false;
 }
 
 VideoCacheThread::~VideoCacheThread()
@@ -46,7 +47,6 @@ void VideoCacheThread::Start()
 void VideoCacheThread::Stop()
 {
 	atomic_bRunning = false;
-	cvFrameIdChanged.notify_all();
 
 	if (Thread.joinable())
 	{
@@ -57,11 +57,8 @@ void VideoCacheThread::Stop()
 
 void VideoCacheThread::SetPlayhead(int _idxPlayhead)
 {
-	// lock _mutex with automatic unlock on out of context
-	std::lock_guard<std::mutex> lock(_mutex);
-
 	idxPlayhead = _idxPlayhead;
-	cvFrameIdChanged.notify_all();
+	atomic_bNewRequest = true;
 }
 
 
@@ -69,16 +66,19 @@ void VideoCacheThread::Worker()
 {
 	while (atomic_bRunning)
 	{
-		std::unique_lock<std::mutex> lock(_mutex);
-		cvFrameIdChanged.wait_for(lock, std::chrono::milliseconds(10));
+		if (atomic_bNewRequest)
+		{
+			UpdateCacheWindow(idxPlayhead);
 
-		UpdateCacheWindow(idxPlayhead);
+			atomic_bNewRequest = false;
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 }
 
 void VideoCacheThread::UpdateCacheWindow(int index)
 {
-
 	if (!m_bCacheInitialized)
 	{
 		m_center = index;
@@ -94,20 +94,24 @@ void VideoCacheThread::UpdateCacheWindow(int index)
 
 	if (iLow < 0) iLow = 0;
 
-	// 1. EVICT outside window
-	for (auto it = m_cache.begin(); it != m_cache.end(); )
-	{
-		if (it->first < iLow || it->first > iHigh)
+	_mutex_mapExclusiveAccess.lock();
+
+		// 1. EVICT outside window
+		for (auto it = m_cache.begin(); it != m_cache.end(); )
 		{
-			// return FrameItem to the pull of buffers
-			liFreeFrames.emplace_back(it->second);
-			it = m_cache.erase(it);
+			if (it->first < iLow || it->first > iHigh)
+			{
+				// return FrameItem to the pull of buffers
+				liFreeFrames.emplace_back(it->second);
+				it = m_cache.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
-		else
-		{
-			++it;
-		}
-	}
+
+	_mutex_mapExclusiveAccess.unlock();
 
 	// 2. LOAD missing (iLow -> iHigh ensures correct order)
 	for (int i = m_center; i <= iHigh; ++i)
@@ -126,6 +130,8 @@ void VideoCacheThread::UpdateCacheWindow(int index)
 
 bool VideoCacheThread::ExistsInCache(int i)
 {
+	std::lock_guard<std::mutex> lock(_mutex_mapExclusiveAccess);
+
 	return (m_cache.find(i) != m_cache.end());
 }
 
@@ -134,27 +140,29 @@ void VideoCacheThread::InsertIntoCache(int index)
 {
 	FrameItem* frameItem = LoadFrameFromStream(index);
 
-	m_cache[index] = frameItem;
+	_mutex_mapExclusiveAccess.lock();
+		m_cache[index] = frameItem;
+	_mutex_mapExclusiveAccess.unlock();
 }
 
 
-FrameItem* VideoCacheThread::LoadFrameFromStream(int index)
+FrameItem* VideoCacheThread::LoadFrameFromStream(int indexFrame)
 {
-	std::cout << "Loading " << index << "\n";
+	std::cout << "Loading " << indexFrame << "\n";
 
 	char errmsg[1024];
 	FFMS_ErrorInfo err;
 	err.Buffer     = errmsg;
 	err.BufferSize = sizeof(errmsg);
 
-	const FFMS_Frame* frame = FFMS_GetFrame(videoSource, index, &err);
+	const FFMS_Frame* frame = FFMS_GetFrame(videoSource, indexFrame, &err);
 
 	FrameItem* frameItem;
 	if (!liFreeFrames.empty())
 	{
 		// reuse frame from the pool of free frames
-		frameItem = liFreeFrames.back();
-		liFreeFrames.pop_back();
+		frameItem = liFreeFrames.front();
+		liFreeFrames.pop_front();
 
 		assert(frameItem->width*4*frameItem->height == frame->Linesize[0]*frame->ScaledHeight);
 	}
@@ -167,9 +175,20 @@ FrameItem* VideoCacheThread::LoadFrameFromStream(int index)
 		frameItem->data = new uint8_t[frame->Linesize[0]*frame->ScaledHeight];
 	}
 
-	printf("liFreeFrames %d\n", liFreeFrames.size());
-
 	memcpy(frameItem->data, frame->Data[0], frame->Linesize[0]*frame->ScaledHeight);
+
+	////////////////
+
+	FFMS_Track* videoTrack = FFMS_GetTrackFromVideo(videoSource);
+	const FFMS_FrameInfo* info = FFMS_GetFrameInfo(videoTrack, indexFrame);
+
+	int64_t pts = info->PTS;
+
+	const FFMS_TrackTimeBase* tb = FFMS_GetTimeBase(videoTrack);
+
+	frameItem->seconds = (float)pts * (float)tb->Num/(float)tb->Den * 0.001f;
+
+	////////////////
 
 	return frameItem;
 }
@@ -177,13 +196,15 @@ FrameItem* VideoCacheThread::LoadFrameFromStream(int index)
 
 FrameItem* VideoCacheThread::GetFrame(int index)
 {
-	SetPlayhead(index);
+	std::lock_guard<std::mutex> lock(_mutex_mapExclusiveAccess);
 
-	auto it = m_cache.find(index);
-	if (it == m_cache.end())
-		return nullptr;
+		SetPlayhead(index);
 
-	return it->second;
+		auto it = m_cache.find(index);
+
+		if (it == m_cache.end()) return NULL;
+
+		return it->second;
 }
 
 

@@ -13,10 +13,10 @@ class FFMS_Video
 {
 public:
 
+	static void Initialize();
+
 	FFMS_Video();
 	~FFMS_Video();
-
-	static void Initialize();
 
 	void LoadMPEG(const char* _filename);
 	
@@ -25,6 +25,8 @@ public:
 
 	FFMS_VideoSource* videoSource;
 	FFMS_AudioSource* audioSource;
+
+	int iCurrentFrame;
 
 protected:
 
