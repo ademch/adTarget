@@ -23,12 +23,12 @@ VideoSlider::VideoSlider(int px, int py, int _height):
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
 }
 
-void VideoSlider::SetPos0_1(float _val)
+void VideoSlider::SetPos0_1(double _val)
 {
 	m_fPos01 = _val;
 }
 
-void VideoSlider::SetPosInit(float _val0_1, float _v_max)
+void VideoSlider::SetPosInit(double _val0_1, int _v_max)
 {
 	m_fPos01  = _val0_1;
 	m_iValMax = _v_max;
@@ -81,33 +81,20 @@ void VideoSlider::Draw()
 	{
 		unsigned int Count = int(m_iValMax);
 
-		bool bDrawn;
-
 		// hours
-		DrawTicks(Count/3600.0f, 1, 3, 18, matrSliderInverted);
+		DrawTicks(Count/(100.0*3600.0f), 1, 2, 18, matrSliderInverted);
 
 		// minutes
 		glColor3f(0.2*fHighlight, 0.6*fHighlight, 0.2*fHighlight);
-		bDrawn = DrawTicks(Count/60.0f, 1, 2, 10, matrSliderInverted);
-
-		if (!bDrawn)
-		{
-			// quarters of hour
-			glColor3f(0.5*fHighlight, 0.7*fHighlight, 0.4*fHighlight);
-			DrawTicks(Count/60.0f, 15, 2, 14, matrSliderInverted);
-		}
-
+		DrawTicks(Count/(100.0*60.0f), 1, 1, 8, matrSliderInverted);
 
 		// seconds
 		glColor3f(0.1*fHighlight, 0.6*fHighlight, 0.1*fHighlight);
-		bDrawn = DrawTicks(Count/1.0f, 1, 2, 3, matrSliderInverted);
+		DrawTicks(Count/100.0, 1, 1, 3, matrSliderInverted);
 
-		if (!bDrawn)
-		{
-			// quarters of seconds
-			glColor3f(0.7*fHighlight, 0.7*fHighlight, 0.0*fHighlight);
-			DrawTicks(Count/1.0f, 15, 2, 5, matrSliderInverted);
-		}
+		// 10ms ticks
+		glColor3f(0.7*fHighlight, 0.7*fHighlight, 0.0*fHighlight);
+		DrawTicks(Count/1.0f, 1, 1, 1, matrSliderInverted);
 
 	}
 
@@ -183,7 +170,7 @@ bool VideoSlider::Drag(int x, int y)
 	// become a peephole with N times greater precision than 1/(600)
 	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
-	if (bMouseButtonPressed && (ptPeep.X > posx) && (ptPeep.X < posx + m_iWidth) )
+	if (bMouseButtonPressed && (ptPeep.X >= posx) && (ptPeep.X <= posx + m_iWidth) )
 	{
 		m_fPos01 = (ptPeep.X + m_iWidth/2.0) / m_iWidth;
 
@@ -205,8 +192,8 @@ bool VideoSlider::Hover(int x, int y)
 	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
 	// special case, component is symmetric along zero
-	if ((ptPeep.X > posx)               && (ptPeep.X < posx + m_iWidth) &&
-		(ptPeep.Y > posy - m_iHeight/2) && (ptPeep.Y < posy + m_iHeight/2))
+	if ((ptPeep.X >= posx)               && (ptPeep.X <= posx + m_iWidth) &&
+		(ptPeep.Y > posy - m_iHeight/2)  && (ptPeep.Y < posy + m_iHeight/2))
 	{
 		bFocused = bEnabled;
 		return true;

@@ -6,7 +6,7 @@
 #include "AudioThread.h"
 #include "VideoThread.h"
 #include "SoundAL.h"
-
+#include <vector>
 
 
 class FFMS_Video
@@ -19,6 +19,10 @@ public:
 	~FFMS_Video();
 
 	void LoadMPEG(const char* _filename);
+
+	int NextIndexAfter(double value);
+
+	std::vector<double> liIndex;	// seconds
 	
 	AudioThread*      audioThread;
 	VideoCacheThread* videoCacheThread;
@@ -27,6 +31,7 @@ public:
 	FFMS_AudioSource* audioSource;
 
 	int iCurrentFrame;
+	int iTotalFrames;
 
 protected:
 
@@ -37,6 +42,8 @@ protected:
 
 	void LoadMPEG_PrepareVideoFormat(FFMS_VideoSource* videosource);
 	void LoadMPEG_PrepareAudioFormat(FFMS_AudioSource* audiosource);
+
+	void BuildPTSIndex(FFMS_VideoSource* videoSource);
 
 	ALuint idSndSource;
 

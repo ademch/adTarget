@@ -3,14 +3,14 @@
 
 class PositionMediator
 {
-	unsigned int iDurationFrames;
+	int iDurationFrames;
 
-	float fPos0_1;
-	float fPosSelectionStart;
-	float fPosSelectionEnd;
+	double fPos0_1;
+	double fPosSelectionStart;
+	double fPosSelectionEnd;
 
-	std::vector<std::function<void(void*, float)>> listenersPos;
-	std::vector<std::function<void(void*, float, unsigned int)>> listenersPosInit;
+	std::vector<std::function<void(void*, double)>> listenersPos;
+	std::vector<std::function<void(void*, double, int)>> listenersPosInit;
 
 	PositionMediator()
 	{
@@ -29,7 +29,7 @@ public:
 		return &mediator;
 	}
 
-	void SetPos0_1(void* origin, float _fPos)
+	void SetPos0_1(void* origin, double _fPos)
 	{
 		if ( fabs(_fPos - fPos0_1) < 1e-6)
 			return;
@@ -40,7 +40,7 @@ public:
 			listener(origin, _fPos);
 	}
 
-	void SetSelection(void* origin, float _fSelectionStart, float _fSelectionEnd)
+	void SetSelection(void* origin, double _fSelectionStart, double _fSelectionEnd)
 	{
 		if ( fabs(_fSelectionStart - fPosSelectionStart) < 1e-6 &&
 			 fabs(_fSelectionEnd   - fPosSelectionEnd) < 1e-6 )
@@ -50,31 +50,31 @@ public:
 		//	listener(origin, _fPos0_1);
 	}
 
-	void Init(void* origin, float _fPos0_1, unsigned int _iDurationFrames)
+	void Init(void* origin, double _fPos0_1, unsigned int _iDurationIn10msTicks)
 	{
 		fPos0_1 = _fPos0_1;
-		iDurationFrames = _iDurationFrames;
+		iDurationFrames = _iDurationIn10msTicks;
 
 		for (auto& listener : listenersPosInit)
-			listener(origin, _fPos0_1, _iDurationFrames);
+			listener(origin, _fPos0_1, _iDurationIn10msTicks);
 	}
 
-	float Pos01()
-	{
-		return fPos0_1;
-	}
-
-	int DurationFrames()
+	int DurationIn10msTicks()
 	{
 		return iDurationFrames;
 	}
 
-	void subscribeForPos(std::function<void(void*, float)> cb)
+	int Pos10ms()
+	{
+		return int(round(fPos0_1*iDurationFrames));
+	}
+
+	void subscribeForPos(std::function<void(void*, double)> cb)
 	{
 		listenersPos.push_back(std::move(cb));
 	}
 
-	void subscribeForPosInit(std::function<void(void*, float, unsigned int)> cb)
+	void subscribeForPosInit(std::function<void(void*, double, int)> cb)
 	{
 		listenersPosInit.push_back(std::move(cb));
 	}

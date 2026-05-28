@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FFMS_VIdeo.h"
-
+#include <algorithm>
 
 
 FFMS_Video::FFMS_Video()
@@ -9,6 +9,7 @@ FFMS_Video::FFMS_Video()
 	audioSource = NULL;
 
 	iCurrentFrame = 0;
+	iTotalFrames  = 0;
 }
 
 
@@ -53,6 +54,8 @@ void FFMS_Video::LoadMPEG(const char* _filename)
 	videoSource = LoadMPEG_CreateVideoSource(_filename, index);
 	LoadMPEG_PrepareVideoFormat(videoSource);
 
+	BuildPTSIndex(videoSource);
+
 	audioSource = LoadMPEG_CreateAudioSource(_filename, index);
 	LoadMPEG_PrepareAudioFormat(audioSource);
 
@@ -65,7 +68,7 @@ void FFMS_Video::LoadMPEG(const char* _filename)
 	audioThread->EnqueueInitialBuffers();
 	//audioThread->Start();
 
-	videoCacheThread = new VideoCacheThread(videoSource, 20, 5);
+	videoCacheThread = new VideoCacheThread(videoSource, 40, 10);
 	videoCacheThread->UpdateCacheWindow(0);
 	videoCacheThread->Start();
 
@@ -166,11 +169,11 @@ void FFMS_Video::LoadMPEG_PrepareVideoFormat(FFMS_VideoSource* videosource)
 	const FFMS_VideoProperties *videoprops = FFMS_GetVideoProperties(videosource);
 
 	/* Now you may want to do something with the info, like check how many frames the video has */
-	int num_frames = videoprops->NumFrames;
+	iTotalFrames = videoprops->NumFrames;
 
 	/* Get the first frame for examination so we know what we're getting. This is required
 	because resolution and colorspace is a per frame property and NOT global for the video. */
-	const FFMS_Frame *propframe = FFMS_GetFrame(videosource, 0, &errinfo);
+	const FFMS_Frame *propframe = FFMS_GetFrame(videosource, 1, &errinfo);
 
 	printf("    Video encoded resolution: %d x %d\n", propframe->EncodedWidth, propframe->EncodedHeight);
 	printf("    Video encoded pixelformat: %d\n",	  propframe->EncodedPixelFormat);
@@ -219,4 +222,37 @@ void FFMS_Video::LoadMPEG_PrepareAudioFormat(FFMS_AudioSource* audiosource)
 
 	printf("    Frequency: %d\n", audioprops->SampleRate);
 	printf("    Samples: %lld\n", audioprops->NumSamples);
+}
+
+
+void FFMS_Video::BuildPTSIndex(FFMS_VideoSource* videoSource)
+{
+	FFMS_Track* videoTrack = FFMS_GetTrackFromVideo(videoSource);
+	const FFMS_TrackTimeBase* tb = FFMS_GetTimeBase(videoTrack);
+	
+	int frameCount = FFMS_GetNumFrames(videoTrack);
+
+	liIndex.reserve(frameCount);
+
+	for (int i = 0; i < frameCount; i++)
+	{
+		const FFMS_FrameInfo* info = FFMS_GetFrameInfo(videoTrack, i);
+
+		double fS = 0.001*(info->PTS*(double)tb->Num/(double)tb->Den);
+
+		liIndex.push_back(fS);
+	}
+
+	return;
+}
+
+
+int FFMS_Video::NextIndexAfter(double fS)
+{
+	auto it = std::upper_bound(liIndex.begin(), liIndex.end(), fS);
+
+	if (it == liIndex.end())
+		return -1;
+
+	return (int)std::distance(liIndex.begin(), it);
 }

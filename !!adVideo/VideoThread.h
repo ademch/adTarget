@@ -14,7 +14,7 @@ struct FrameItem
 {
 	int      width;
 	int      height;
-	float    seconds;
+	double   fS;
 	uint8_t* data;
 };
 
@@ -30,6 +30,7 @@ public:
 	void Stop();
 
 	FrameItem* GetFrame(int index);
+	FrameItem* GetFrameByTime(double fSeconds, int& index);
 	void UpdateCacheWindow(int index);
 
 protected:

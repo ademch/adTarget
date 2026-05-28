@@ -12,10 +12,10 @@ public:
 
 	VideoSlider(int px, int py, int _height);
 
-	std::function<void(float)>      OnChange;
+	std::function<void(double)>      OnChange;
 
-	void SetPos0_1(float _val);
-	void SetPosInit(float _val, float _v_max);
+	void SetPos0_1(double _val);
+	void SetPosInit(double _val, int _v_max);
 
 	void Resize(int iWidth, int iHeight) override;
 
@@ -33,7 +33,7 @@ protected:
 	// those are values in seconds
 	int m_iValMax;
 
-	float m_fPos01;
+	double m_fPos01;
 
 	Vec3 vColor_focused;
 	Vec3 vColor_defocused;

@@ -37,12 +37,14 @@ public:
 	TrackClip(int _id, int px, int py, int _width, int _height);
 	~TrackClip();
 
+	static TrackClip* GetClip(OpenGLSubWindowWithGUI* wnd);
+
 	void Resize(int iWidth, int iHeight) override;
 
 	void SetAttr(int _iStartPosFrame, int _iLengthFrames)
 	{
-		m_iStartPosFrame = _iStartPosFrame;
-		m_iLengthFrames  = _iLengthFrames;
+		m_iStartPos10msTicks = _iStartPosFrame;
+		m_iLength10msTicks   = _iLengthFrames;
 	}
 
 	void Draw() override;
@@ -58,8 +60,8 @@ public:
 	int      iTrack;
 
 	ClipType mediaType;
-	int      m_iLengthFrames;
-	int      m_iStartPosFrame;
+	int      m_iLength10msTicks;
+	int      m_iStartPos10msTicks;
 
 	OpenGLSubWindowWithGUI*    windowTool;
 	TextureDescriptor*         textureIcon;
