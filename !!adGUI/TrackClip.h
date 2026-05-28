@@ -6,6 +6,7 @@
 #include "../!!adGlobals/TextureDescriptor.h"
 #include <functional>
 
+
 enum ClipType  {
 	CLIP_IMAGE,
 	CLIP_VIDEO
@@ -41,10 +42,10 @@ public:
 
 	void Resize(int iWidth, int iHeight) override;
 
-	void SetAttr(int _iStartPosFrame, int _iLengthFrames)
+	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
 	{
-		m_iStartPos10msTicks = _iStartPosFrame;
-		m_iLength10msTicks   = _iLengthFrames;
+		m_iStartPos10msTicks = _iStartPos10msTicks;
+		m_iLength10msTicks   = _iLength10msTicks;
 	}
 
 	void Draw() override;
@@ -68,7 +69,6 @@ public:
 	FFMS_Video*                video;
 
 	std::function<bool()>      OnClick;
-	std::function<bool(float)> OnDrawValue;
 	std::function<bool()>      OnClickDrag;
 
 	std::function<void(OpenGLSubWindowWithGUI*)> OnClipChange;
@@ -95,10 +95,11 @@ protected:
 
 	StateClipDrag_enum stateClip;
 
-	float fPPF;
+	// pixels per 10ms unit
+	float fPPU;
 
-	float FindClipOnTrackBeforeFrame_TailPx(int iTrack, int iFrame);
-	float FindClipOnTrackAfterFrame_HeadPx(int iTrack, int iFrame);
+	float FindClipOnTrackBefore_TailPx(int iTrack, int iPosIn10msTicks);
+	float FindClipOnTrackAfter_HeadPx(int iTrack, int iPosIn10msTicks);
 
 };
 

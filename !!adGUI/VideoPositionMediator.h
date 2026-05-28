@@ -3,7 +3,7 @@
 
 class PositionMediator
 {
-	int iDurationFrames;
+	int iDurationIn10msTicks;
 
 	double fPos0_1;
 	double fPosSelectionStart;
@@ -14,7 +14,7 @@ class PositionMediator
 
 	PositionMediator()
 	{
-		iDurationFrames   = 0;
+		iDurationIn10msTicks   = 0;
 
 		fPos0_1 = 0;
 		fPosSelectionStart = 0;
@@ -53,7 +53,7 @@ public:
 	void Init(void* origin, double _fPos0_1, unsigned int _iDurationIn10msTicks)
 	{
 		fPos0_1 = _fPos0_1;
-		iDurationFrames = _iDurationIn10msTicks;
+		iDurationIn10msTicks = _iDurationIn10msTicks;
 
 		for (auto& listener : listenersPosInit)
 			listener(origin, _fPos0_1, _iDurationIn10msTicks);
@@ -61,12 +61,12 @@ public:
 
 	int DurationIn10msTicks()
 	{
-		return iDurationFrames;
+		return iDurationIn10msTicks;
 	}
 
 	int Pos10ms()
 	{
-		return int(round(fPos0_1*iDurationFrames));
+		return int(round(fPos0_1*iDurationIn10msTicks));
 	}
 
 	void subscribeForPos(std::function<void(void*, double)> cb)
