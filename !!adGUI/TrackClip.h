@@ -44,8 +44,8 @@ public:
 
 	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
 	{
-		m_iStartPos10msTicks = _iStartPos10msTicks;
-		m_iLength10msTicks   = _iLength10msTicks;
+		m_iStartPos10msUnits = _iStartPos10msTicks;
+		m_iLength10msUnits   = _iLength10msTicks;
 	}
 
 	void Draw() override;
@@ -61,8 +61,8 @@ public:
 	int      iTrack;
 
 	ClipType mediaType;
-	int      m_iLength10msTicks;
-	int      m_iStartPos10msTicks;
+	int      m_iLength10msUnits;
+	int      m_iStartPos10msUnits;
 
 	OpenGLSubWindowWithGUI*    windowTool;
 	TextureDescriptor*         textureIcon;
@@ -98,8 +98,8 @@ protected:
 	// pixels per 10ms unit
 	float fPPU;
 
-	float FindClipOnTrackBefore_TailPx(int iTrack, int iPosIn10msTicks);
-	float FindClipOnTrackAfter_HeadPx(int iTrack, int iPosIn10msTicks);
+	float FindClipOnTrackBefore_TailPx(int iTrack, int iPos);
+	float FindClipOnTrackAfter_HeadPx(int iTrack, int iPos);
 
 };
 

@@ -1,9 +1,10 @@
 #ifndef POSITONMEDIATOR_H
 #define POSITONMEDIATOR_H
 
+
 class PositionMediator
 {
-	int iDurationIn10msTicks;
+	int iDuration10msUnit;
 
 	double fPos0_1;
 	double fPosSelectionStart;
@@ -14,7 +15,7 @@ class PositionMediator
 
 	PositionMediator()
 	{
-		iDurationIn10msTicks   = 0;
+		iDuration10msUnit   = 0;
 
 		fPos0_1 = 0;
 		fPosSelectionStart = 0;
@@ -50,23 +51,23 @@ public:
 		//	listener(origin, _fPos0_1);
 	}
 
-	void Init(void* origin, double _fPos0_1, unsigned int _iDurationIn10msTicks)
+	void Init(void* origin, double _fPos0_1, unsigned int _iDurationIn10msUnit)
 	{
 		fPos0_1 = _fPos0_1;
-		iDurationIn10msTicks = _iDurationIn10msTicks;
+		iDuration10msUnit = _iDurationIn10msUnit;
 
 		for (auto& listener : listenersPosInit)
-			listener(origin, _fPos0_1, _iDurationIn10msTicks);
+			listener(origin, _fPos0_1, _iDurationIn10msUnit);
 	}
 
-	int DurationIn10msTicks()
+	int Duration10msUnits()
 	{
-		return iDurationIn10msTicks;
+		return iDuration10msUnit;
 	}
 
-	int Pos10ms()
+	int Pos10msUnits()
 	{
-		return int(round(fPos0_1*iDurationIn10msTicks));
+		return int(round(fPos0_1*iDuration10msUnit));
 	}
 
 	void subscribeForPos(std::function<void(void*, double)> cb)
