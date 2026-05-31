@@ -391,7 +391,7 @@ bool TrackClip::Drag(int x, int y)
 		// become a peephole with N times greater precision than 1/(600)
 		float fDeltaX = matrSliderNonInverted.m[0][0] * (x - iBeginDragX);
 
-		float fRightWallPix = FindClipOnTrackAfter_HeadPx(iTrack, m_iStartPos10msUnits*fPPU + m_iLength10msUnits*fPPU);
+		float fRightWallPix = FindClipOnTrackAfter_HeadPx(iTrack, m_iStartPos10msUnits + m_iLength10msUnits);
 
 		// Precalculate how far handle goes out of the window after current drag and move it back
 		{
