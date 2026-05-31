@@ -118,7 +118,7 @@ void TrackClip::Resize(int iWidth, int iHeight)
 
 float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos)
 {
-	float iMax = -m_iWidth/2.0;
+	float iMax = -m_iWidth/2;
 	for (auto iterEl : liClips)
 	{
 		if (iterEl->iTrack != iTrack) continue;		// skip clip from the other track
@@ -136,7 +136,7 @@ float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos)
 
 float TrackClip::FindClipOnTrackAfter_HeadPx(int iTrack, int iPos)
 {
-	float iMin = m_iWidth/2.0;
+	float iMin = m_iWidth/2;
 	for (auto iterEl : liClips)
 	{
 		// Skip clip from the other track

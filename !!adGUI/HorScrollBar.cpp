@@ -18,8 +18,8 @@ HorScrollBar::HorScrollBar(std::string caption, int px, int py)
 	m_iWidth  = 250;
 	m_iHeight = 15;
 
-	m_ptHandleStartWorldCoords = Vecc3(-m_iWidth/2.0, 0);
-	m_ptHandleEndWorldCoords   = Vecc3( m_iWidth/2.0, 0);
+	m_ptHandleStartWorldCoords = Vecc3(-m_iWidth/2, 0);
+	m_ptHandleEndWorldCoords   = Vecc3( m_iWidth/2, 0);
 
 	bFocused = false;
 	iGUIpushed = 0;
@@ -45,8 +45,8 @@ void HorScrollBar::Resize(int iWidth, int iHeight)
 	m_iWidth  = iWidth;
 	m_iHeight = iHeight;
 
-	m_ptHandleStartWorldCoords = Vecc3(-iWidth/2.0, 0);
-	m_ptHandleEndWorldCoords   = Vecc3( iWidth/2.0, 0);
+	m_ptHandleStartWorldCoords = Vecc3(-iWidth/2, 0);
+	m_ptHandleEndWorldCoords   = Vecc3( iWidth/2, 0);
 }
 
 
@@ -76,11 +76,11 @@ void HorScrollBar::Draw()
 		Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 		float fLength = ptHandleEndTrans.X - ptHandleStartTrans.X;
 
-		float iForcedAddition = 0.0;
+		int iForcedAddition = -2;
 		if (fLength < 10)
 			iForcedAddition = 10 - fLength;
 
-		glQuad(       ptHandleStartTrans.X + iGUIpushed - 1,	// startx
+		glQuad(       ptHandleStartTrans.X + iGUIpushed + 1,	// startx
 			   posy + ptHandleStartTrans.Y - iGUIpushed + 3,	// starty
 			   fLength + iForcedAddition,	                    // width
 			   m_iHeight-6,										// height
@@ -151,8 +151,8 @@ bool HorScrollBar::Drag(int x, int y)
 			Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
 			Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
-			float fUnderflow = -m_iWidth/2.0 - ptHandleStartTrans.X;
-			float fOverflow  = ptHandleEndTrans.X - m_iWidth/2.0;
+			float fUnderflow = -m_iWidth/2 - ptHandleStartTrans.X;
+			float fOverflow  = ptHandleEndTrans.X - m_iWidth/2;
 
 			if (fUnderflow > 0)
 				vUserSceneTranslation.X += (x - iBeginDragX) + fUnderflow;
@@ -248,8 +248,8 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 				Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
 				Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
-				float fUnderflow = -m_iWidth/2.0 - ptHandleStartTrans.X;
-				float fOverflow  = ptHandleEndTrans.X - m_iWidth/2.0;
+				float fUnderflow = -m_iWidth/2 - ptHandleStartTrans.X;
+				float fOverflow  = ptHandleEndTrans.X - m_iWidth/2;
 
 				if (fUnderflow > 0)
 					vUserSceneTranslation.X += fUnderflow;
@@ -272,19 +272,20 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 void HorScrollBar::ScrollToMakePlayheadVisible(double fVal)
 {
 	PositionMediator* mediator = PositionMediator::Get();
-	float fSliderX = (fVal - 0.5)*(m_iWidth - iBorder*2);
+	// 				 float           int
+	float fSliderX = fVal*m_iWidth - m_iWidth/2 -fVal*iBorder*2 + iBorder;
 
 	cpuLoadIdentity();
 
 		cpuTranslatef(vUserSceneTranslation.X, 0, 0);
 		cpuMultMatrixf(matrUserScale);
 
-		Vec3 ptLeft  = cpuPipelineVertex3fv( Vecc3(-m_iWidth/2.0 + iBorder) );
-		Vec3 ptRight = cpuPipelineVertex3fv( Vecc3( m_iWidth/2.0 - iBorder) );
+		float xLeft  = cpuPipelineVertex3fv( Vecc3(-m_iWidth/2 + iBorder) ).X;
+		float xRight = cpuPipelineVertex3fv( Vecc3( m_iWidth/2 - iBorder) ).X;
 
-	if (fSliderX <= ptRight.X) return;
+	if (fSliderX <= xRight) return;
 
-	float fDelta = ptRight.X-ptLeft.X;
+	float fDelta = xRight - xLeft;
 
 	// Precalculate how far handle goes out of the window after current drag and move it back
 	{
@@ -296,8 +297,8 @@ void HorScrollBar::ScrollToMakePlayheadVisible(double fVal)
 			Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
 			Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
-		float fUnderflow = -m_iWidth/2.0 - ptHandleStartTrans.X;
-		float fOverflow  = ptHandleEndTrans.X - m_iWidth/2.0;
+		float fUnderflow = -m_iWidth/2 - ptHandleStartTrans.X;
+		float fOverflow  = ptHandleEndTrans.X - m_iWidth/2;
 
 		if (fUnderflow > 0)
 			vUserSceneTranslation.X += fDelta + fUnderflow;

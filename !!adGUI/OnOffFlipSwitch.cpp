@@ -84,23 +84,23 @@ void OnOffFlipSwitch::Draw()
 
 	if (bON)
 	{
-		glQuad( posx + 3 + m_Width/2.0 + iGUIpushed,
+		glQuad( posx + 3 + m_Width/2 + iGUIpushed,
 			    posy + 3 - iGUIpushed,
-			    m_Width/2.0 - 7,
+			    m_Width/2 - 7,
 			    m_Height - 6,
 				4 );
 
 		glColor3f(0,0.3,0);
 		glBegin(GL_LINES);
-			glVertex3f(posx + (3 + m_Width*0.5 + m_Width - 4 )/2.0 + iGUIpushed, posy + 3 - iGUIpushed,                5);
-			glVertex3f(posx + (3 + m_Width*0.5 + m_Width - 4) /2.0 + iGUIpushed, posy + m_Height - 3 - iGUIpushed, 5);
+			glVertex3f(posx + (3 + m_Width/2 + m_Width - 4 )/2.0 + iGUIpushed, posy            + 3 - iGUIpushed, 5);
+			glVertex3f(posx + (3 + m_Width/2 + m_Width - 4) /2.0 + iGUIpushed, posy + m_Height - 3 - iGUIpushed, 5);
 		glEnd();
 	}
 	else
 	{
 		glQuad(	posx + 3 + iGUIpushed, 
 			    posy + 3 - iGUIpushed,
-			    m_Width/2.0 - 7,
+			    m_Width/2 - 7,
 			    m_Height - 6,
 			    4 );
 

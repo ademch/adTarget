@@ -187,7 +187,8 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 
 		if (state==GLUT_DOWN)
 		{
-			m_fPos01 = (ptPeep.X + m_iWidth/2.0) / m_iWidth;
+			//          float      int
+			m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
 
 			if (OnChange != NULL) OnChange(m_fPos01);
 
@@ -213,7 +214,8 @@ bool VideoSlider::Drag(int x, int y)
 
 	if (bMouseButtonPressed && (ptPeep.X >= posx) && (ptPeep.X <= posx + m_iWidth) )
 	{
-		m_fPos01 = (ptPeep.X + m_iWidth/2.0) / m_iWidth;
+		//          float      int
+		m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
 
 		if (OnChange != NULL) OnChange(m_fPos01);
 
@@ -234,7 +236,7 @@ bool VideoSlider::Hover(int x, int y)
 
 	// special case, component is symmetric along zero
 	if ((ptPeep.X >= posx)               && (ptPeep.X <= posx + m_iWidth) &&
-		(ptPeep.Y > posy - m_iHeight/2)  && (ptPeep.Y < posy + m_iHeight/2))
+		(ptPeep.Y >  posy - m_iHeight/2) && (ptPeep.Y <  posy + m_iHeight/2))
 	{
 		bFocused = bEnabled;
 		return true;
