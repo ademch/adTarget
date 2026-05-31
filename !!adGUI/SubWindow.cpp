@@ -46,8 +46,8 @@ GLfloat m[4][4];
 				glBegin(GL_LINE_LOOP);
 					glVertex2f(-m_iWidth/2.0 + 1, -m_iHeight/2.0 + 1);
 					glVertex2f(-m_iWidth/2.0 + 1,  m_iHeight/2.0 - 1);
-					glVertex2f( m_iWidth/2.0 - 1,  m_iHeight/2.0 - 1);
-					glVertex2f( m_iWidth/2.0 - 1, -m_iHeight/2.0 + 1);
+					glVertex2f( m_iWidth/2.0 - 0,  m_iHeight/2.0 - 1);
+					glVertex2f( m_iWidth/2.0 - 0, -m_iHeight/2.0 + 1);
 				glEnd();
 
 				glFontBegin(&font);

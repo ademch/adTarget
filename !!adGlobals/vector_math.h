@@ -135,12 +135,12 @@ Vec3d Vecc3d(const Vec3& vec);				                    //caster
 Vec3d Vecc3d(double x=0.0,double y=0.0,double z=0.0);			//constructor
 
 
-inline Matr4 Matrc4(Vec4 r0=Vecc4(1.0,0.0,0.0,0.0),
-					Vec4 r1=Vecc4(0.0,1.0,0.0,0.0),
-					Vec4 r2=Vecc4(0.0,0.0,1.0,0.0),
-					Vec4 r3=Vecc4(0.0,0.0,0.0,1.0));
+inline Matr4 Matrc4(const Vec4& r0=Vecc4(1.0,0.0,0.0,0.0),
+					const Vec4& r1=Vecc4(0.0,1.0,0.0,0.0),
+					const Vec4& r2=Vecc4(0.0,0.0,1.0,0.0),
+					const Vec4& r3=Vecc4(0.0,0.0,0.0,1.0));
 
-Matr4 MatrTranspose(Matr4 m);
+Matr4 MatrTranspose(const Matr4& m);
 
 // Vector operators single precision
 Vec3 operator+(Vec3 v1,Vec3 v2);

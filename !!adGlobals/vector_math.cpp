@@ -70,10 +70,7 @@ Vec3 cpuPipelineVertex3fv(const Vec3& vCPU_in)
 
 Vec2 Vecc2(float x,float y)
 {
-Vec2 u;	
-	u.X = x; 	u.Y = y;
-
-return u;
+	return {x, y};
 }	
 
 VecUB4 VeccUB4(unsigned char R,unsigned char G,unsigned char B,unsigned char A)
@@ -94,10 +91,7 @@ VecUB3 c;
 
 Vec3 Vecc3(float x,float y,float z)
 {
-Vec3 u;	
-	u.X = x; 	u.Y = y; 	u.Z = z;
-
-return u;
+	return {x, y, z};
 }			   
 
 Vec2 Vecc2(const Vec3d& vec)
@@ -145,7 +139,7 @@ Vec4 Vecp4(float a[4])
 	return {a[0],a[1],a[2],a[3]};
 }
 
-Matr4 Matrc4(Vec4 r0, Vec4 r1, Vec4 r2, Vec4 r3)
+Matr4 Matrc4(const Vec4& r0, const Vec4& r1, const Vec4& r2, const Vec4& r3)
 {
 Matr4 u;
 
@@ -333,23 +327,23 @@ return Ra*(1-v) + Rb*v;
 Vec2 operator-(Vec2 v1, Vec2 v2) { return Vecc2(v1.X - v2.X, v1.Y - v2.Y); }
 
 
-Vec3 operator+(Vec3 v1,Vec3 v2)   {return Vecc3(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);}
-Vec2 operator+(Vec2 v1,Vec2 v2)   {return Vecc2(v1.X + v2.X, v1.Y + v2.Y); }
-Vec3 operator-(Vec3 v1,Vec3 v2)   {return Vecc3(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);}
-Vec3 operator-(Vec3 v)            {return Vecc3(-v.X, -v.Y, -v.Z);}
-Vec3 operator*(Vec3 v1,float s)   {return Vecc3(v1.X*s, v1.Y*s, v1.Z*s);}
-Vec2 operator*(Vec2 v1, float s)  {return Vecc2(v1.X*s, v1.Y*s); }
-Vec3 operator*(float s, Vec3 v1)  {return Vecc3(v1.X*s, v1.Y*s, v1.Z*s);}
-Vec2 operator*(float s, Vec2 v1)  {return Vecc2(v1.X*s, v1.Y*s); }
+Vec3 operator+(Vec3 v1,Vec3 v2)   {return {v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z};}
+Vec2 operator+(Vec2 v1,Vec2 v2)   {return {v1.X + v2.X, v1.Y + v2.Y}; }
+Vec3 operator-(Vec3 v1,Vec3 v2)   {return {v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z};}
+Vec3 operator-(Vec3 v)            {return {-v.X, -v.Y, -v.Z};}
+Vec3 operator*(Vec3 v1,float s)   {return {v1.X*s, v1.Y*s, v1.Z*s};}
+Vec2 operator*(Vec2 v1, float s)  {return {v1.X*s, v1.Y*s}; }
+Vec3 operator*(float s, Vec3 v1)  {return {v1.X*s, v1.Y*s, v1.Z*s};}
+Vec2 operator*(float s, Vec2 v1)  {return {v1.X*s, v1.Y*s}; }
 Vec3 operator/(Vec3 v,float s)    {return v*(1.0f/s);}
 Vec2 operator/(Vec2 v, float s)   {return v*(1.0f/s);}
 float operator^(Vec3 v1,Vec3 v2)  {return v1.X*v2.X + v1.Y*v2.Y + v1.Z*v2.Z;} // DOT product
 float operator^(Vec2 v1,Vec2 v2)  {return v1.X*v2.X + v1.Y*v2.Y;}             // DOT product
-Vec3 operator*(Vec3 v1,Vec3 v2)	  // CROSS product
-{    return Vecc3(
+Vec3 operator*(Vec3 v1,Vec3 v2)												  // CROSS product
+{    return {
 				v1.Y * v2.Z - v1.Z*v2.Y,
 				v1.Z * v2.X - v1.X*v2.Z,
-				v1.X * v2.Y - v1.Y*v2.X );
+				v1.X * v2.Y - v1.Y*v2.X };
 }
 
 Vec3d operator+(Vec3d v1,Vec3d v2)   {return Vecc3d(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);}
@@ -360,10 +354,10 @@ Vec3d operator*(double s, Vec3d v1)  {return Vecc3d(v1.X*s, v1.Y*s, v1.Z*s);}
 Vec3d operator/(Vec3d v,double s)    {return v*(1.0/s);}
 double operator^(Vec3d v1,Vec3d v2)  {return v1.X*v2.X + v1.Y*v2.Y + v1.Z*v2.Z;}
 Vec3d operator*(Vec3d v1,Vec3d v2)	  // CROSS product
-{    return Vecc3d(
-				  v1.Y * v2.Z - v1.Z*v2.Y,
-				  v1.Z * v2.X - v1.X*v2.Z,
-				  v1.X * v2.Y - v1.Y*v2.X );
+{    return {
+			  v1.Y * v2.Z - v1.Z*v2.Y,
+			  v1.Z * v2.X - v1.X*v2.Z,
+			  v1.X * v2.Y - v1.Y*v2.X };
 }
 
 VecUB4 operator+(VecUB4 v1,VecUB4 v2)   {return VeccUB4(v1.R + v2.R, v1.G + v2.G, v1.B + v2.B, v1.A + v2.A);}
@@ -497,7 +491,7 @@ float plane_offset;
 //
 
 
-Matr4 MatrTranspose(Matr4 m)
+Matr4 MatrTranspose(const Matr4& m)
 {	return Matrc4(	Vecc4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0]),
 					Vecc4(m.m[0][1], m.m[1][1], m.m[2][1], m.m[3][1]),
 					Vecc4(m.m[0][2], m.m[1][2], m.m[2][2], m.m[3][2]),
@@ -708,11 +702,10 @@ float ar[3];
 
 Matr4 Mat4MakeIdent()
 {
-unsigned char i;
 Matr4 u;
 
 	ZeroMemory(&u, sizeof(u));
-	for (i=0;i<4;i++)
+	for (unsigned char i=0; i<4; i++)
 		u.m[i][i] = 1.0;
 
 return u;

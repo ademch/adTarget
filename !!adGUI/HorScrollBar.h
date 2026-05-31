@@ -9,8 +9,8 @@
 class HorScrollBar : public GUI_Element
 {
 public:
-	int  m_Height;
-	int  m_Width;
+	int  m_iHeight;
+	int  m_iWidth;
 
 	Vec3 m_ptHandleStartWorldCoords;
 	Vec3 m_ptHandleEndWorldCoords;
@@ -20,7 +20,7 @@ public:
 	Vec4 vColor_focused;
 	Vec4 vColor_defocused;
 
-	float fZoomFactor;
+	float  fZoomFactor;
 	int8_t iZoomIndex;
 
 	HorScrollBar(std::string caption, int px, int py);
@@ -28,13 +28,17 @@ public:
 
 	std::function<void(Matr4)> OnChange;
 
-	virtual void Draw();
-	virtual bool Hover(int x, int y);
-	virtual bool Clicked(int button, int state, int x, int y);
-	virtual bool Wheel(int state, int delta, int x, int y);
-	virtual bool Drag(int x, int y);
+	void Draw() override;
+	bool Hover(int x, int y) override;
+	bool Clicked(int button, int state, int x, int y) override;
+	bool Wheel(int state, int delta, int x, int y) override;
+	bool Drag(int x, int y) override;
 
 	void Resize(int iWidth, int iHeight);
+
+	// because slider visualisation window has slightly different width we need to compensate for it
+	int iBorder;
+	void ScrollToMakePlayheadVisible(double fVal);
 
 protected:
 

@@ -30,7 +30,6 @@ protected:
 	int m_iWidth;
 	int m_iHeight;
 
-	// those are values in seconds
 	int m_iValMax;
 
 	double m_fPos01;
@@ -41,7 +40,8 @@ protected:
 	bool bFocused;
 	bool bMouseButtonPressed;
 
-	bool DrawTicks(float count, int iStep, float fThickness, float fHeight, const Matr4& matTransform);
+	bool DrawTicks(float count, float fThickness, float fHeight, const Matr4& matTransform);
+	bool DrawMinuteDigits(float count, const Matr4& matTransform);
 };
 
 

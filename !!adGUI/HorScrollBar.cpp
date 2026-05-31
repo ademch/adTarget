@@ -3,6 +3,7 @@
 #include <gl/gl.h>
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
+#include "VideoPositionMediator.h"
 
 const unsigned int g_minZoomOutIndex = -20;
 
@@ -14,11 +15,11 @@ HorScrollBar::HorScrollBar(std::string caption, int px, int py)
 	iHPosShift = px;
 	iVPosShift = py;
 
-	m_Width  = 250;
-	m_Height = 15;
+	m_iWidth  = 250;
+	m_iHeight = 15;
 
-	m_ptHandleStartWorldCoords = Vecc3(-m_Width/2.0, 0);
-	m_ptHandleEndWorldCoords   = Vecc3( m_Width/2.0, 0);
+	m_ptHandleStartWorldCoords = Vecc3(-m_iWidth/2.0, 0);
+	m_ptHandleEndWorldCoords   = Vecc3( m_iWidth/2.0, 0);
 
 	bFocused = false;
 	iGUIpushed = 0;
@@ -33,14 +34,16 @@ HorScrollBar::HorScrollBar(std::string caption, int px, int py)
 
 	vColor_focused   = Vecc4(0.1, 0.8, 0.1, 0.7);
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
+
+	iBorder = 0;
 }
 
 
 
 void HorScrollBar::Resize(int iWidth, int iHeight)
 {
-	m_Width  = iWidth;
-	m_Height = iHeight;
+	m_iWidth  = iWidth;
+	m_iHeight = iHeight;
 
 	m_ptHandleStartWorldCoords = Vecc3(-iWidth/2.0, 0);
 	m_ptHandleEndWorldCoords   = Vecc3( iWidth/2.0, 0);
@@ -53,12 +56,9 @@ void HorScrollBar::Draw()
 
 	// clear screen under element
 	glColor3f(0, 0, 0);
-	glQuad(posx + iGUIpushed, posy - iGUIpushed, m_Width, m_Height, 3);
+	glQuad(posx, posy+1, m_iWidth, m_iHeight, 3);
 
 	glColor4fv(&vColor_defocused.X);
-
-	glLineWidth(1);
-	glWireRectangle(posx, posy, m_Width, m_Height, 4.5);
 
 	if (bFocused && bEnabled)
 		glColor4fv(&vColor_focused.X);
@@ -77,23 +77,24 @@ void HorScrollBar::Draw()
 		float fLength = ptHandleEndTrans.X - ptHandleStartTrans.X;
 
 		float iForcedAddition = 0.0;
-		if (fLength < 5)
-			iForcedAddition = 5 - fLength;
+		if (fLength < 10)
+			iForcedAddition = 10 - fLength;
 
 		glQuad(       ptHandleStartTrans.X + iGUIpushed - 1,	// startx
 			   posy + ptHandleStartTrans.Y - iGUIpushed + 3,	// starty
 			   fLength + iForcedAddition,	                    // width
-			   m_Height-6,										// height
+			   m_iHeight-6,										// height
 			   5);												// zcoord
 	}
 }
+
 
 bool HorScrollBar::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	if ((x > posx) && (x < posx + m_Width) && 
-		(y > posy) && (y < posy + m_Height + 1))
+	if ((x > posx) && (x < posx + m_iWidth) && 
+		(y > posy) && (y < posy + m_iHeight + 1))
 	{
 		bFocused = bEnabled;
 		return true;
@@ -111,8 +112,8 @@ bool HorScrollBar::Clicked(int button, int state, int x, int y)
 
 	if (!bEnabled) return false;
 
-	if ((x < posx + m_Width)  && (x > posx) &&
-		(y < posy + m_Height) && (y > posy))
+	if ((x < posx + m_iWidth)  && (x > posx) &&
+		(y < posy + m_iHeight) && (y > posy))
 	{
 		if (button == GLUT_LEFT_BUTTON)
 		{
@@ -150,8 +151,8 @@ bool HorScrollBar::Drag(int x, int y)
 			Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
 			Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
-			float fUnderflow = -m_Width/2.0 - ptHandleStartTrans.X;
-			float fOverflow  = ptHandleEndTrans.X - m_Width/2.0;
+			float fUnderflow = -m_iWidth/2.0 - ptHandleStartTrans.X;
+			float fOverflow  = ptHandleEndTrans.X - m_iWidth/2.0;
 
 			if (fUnderflow > 0)
 				vUserSceneTranslation.X += (x - iBeginDragX) + fUnderflow;
@@ -179,8 +180,8 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 {
 	GUI_Element::Wheel(state, delta, x, y);
 
-	if ((x > posx) && (x < posx + m_Width) &&
-		(y > posy) && (y < posy + m_Height))
+	if ((x > posx) && (x < posx + m_iWidth) &&
+		(y > posy) && (y < posy + m_iHeight))
 	{
 		if (bEnabled)
 		{
@@ -206,7 +207,7 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 			// That does not come automatically as window controlled by this slider is zoomed in the opposite direction than the slider
 			//
 			{
-				float t = float(x + m_Width/2) / float(m_Width);
+				float t = float(x + m_iWidth/2) / float(m_iWidth);
 
 				cpuLoadIdentity();
 
@@ -247,8 +248,8 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 				Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
 				Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
 
-				float fUnderflow = -m_Width/2.0 - ptHandleStartTrans.X;
-				float fOverflow  = ptHandleEndTrans.X - m_Width/2.0;
+				float fUnderflow = -m_iWidth/2.0 - ptHandleStartTrans.X;
+				float fOverflow  = ptHandleEndTrans.X - m_iWidth/2.0;
 
 				if (fUnderflow > 0)
 					vUserSceneTranslation.X += fUnderflow;
@@ -264,4 +265,49 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 	}
 
 	return false;
+}
+
+
+// Called from outside by MediaSubWindow during playback to make sure pleayhead stays visible
+void HorScrollBar::ScrollToMakePlayheadVisible(double fVal)
+{
+	PositionMediator* mediator = PositionMediator::Get();
+	float fSliderX = (fVal - 0.5)*(m_iWidth - iBorder*2);
+
+	cpuLoadIdentity();
+
+		cpuTranslatef(vUserSceneTranslation.X, 0, 0);
+		cpuMultMatrixf(matrUserScale);
+
+		Vec3 ptLeft  = cpuPipelineVertex3fv( Vecc3(-m_iWidth/2.0 + iBorder) );
+		Vec3 ptRight = cpuPipelineVertex3fv( Vecc3( m_iWidth/2.0 - iBorder) );
+
+	if (fSliderX <= ptRight.X) return;
+
+	float fDelta = ptRight.X-ptLeft.X;
+
+	// Precalculate how far handle goes out of the window after current drag and move it back
+	{
+		cpuLoadIdentity();
+
+			cpuTranslatef(vUserSceneTranslation.X + fDelta, 0, 0);
+			cpuMultMatrixf(matrUserScale);
+
+			Vec3 ptHandleStartTrans = cpuPipelineVertex3fv(m_ptHandleStartWorldCoords);
+			Vec3 ptHandleEndTrans   = cpuPipelineVertex3fv(m_ptHandleEndWorldCoords);
+
+		float fUnderflow = -m_iWidth/2.0 - ptHandleStartTrans.X;
+		float fOverflow  = ptHandleEndTrans.X - m_iWidth/2.0;
+
+		if (fUnderflow > 0)
+			vUserSceneTranslation.X += fDelta + fUnderflow;
+		else if (fOverflow > 0)
+			vUserSceneTranslation.X += fDelta - fOverflow;
+		else
+			vUserSceneTranslation.X += fDelta;
+	}
+
+	if (OnChange != NULL) OnChange(Mat4MakeTrans(vUserSceneTranslation.X, 0, 0)*matrUserScale);
+
+	return;
 }

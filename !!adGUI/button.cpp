@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "button.h"
+#include "glfont.h"
 #include <gl/gl.h>
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"

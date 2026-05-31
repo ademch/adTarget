@@ -10,8 +10,9 @@ class PositionMediator
 	double fPosSelectionStart;
 	double fPosSelectionEnd;
 
-	std::vector<std::function<void(void*, double)>> listenersPos;
+	std::vector<std::function<void(void*, double)>>		 listenersPos;
 	std::vector<std::function<void(void*, double, int)>> listenersPosInit;
+	std::vector<std::function<void(void*, double)>>		 listenersPosUpdateFromTimer;
 
 	PositionMediator()
 	{
@@ -30,7 +31,7 @@ public:
 		return &mediator;
 	}
 
-	void SetPos0_1(void* origin, double _fPos)
+	void SetPos0_1(void* origin, double _fPos, bool bUpdateFromTimer = false)
 	{
 		if ( fabs(_fPos - fPos0_1) < 1e-6)
 			return;
@@ -39,6 +40,12 @@ public:
 
 		for (auto& listener : listenersPos)
 			listener(origin, _fPos);
+
+		if (bUpdateFromTimer)
+		{
+			for (auto& listener : listenersPosUpdateFromTimer)
+				listener(origin, _fPos);
+		}
 	}
 
 	void SetSelection(void* origin, double _fSelectionStart, double _fSelectionEnd)
@@ -78,6 +85,11 @@ public:
 	void subscribeForPosInit(std::function<void(void*, double, int)> cb)
 	{
 		listenersPosInit.push_back(std::move(cb));
+	}
+
+	void subscribeForPosUpdateFromTimer(std::function<void(void*, double)> cb)
+	{
+		listenersPosUpdateFromTimer.push_back(std::move(cb));
 	}
 
 };

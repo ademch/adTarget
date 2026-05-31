@@ -1,10 +1,12 @@
 #include "stdafx.h"
+#include "glfont.h"
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "VideoSlider.h"
 #include "../!!adGlobals/vector_math.h"
 #include "VideoPositionMediator.h"
 
+extern GLFONT font;
 
 VideoSlider::VideoSlider(int px, int py, int _height):
 			             m_iValMax(4000), m_fPos01(0.0),
@@ -34,27 +36,65 @@ void VideoSlider::SetPosInit(double _val0_1, int _v_max)
 	m_iValMax = _v_max;
 }
 
-bool VideoSlider::DrawTicks(float count, int iStep, float fThickness, float fCaliper, const Matr4& matTransform)
+bool VideoSlider::DrawTicks(float count, float fThickness, float fCaliper, const Matr4& matTransform)
 {
 	if (count < 1) return false;
 	
 	float fTickStep = m_iWidth/count;
 
-	float vNew = matTransform.m[0][0] * fTickStep*iStep;
+	float vNew = matTransform.m[0][0] * fTickStep;
 
 	if ( vNew < 7) return false;
 
 	glLineWidth(fThickness);
 	glBegin(GL_LINES);
 		float fCurrentVal = 0;
-		for (int iTick = 0; iTick <= int(count); iTick+=iStep)
+		for (int iTick = 0; iTick <= int(count); iTick++)
 		{
 			fCurrentVal = fTickStep*iTick;
 
-			glVertex3f(posx + fCurrentVal,  posy + fCaliper/2.0*(m_iHeight/20.0f), 4);
-			glVertex3f(posx + fCurrentVal,  posy - fCaliper/2.0*(m_iHeight/20.0f), 4);
+			glVertex3f(posx + fCurrentVal,  posy + fCaliper/2.0*(m_iHeight/20.0f), -8);
+			glVertex3f(posx + fCurrentVal,  posy - fCaliper/2.0*(m_iHeight/20.0f), -8);
 		}
 	glEnd();
+
+	return true;
+}
+
+
+bool VideoSlider::DrawMinuteDigits(float count, const Matr4& matTransform)
+{
+	float fTickStep = m_iWidth/count;
+
+	float vNew = matTransform.m[0][0] * fTickStep;
+
+	if ( vNew < 50) return false;
+
+	float fCurrentVal = 0;
+	for (int iTick = 0; iTick <= int(count); iTick+=1)
+	{
+		fCurrentVal = fTickStep*iTick;
+
+		float fTransX = (posx + fCurrentVal)*matTransform.m[0][0] + matTransform.m[3][0];
+
+		glColor3f(0, 0, 0);
+		glQuad(fTransX-6, posy - 7, 30, 14, -5);
+
+		int iMinutes = iTick % 60;
+		int iHours   = iTick / 60;
+		static char strMinutes[8];
+		if (iHours < 1)
+			sprintf(strMinutes, "%dm", iMinutes);
+		else
+			sprintf(strMinutes, "%dh%dm", iHours, iMinutes);
+
+		glColor3f(0.1, 0.8, 0.1);
+
+		glFontBegin(&font);
+		glFontTextOut(strMinutes, fTransX-3, posy-6, -4, /*size*/ 5);
+			glFontEnd();
+		glDisable(GL_TEXTURE_2D);
+	}
 
 	return true;
 }
@@ -68,7 +108,7 @@ void VideoSlider::Draw()
 
 	// clear screen under control
 	glColor3f(0, 0, 0);
-	glQuad(posx, posy, m_iWidth, m_iHeight, 0);
+	glQuad(posx, posy-m_iHeight/2, m_iWidth, m_iHeight, -10);
 
 
 	float fHighlight = 1.0f;
@@ -79,22 +119,20 @@ void VideoSlider::Draw()
 
 	// Draw ticks
 	{
-		unsigned int Count = int(m_iValMax);
-
 		// hours
-		DrawTicks(Count/(100.0*3600.0f), 1, 2, 18, matrSliderInverted);
+		DrawTicks(m_iValMax/(100.0*3600.0f), 2, 18, matrSliderInverted);
 
 		// minutes
 		glColor3f(0.2*fHighlight, 0.6*fHighlight, 0.2*fHighlight);
-		DrawTicks(Count/(100.0*60.0f), 1, 1, 8, matrSliderInverted);
+		DrawTicks(m_iValMax/(100.0*60.0f), 1, 8, matrSliderInverted);
 
 		// seconds
 		glColor3f(0.1*fHighlight, 0.6*fHighlight, 0.1*fHighlight);
-		DrawTicks(Count/100.0, 1, 1, 3, matrSliderInverted);
+		DrawTicks(m_iValMax/100.0, 1, 3, matrSliderInverted);
 
 		// 10ms ticks
 		glColor3f(0.7*fHighlight, 0.7*fHighlight, 0.0*fHighlight);
-		DrawTicks(Count/1.0f, 1, 1, 1, matrSliderInverted);
+		DrawTicks(m_iValMax/1.0f, 1, 1, matrSliderInverted);
 
 	}
 
@@ -120,6 +158,9 @@ void VideoSlider::Draw()
 		glLine( posx + m_fSliderX, posy + m_iHeight/2 - 4,
 				posx + m_fSliderX, posy - m_iHeight/2 + 5, 5);
 	}
+
+	glLoadIdentity();
+	DrawMinuteDigits(m_iValMax/(100.0*60.0f), matrSliderInverted);
 
 }
 
