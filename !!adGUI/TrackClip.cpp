@@ -116,7 +116,7 @@ void TrackClip::Resize(int iWidth, int iHeight)
 }
 
 
-float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos)
+float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos10msUnits)
 {
 	float iMax = -m_iWidth/2;
 	for (auto iterEl : liClips)
@@ -124,8 +124,8 @@ float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos)
 		if (iterEl->iTrack != iTrack) continue;		// skip clip from the other track
 		if (iterEl == this)           continue;		// skip ourselves
 		
-		// skip tracks that start after iPos (iPos can be already inside the body, thats why check against start, not end)
-		if (iterEl->m_iStartPos10msUnits /*+ iterEl->m_iLength10msUnits*fPPU*/ > iPos) continue;
+		// skip tracks that start after iPos10msUnits (iPos10msUnits can be already inside the body, thats why check against start, not end)
+		if (iterEl->m_iStartPos10msUnits /*+ iterEl->m_iLength10msUnits*fPPU*/ > iPos10msUnits) continue;
 
 		iMax = max(iMax, posx + iterEl->m_iStartPos10msUnits*fPPU + iterEl->m_iLength10msUnits*fPPU);
 	}
@@ -134,7 +134,7 @@ float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos)
 }
 
 
-float TrackClip::FindClipOnTrackAfter_HeadPx(int iTrack, int iPos)
+float TrackClip::FindClipOnTrackAfter_HeadPx(int iTrack, int iPos10msUnits)
 {
 	float iMin = m_iWidth/2;
 	for (auto iterEl : liClips)
@@ -143,7 +143,7 @@ float TrackClip::FindClipOnTrackAfter_HeadPx(int iTrack, int iPos)
 		if (iterEl->iTrack != iTrack) continue;
 		// skip ourselves
 		if (iterEl == this) continue;
-		if (iterEl->m_iStartPos10msUnits + iterEl->m_iLength10msUnits - 1 < iPos) continue;
+		if (iterEl->m_iStartPos10msUnits + iterEl->m_iLength10msUnits - 1 < iPos10msUnits) continue;
 
 		iMin = min(iMin, posx + iterEl->m_iStartPos10msUnits*fPPU);
 	}

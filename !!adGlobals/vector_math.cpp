@@ -591,7 +591,7 @@ Matr4 Mat4MakeTransformFromVectors( const Vec3& orig,  const Vec3& v1,  const Ve
 									const Vec3& orign, const Vec3& v1n, const Vec3& v2n)
 {
 	// --- source basis ---
-	Vec3 v3 = v1 * v2;
+	Vec3 v3 = v1 * v2;		// Watch that this transform produces non normalized Z axis
 
 	Matr4 B = Matrc4(	Vecc4(v1.X, v1.Y, v1.Z, 0),
 						Vecc4(v2.X, v2.Y, v2.Z, 0),
@@ -600,7 +600,7 @@ Matr4 Mat4MakeTransformFromVectors( const Vec3& orig,  const Vec3& v1,  const Ve
 					);
 
 	// --- target basis ---
-	Vec3 v3n = v1n * v2n;
+	Vec3 v3n = v1n * v2n;	// Watch that this transform produces non normalized Z axis
 
 	Matr4 T = Matrc4(	Vecc4(v1n.X, v1n.Y, v1n.Z, 0),
 						Vecc4(v2n.X, v2n.Y, v2n.Z, 0),

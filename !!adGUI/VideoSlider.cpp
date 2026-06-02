@@ -44,7 +44,7 @@ bool VideoSlider::DrawTicks(float count, float fThickness, float fCaliper, const
 
 	float vNew = matTransform.m[0][0] * fTickStep;
 
-	if ( vNew < 7) return false;
+	if ( vNew < 6) return false;
 
 	glLineWidth(fThickness);
 	glBegin(GL_LINES);
