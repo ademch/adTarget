@@ -23,7 +23,7 @@ ToolTip::ToolTip()
 
 	WNDCLASSW wc = {0};
 	wc.lpfnWndProc   = TipProc;
-	wc.hInstance     = GetModuleHandle(NULL);;
+	wc.hInstance     = GetModuleHandle(NULL);
 	wc.lpszClassName = L"MyToolTip";
 
 	RegisterClassW(&wc);

@@ -68,8 +68,8 @@ bool Button::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	if ((x > posx)   && (x < posx + m_Width) && 
-		(y > posy-1) && (y < posy + m_Height))
+	if ((x > posx) && (x < posx + m_Width) && 
+		(y > posy) && (y < posy + m_Height))
 	{
 		bFocused = bEnabled;
 

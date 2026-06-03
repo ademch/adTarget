@@ -40,6 +40,11 @@ void RenderTexturedQuad(unsigned int tex,
 		                float fWidth, float fHeight,
 		                float fZ = 0.0f);
 
+void RenderTexturedQuadTransparent( unsigned int tex,
+									float fX_bottom, float fY_bottom,
+									float fWidth, float fHeight,
+									float fZ = 0.0f);
+
 void RenderTexturedQuadMesh(unsigned int tex,
 							float fX_bottom, float fY_bottom,
 							float fWidth, float fHeight,

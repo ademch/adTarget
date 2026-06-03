@@ -21,6 +21,7 @@ class Slider : public GUI_Element
 public:
 
 	bool bDrawComment;
+	bool bDrawMinMaxValues;
 
 	float fTickGranularity;
 	float fValueGranularity;
@@ -55,21 +56,24 @@ public:
 		iHPosShift = px;
 		iVPosShift = py;
 
-		glFontGetLength(strCaption.c_str(), &font, _text_width, _text_height, scale);
-		m_iBox_width=250;
-		m_iBox_sep  =20;
+		float _text_width;
+		glFontGetLength(strCaption.c_str(), &font, _text_width, m_iHeight, scale);
+
+		m_iWidth    = 250;
+		m_iBox_sep  = 20;
 
 		bMouseButtonPressed = false;
-		bDrawComment = true;
+		bDrawComment	  = true;
+		bDrawMinMaxValues = true;
 
-		fTickGranularity = 1.0f;
+		fTickGranularity  = 1.0f;
 		fValueGranularity = 1.0f;	// changed to match POLYItan branch
 
 		bFocused = false;
 		vColor_focused   = Vecc4(0.1,0.8,0.1,0.7);
 		vColor_defocused = Vecc4(0.1,0.5,0.1,0.7);
 
-		fBoxHeightScale= 0.7;
+		fBoxHeightScale = 0.7;
 	}
 	
 	void Draw()
@@ -107,12 +111,12 @@ public:
 			}
 			// Render the value
 			glFontBegin(&font);
-				glFontTextOut(text_buf, posx + m_iBox_width + m_iBox_sep, posy, 4, size - 1);
+				glFontTextOut(text_buf, posx + m_iWidth + m_iBox_sep, posy, 4, size - 1);
 			glFontEnd();
 		}
 		
-		// Render min max values
-		glFontBegin(&font);
+		if (bDrawMinMaxValues)
+		{
 			float fValueMin = m_fVal_min;
 			if (OnDrawValue)
 				fValueMin = OnDrawValue(fValueMin);
@@ -121,29 +125,33 @@ public:
 			if (OnDrawValue)
 				fValueMax = OnDrawValue(fValueMax);
 
-			if (SlType == SL_INT) {
-				sprintf(text_buf, "%d", int(fValueMin));
-				glFontTextOut(text_buf, posx, posy + 16*fBoxHeightScale, 5, size - 2);
-				sprintf(text_buf, "%d", int(fValueMax));
-				glFontTextOut(text_buf, posx + m_iBox_width - 20, posy + 16*fBoxHeightScale, 5, size - 2);
-			}
-			if (SlType == SL_FLOAT) {
-				sprintf(text_buf, "%.1f", fValueMin);
-				glFontTextOut(text_buf, posx, posy + 16*fBoxHeightScale, 5, size - 2);
-				sprintf(text_buf, "%.1f", fValueMax);
-				glFontTextOut(text_buf, posx + m_iBox_width - 20, posy + 16*fBoxHeightScale, 5, size - 2);
-			}
-		glFontEnd();
+			glFontBegin(&font);
+				if (SlType == SL_INT)
+				{
+					sprintf(text_buf, "%d", int(fValueMin));
+					glFontTextOut(text_buf, posx, posy + 16*fBoxHeightScale, 5, size - 2);
+					sprintf(text_buf, "%d", int(fValueMax));
+					glFontTextOut(text_buf, posx + m_iWidth - 20, posy + 16*fBoxHeightScale, 5, size - 2);
+				}
+				if (SlType == SL_FLOAT)
+				{
+					sprintf(text_buf, "%.1f", fValueMin);
+					glFontTextOut(text_buf, posx, posy + 16*fBoxHeightScale, 5, size - 2);
+					sprintf(text_buf, "%.1f", fValueMax);
+					glFontTextOut(text_buf, posx + m_iWidth - 20, posy + 16*fBoxHeightScale, 5, size - 2);
+				}
+			glFontEnd();
+		}
 
 		glDisable(GL_TEXTURE_2D);
 
 		// draw border
 		glLineWidth(1);
 		glBegin(GL_LINE_LOOP);
-			glVertex3f(posx,               posy,                                4);
-			glVertex3f(posx + m_iBox_width,posy,                                4);
-			glVertex3f(posx + m_iBox_width,posy + _text_height*fBoxHeightScale, 4);
-			glVertex3f(posx,               posy + _text_height*fBoxHeightScale, 4);
+			glVertex3f(posx,            posy,                             4);
+			glVertex3f(posx + m_iWidth, posy,                             4);
+			glVertex3f(posx + m_iWidth, posy + m_iHeight*fBoxHeightScale, 4);
+			glVertex3f(posx,            posy + m_iHeight*fBoxHeightScale, 4);
 		glEnd();
 
 		// draw "mercury"
@@ -154,11 +162,12 @@ public:
 		if (fullness < 0.0) fullness = 0.0;
 		
 		glBegin(GL_QUADS);
-			glVertex3f(posx,                       posy+3,                                4);
-			glVertex3f(posx+ fullness*m_iBox_width,posy+3,                                4);
-			glVertex3f(posx+ fullness*m_iBox_width,posy + _text_height*fBoxHeightScale-2, 4);
-			glVertex3f(posx,                       posy + _text_height*fBoxHeightScale-2, 4);
+			glVertex3f(posx,                    posy+3,                             4);
+			glVertex3f(posx+ fullness*m_iWidth, posy+3,                             4);
+			glVertex3f(posx+ fullness*m_iWidth, posy + m_iHeight*fBoxHeightScale-2, 4);
+			glVertex3f(posx,                    posy + m_iHeight*fBoxHeightScale-2, 4);
 		glEnd();
+
 
 		// Draw ticks
 		glBegin(GL_LINES);
@@ -168,8 +177,8 @@ public:
 			for (unsigned int iTick = 0; iTick <= iTickCount; iTick+= iTickStep)
 			{
 				fullness = (fCurrentVal - m_fVal_min) / (m_fVal_max - m_fVal_min);
-				glVertex3f(posx + fullness*m_iBox_width, posy, 4);
-				glVertex3f(posx + fullness*m_iBox_width, posy - 5, 4);
+				glVertex3f(posx + fullness*m_iWidth, posy, 4);
+				glVertex3f(posx + fullness*m_iWidth, posy - 5, 4);
 				fCurrentVal = fCurrentVal + float(iTickStep*fTickGranularity);
 			}
 		glEnd();
@@ -179,9 +188,9 @@ public:
 	{
 		GUI_Element::Clicked(button, state, x, y);
 
-		if ((state==GLUT_DOWN) && (x<posx + m_iBox_width + 1) && (x>posx - 1) && (y<posy+_text_height) && (y>posy) && bEnabled)
+		if ((state==GLUT_DOWN) && (x<posx + m_iWidth + 1) && (x>posx - 1) && (y<posy+m_iHeight) && (y>posy) && bEnabled)
 		{
-			float fullness = float(x - posx)/float((posx + m_iBox_width) - posx);
+			float fullness = float(x - posx)/float((posx + m_iWidth) - posx);
 
 			*ptr_fVal_cur = fullness*(m_fVal_max-m_fVal_min) + m_fVal_min;
 
@@ -220,9 +229,9 @@ public:
 	{
 		GUI_Element::Drag(x,y);
 
-		if (bMouseButtonPressed && (x<posx + m_iBox_width + 1) && (x>posx - 1))
+		if (bMouseButtonPressed && (x<posx + m_iWidth + 1) && (x>posx - 1))
 		{
-			float fullness= float(x - posx)/float((posx + m_iBox_width) - posx);
+			float fullness= float(x - posx)/float((posx + m_iWidth) - posx);
 
 			*ptr_fVal_cur =fullness*(m_fVal_max-m_fVal_min) + m_fVal_min;
 			
@@ -253,8 +262,8 @@ public:
 	{
 		GUI_Element::Hover(x, y);
 
-		if ((x < posx + m_iBox_width + 1) && (x > posx - 1) &&
-			(y < posy + _text_height)     && (y > posy))
+		if ((x < posx + m_iWidth + 1) && (x > posx - 1) &&
+			(y < posy + m_iHeight)    && (y > posy))
 		{
 			bFocused = bEnabled;
 			return true;
@@ -286,33 +295,35 @@ public:
 		return true;
 	}
 
-	void SetBoxWidth(int _b_w) {
-		m_iBox_width=_b_w;  }
+	void SetBoxWidth(int _w)
+	{
+		m_iWidth = _w;  
+	}
 
-	void SetBoxSeparation(int _b_s) {	
-		m_iBox_sep=_b_s;	}
+	void SetBoxSeparation(int _separation)
+	{	
+		m_iBox_sep = _separation;	
+	}
 
 protected:
 
 	std::string _text;
 	float size;
 
-	float _text_width;
-	float _text_height;
-
-	int m_iBox_width;
-	int m_iBox_sep;
+	float m_iHeight;
+	int   m_iWidth;
+	int   m_iBox_sep;
 
 	float* ptr_fVal_cur;
 	float m_fVal_min;
 	float m_fVal_max;
-
 
 	Vec4 vColor_focused;
 	Vec4 vColor_defocused;
 
 	bool bFocused;
 	bool bMouseButtonPressed;
+
 };
 
 

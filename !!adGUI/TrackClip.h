@@ -2,7 +2,6 @@
 #define TRACKCLIP_H
 
 #include "gui_elementResizable.h"
-#include "../!!adGlobals/vector_math.h"
 #include "../!!adGlobals/TextureDescriptor.h"
 #include <functional>
 
@@ -39,6 +38,8 @@ public:
 	~TrackClip();
 
 	static TrackClip* GetClip(OpenGLSubWindowWithGUI* wnd);
+	static TrackClip* GetSelectedClip();
+	static void       RemoveSelectedClip();
 
 	void Resize(int iWidth, int iHeight) override;
 

@@ -284,6 +284,23 @@ void RenderTexturedQuad(unsigned int tex,
 	glDisable(GL_TEXTURE_2D);
 }
 
+void RenderTexturedQuadTransparent( unsigned int tex,
+									float fX_bottom, float fY_bottom,
+									float fWidth, float fHeight,
+									float fZ)
+{
+	glDisable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+
+		glBindTexture(GL_TEXTURE_2D, tex);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+		// set glColor3f(1.0, 1.0, 1.0, alpha); inside the caller
+		glTexturedQuad(fX_bottom, fY_bottom, fWidth, fHeight, fZ);
+
+	glDisable(GL_TEXTURE_2D);
+}
+
 void RenderTexturedQuadMesh(unsigned int tex,
 	                        float fX_bottom, float fY_bottom,
 	                        float fWidth, float fHeight,

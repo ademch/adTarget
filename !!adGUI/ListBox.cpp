@@ -43,8 +43,8 @@ ListBox::ListBox(std::string caption, int px, int py, int width, int count, floa
 	vColor_focused   = Vecc4(0.1, 0.8, 0.1, 0.7);
 	vColor_defocused = Vecc4(0.1, 0.5, 0.1, 0.7);
 
-	hCurGrab     = LoadCursorFromFileW(L"grab.cur");
-	hCurGrabbing = LoadCursorFromFileW(L"grabbing.cur");
+	hCurGrab     = LoadCursorFromFileW(L"Cursors\\grab.cur");
+	hCurGrabbing = LoadCursorFromFileW(L"Cursors\\grabbing.cur");
 }
 
 ListBox::~ListBox()

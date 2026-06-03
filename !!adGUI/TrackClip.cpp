@@ -5,23 +5,13 @@
 #include "../!!adGlobals/vector_math.h"
 #include "VideoPositionMediator.h"
 #include "../!!adVideo/FFMS_VIdeo.h"
+#include "TrackClipMenu.h"
 
 
 TrackClip* dragNdrop_Clip = NULL;
 
 int TrackClip::iSelected = 0;
 std::vector<TrackClip*> TrackClip::liClips;
-
-
-TrackClip* TrackClip::GetClip(OpenGLSubWindowWithGUI* wnd)
-{
-	for (auto iterClip : liClips)
-	{
-		if (iterClip->windowTool == wnd) return iterClip;
-	}
-
-	return NULL;
-}
 
 
 constexpr int const_iSnapPx       = 8;
@@ -97,12 +87,12 @@ void TrackClip::Draw()
 
 	// Draw icon
 	float fIconAspRatio = float(textureIcon->m_width)/float(textureIcon->m_height);
-	RenderTexturedQuad(textureIcon->m_uiTextureID,						// id
-					   fStartX + 1*matrSliderNonInverted.m[0][0],		// x
-					   posy + 1,										// y
-					   24*fIconAspRatio*matrSliderNonInverted.m[0][0],	// width
-					   24,												// height
-					   11 );											// z
+	RenderTexturedQuad( textureIcon->m_uiTextureID,						// id
+					    fStartX + 1*matrSliderNonInverted.m[0][0],		// x
+					    posy + 1,										// y
+					    24*fIconAspRatio*matrSliderNonInverted.m[0][0],	// width
+					    24,												// height
+					    11 );											// z
 
 }
 
@@ -212,14 +202,22 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 		if ((ptPeep.X > posx + m_iStartPos10msUnits*fPPU) && (ptPeep.X < posx + (m_iStartPos10msUnits + m_iLength10msUnits)*fPPU) &&
 			(ptPeep.Y > posy)							  && (ptPeep.Y < posy + m_iHeight))
 		{
-			iBeginDragX = x;
-			iBeginDragY = y;
+			//iBeginDragX = x;
+			//iBeginDragY = y;
 
-			stateClip = STATE_CLIP_DRAG_POS;
+			//stateClip = STATE_CLIP_DRAG_POS;
 
 			OnClipChange(windowTool);
 
 			iSelected = id;
+
+			// SHOW MENU
+			{
+				POINT pt;
+				GetCursorPos(&pt);
+
+				TrackClipMenu::Get()->Show(pt.x, pt.y);
+			}
 
 			return true;
 		}
@@ -261,6 +259,12 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 		else if ((ptPeep.X > posx + m_iStartPos10msUnits*fPPU) && (ptPeep.X < posx + (m_iStartPos10msUnits + m_iLength10msUnits)*fPPU) &&
 				 (ptPeep.Y > posy)							   && (ptPeep.Y < posy + m_iHeight))
 		{
+			
+			iBeginDragX = x;
+			iBeginDragY = y;
+
+			stateClip = STATE_CLIP_DRAG_POS;
+			
 			OnClipChange(windowTool);
 
 			iSelected = id;
@@ -417,3 +421,41 @@ bool TrackClip::Drag(int x, int y)
 	return false;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+TrackClip* TrackClip::GetClip(OpenGLSubWindowWithGUI* wnd)
+{
+	for (auto iterClip : liClips)
+	{
+		if (iterClip->windowTool == wnd) return iterClip;
+	}
+	return NULL;
+}
+
+
+void TrackClip::RemoveSelectedClip()
+{
+	for (auto it = liClips.begin(); it != liClips.end(); ++it)
+	{
+		if ((*it)->id == iSelected)
+		{
+			//delete *it;				// if you own the pointer
+			it = liClips.erase(it);		// erase returns next iterator
+
+			iSelected = 0;
+
+			break;
+		}
+	}
+}
+
+TrackClip* TrackClip::GetSelectedClip()
+{
+	for (auto it = liClips.begin(); it != liClips.end(); ++it)
+	{
+		if ((*it)->id == iSelected)
+			return *it;
+	}
+	return NULL;
+}
