@@ -7,6 +7,9 @@ VideoCacheThread::VideoCacheThread(FFMS_VideoSource* _videoSource, int maxItems,
 {   
 	videoSource    = _videoSource;
 
+	const FFMS_VideoProperties *videoprops = FFMS_GetVideoProperties(videoSource);
+	iTotalFrames   = videoprops->NumFrames;
+
 	m_halfWindow   = maxItems/2;
 	m_hysteresis   = hysteresis;
 	m_center       = 0;
@@ -30,10 +33,10 @@ VideoCacheThread::~VideoCacheThread()
 	}
 
 	// free frames from pool
-	for (auto it = liFreeFrames.begin(); it != liFreeFrames.end(); )
+	for (auto p : liFreeFrames)
 	{
-		delete [] (*it)->data;
-		delete *it;
+		delete[] p->data;
+		delete p;
 	}
 }
 
@@ -114,13 +117,13 @@ void VideoCacheThread::UpdateCacheWindow(int index)
 	_mutex_mapExclusiveAccess.unlock();
 
 	// 2. LOAD missing (iLow -> iHigh ensures correct order)
-	for (int i = m_center; i <= iHigh; ++i)
+	for (int i = m_center; i <= iHigh && i <= iTotalFrames-1; ++i)
 	{
 		if (!ExistsInCache(i))
 			InsertIntoCache(i);
 	}
 
-	for (int i = iLow; i < m_center; ++i)
+	for (int i = iLow; i < m_center && i <= iTotalFrames-1; ++i)
 	{
 		if (!ExistsInCache(i))
 			InsertIntoCache(i);

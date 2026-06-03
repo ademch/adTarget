@@ -60,6 +60,8 @@ protected:
 
 private:
 
+	int iTotalFrames;
+
 	void Worker();
 
 	void InsertIntoCache(int index);
