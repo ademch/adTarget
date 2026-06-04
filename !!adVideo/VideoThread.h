@@ -30,7 +30,6 @@ public:
 	void Stop();
 
 	FrameItem* GetFrame(int index);
-	FrameItem* GetFrameByTime(double fSeconds, int& index);
 	void UpdateCacheWindow(int index);
 
 protected:

@@ -52,11 +52,14 @@ public:
 		}
 	}
 
-	void SetSelection(void* origin, double _fSelectionStart, double _fSelectionEnd)
+	void SetSelection0_1(void* origin, double _fPosSelStart0_1, double _fPosSelEnd0_1)
 	{
-		if ( fabs(_fSelectionStart - fPosSelStart0_1) < 1e-6 &&
-			 fabs(_fSelectionEnd   - fPosSelEnd0_1) < 1e-6 )
+		if ( fabs(_fPosSelStart0_1 - fPosSelStart0_1) < 1e-6 &&
+			 fabs(_fPosSelEnd0_1   - fPosSelEnd0_1) < 1e-6 )
 			return;
+
+		fPosSelStart0_1 = _fPosSelStart0_1;
+		fPosSelEnd0_1   = _fPosSelEnd0_1;
 
 		//for (auto& listener : listenersPos)
 		//	listener(origin, _fPos0_1);
@@ -100,6 +103,12 @@ public:
 	double PosMarker0_1()
 	{
 		return fPosMarker0_1;
+	}
+
+	void PosSel10msUnits(int& iStart10msUnits, int& iEnd10msUnits)
+	{
+		iStart10msUnits = int(round(fPosSelStart0_1*iDuration10msUnit));
+		iEnd10msUnits   = int(round(fPosSelEnd0_1  *iDuration10msUnit));
 	}
 
 	void subscribeForPos(std::function<void(void*, double)> cb)

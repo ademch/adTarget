@@ -210,29 +210,3 @@ FrameItem* VideoCacheThread::GetFrame(int index)
 		return it->second;
 }
 
-
-FrameItem* VideoCacheThread::GetFrameByTime(double _fS, int& indexLastRequested)
-{
-	std::lock_guard<std::mutex> lock(_mutex_mapExclusiveAccess);
-
-		SetPlayhead(indexLastRequested);
-	
-		// find iterator of last accessed frame and use it as a seed to search forward 
-		auto it = m_cache.find(indexLastRequested);
-
-		if (it == m_cache.end()) return NULL;
-
-		while (true)
-		{
-			// does next frame exist in cache and does it go earlier than asked
-			if ( (std::next(it) != m_cache.end()) && (std::next(it)->second->fS < _fS + 0.001) )
-				++it;
-			else
-				break;
-		}
-
-		indexLastRequested = it->first;
-
-		return it->second;
-}
-
