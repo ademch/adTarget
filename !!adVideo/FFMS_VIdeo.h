@@ -20,7 +20,7 @@ public:
 
 	void LoadMPEG(const char* _filename);
 
-	int NextIndexAfter(double value);
+	int NextIndexOrEqualFromTime(double value);
 
 	std::vector<double> liIndex;	// seconds
 	

@@ -247,9 +247,10 @@ void FFMS_Video::BuildPTSIndex(FFMS_VideoSource* videoSource)
 }
 
 
-int FFMS_Video::NextIndexAfter(double fS)
+int FFMS_Video::NextIndexOrEqualFromTime(double fS)
 {
-	auto it = std::upper_bound(liIndex.begin(), liIndex.end(), fS);
+	// lower_bound returns first element greater than or equal to fS
+	auto it = std::lower_bound(liIndex.begin(), liIndex.end(), fS);
 
 	if (it == liIndex.end())
 		return -1;
