@@ -236,6 +236,3 @@ FrameItem* VideoCacheThread::GetFrameByTime(double _fS, int& indexLastRequested)
 		return it->second;
 }
 
-
-
-
