@@ -111,6 +111,11 @@ public:
 		iEnd10msUnits   = int(round(fPosSelEnd0_1  *iDuration10msUnit));
 	}
 
+	double PosSelStart0_1()
+	{
+		return fPosSelStart0_1;
+	}
+
 	void subscribeForPos(std::function<void(void*, double)> cb)
 	{
 		listenersPos.push_back(std::move(cb));
