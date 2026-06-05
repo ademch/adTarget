@@ -28,6 +28,9 @@ inline double sqr(double);
 struct Vec2
 {	float X; float Y; };
 
+struct Vec2i
+{	int X; int Y; };
+
 struct Vec3
 {	union { struct {float X; float Y; float Z;}; 
             float ar[3]; 
@@ -113,6 +116,8 @@ struct SMeshBezier4x4
 float getRandomMinMax( float fMin, float fMax );
 Vec3  getRandomVector( void );
 Vec3  getRandomVector(Vec3 vInput, float fAngle );
+
+Vec2i Vecc2i(int x=0,int y=0);
 
 Vec2 Vecc2(float x=0.0,float y=0.0);
 

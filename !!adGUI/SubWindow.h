@@ -107,6 +107,8 @@ public:
 	int Width()  { return m_iWidth;  }
 	int Height() { return m_iHeight; }
 
+	int BottomLeftX()  { return m_iBottomLeftX; }
+	int BottomLeftY()  { return m_iBottomLeftY; }
 
 protected:
 

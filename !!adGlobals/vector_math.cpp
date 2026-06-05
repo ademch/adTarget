@@ -71,6 +71,11 @@ Vec3 cpuPipelineVertex3fv(const Vec3& vCPU_in)
 Vec2 Vecc2(float x,float y)
 {
 	return {x, y};
+}
+
+Vec2i Vecc2i(int x,int y)
+{
+	return {x, y};
 }	
 
 VecUB4 VeccUB4(unsigned char R,unsigned char G,unsigned char B,unsigned char A)
