@@ -156,7 +156,7 @@ bool OpenGLSubWindowWithGUI::PassiveMotionFuncGUI(int x, int y)
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 		Vec3d v3DCoords;
-		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		gluUnProjectFriendlyZ(x, y, 0.5, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 		bool bResult = false;
 		for (auto iterElement : liGUI_Elements)
@@ -175,7 +175,7 @@ bool OpenGLSubWindowWithGUI::MouseFuncGUI(int button, int state, int x, int y)
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 		Vec3d v3DCoords;
-		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		gluUnProjectFriendlyZ(x, y, 0.5, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 		for (auto iterElement : liGUI_Elements)
 		{
@@ -191,7 +191,7 @@ void OpenGLSubWindowWithGUI::MotionFuncGUI(int x, int y)
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 		Vec3d v3DCoords;
-		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		gluUnProjectFriendlyZ(x, y, 0.5, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 		for (auto iterElement : liGUI_Elements)
 			iterElement->Drag(int(v3DCoords.X), int(v3DCoords.Y));
@@ -202,7 +202,7 @@ bool OpenGLSubWindowWithGUI::MouseWheelFuncGUI(int state, int delta, int x, int 
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 		Vec3d v3DCoords;
-		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		gluUnProjectFriendlyZ(x, y, 0.5, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 		for (auto iterElement : liGUI_Elements)
 		{
@@ -218,7 +218,7 @@ bool OpenGLSubWindowWithGUI::MouseHWheelFuncGUI(int state, int delta, int x, int
 	SetupGraphicsPipelineWithIdentityModelViewMatrix();
 
 		Vec3d v3DCoords;
-		gluUnProjectFriendly(x, y, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
+		gluUnProjectFriendlyZ(x, y, 0.5, 0, v3DCoords.X, v3DCoords.Y, v3DCoords.Z);
 
 		for (auto iterElement : liGUI_Elements)
 		{

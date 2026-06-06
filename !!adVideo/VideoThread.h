@@ -14,7 +14,6 @@ struct FrameItem
 {
 	int      width;
 	int      height;
-	double   fS;
 	uint8_t* data;
 };
 

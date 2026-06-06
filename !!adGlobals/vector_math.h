@@ -21,6 +21,8 @@ enum
 #define RADIANS_TO_DEGREES  (180.0f/PI)
 #define M_SQRT3             1.7320508075688772935274463415059
 
+#define CLAMP(x, lo, hi) ((x) < (lo) ? (lo) : ((x) > (hi) ? (hi) : (x)))
+
 inline float sqr(float);
 inline double sqr(double);
 

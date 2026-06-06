@@ -176,26 +176,30 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 {
 	GUI_Element::Clicked(button, state, x, y);
 
-	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-	// The matrix is specially organized in a way the world coordinates (-300...300)
-	// become a peephole with N times greater precision than 1/(600)
-	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
-
 	// special case, component is symmetric along zero
-	if ((ptPeep.X > posx)               && (ptPeep.X < posx + m_iWidth) &&
-		(ptPeep.Y > posy - m_iHeight/2) && (ptPeep.Y < posy + m_iHeight/2))
+	if ((x >= posx)               && (x <= posx + m_iWidth) &&
+		(y >  posy - m_iHeight/2) && (y <  posy + m_iHeight/2))
 	{
-		if (!bEnabled) return false;
+		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+		// The matrix is specially organized in a way the world coordinates (-300...300)
+		// become a peephole with N times greater precision than 1/(600)
+		Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
-		if (state==GLUT_DOWN)
+		// special case, component is symmetric along zero
+		if ((ptPeep.X > posx) && (ptPeep.X < posx + m_iWidth))
 		{
-			//          float      int
-			m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
+			if (!bEnabled) return false;
 
-			if (OnChange != NULL) OnChange(m_fPos01);
+			if (state==GLUT_DOWN)
+			{
+				//          float      int
+				m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
 
-			bMouseButtonPressed = true;
-			return true;
+				if (OnChange != NULL) OnChange(m_fPos01);
+
+				bMouseButtonPressed = true;
+				return true;
+			}
 		}
 	}
 
@@ -209,19 +213,23 @@ bool VideoSlider::Drag(int x, int y)
 {
 	GUI_Element::Drag(x, y);
 
-	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-	// The matrix is specially organized in a way the world coordinates (-300...300)
-	// become a peephole with N times greater precision than 1/(600)
-	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
-
-	if (bMouseButtonPressed && (ptPeep.X >= posx) && (ptPeep.X <= posx + m_iWidth) )
+	// special case, component is symmetric along zero
+	if ((x >= posx) && (x <= posx + m_iWidth))
 	{
-		//          float      int
-		m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
+		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
+		// The matrix is specially organized in a way the world coordinates (-300...300)
+		// become a peephole with N times greater precision than 1/(600)
+		Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
-		if (OnChange != NULL) OnChange(m_fPos01);
+		if ((bMouseButtonPressed) && (ptPeep.X >= posx) && (ptPeep.X <= posx + m_iWidth) )
+		{
+			//          float      int
+			m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
 
-		return true;
+			if (OnChange != NULL) OnChange(m_fPos01);
+
+			return true;
+		}
 	}
 	return false;
 }
@@ -231,14 +239,9 @@ bool VideoSlider::Hover(int x, int y)
 {
 	GUI_Element::Hover(x, y);
 
-	// Transform-scale input world coords of a slider using matrix from HorScrollBar.
-	// The matrix is specially organized in a way the world coordinates (-300...300)
-	// become a peephole with N times greater precision than 1/(600)
-	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
-
 	// special case, component is symmetric along zero
-	if ((ptPeep.X >= posx)               && (ptPeep.X <= posx + m_iWidth) &&
-		(ptPeep.Y >  posy - m_iHeight/2) && (ptPeep.Y <  posy + m_iHeight/2))
+	if ((x >= posx)               && (x <= posx + m_iWidth) &&
+		(y >  posy - m_iHeight/2) && (y <  posy + m_iHeight/2))
 	{
 		bFocused = bEnabled;
 		if (bEnabled)

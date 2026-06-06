@@ -1,10 +1,5 @@
 #include "stdafx.h"
-#include <stdio.h>
 #include <assert.h>
-#include <Windows.h>
-
-#include <iostream>
-
 #include "vector_math.h"
 
 inline float  sqr(float a)  {return a*a;}

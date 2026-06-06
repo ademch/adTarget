@@ -180,19 +180,6 @@ FrameItem* VideoCacheThread::LoadFrameFromStream(int indexFrame)
 
 	memcpy(frameItem->data, frame->Data[0], frame->Linesize[0]*frame->ScaledHeight);
 
-	////////////////
-
-	FFMS_Track* videoTrack = FFMS_GetTrackFromVideo(videoSource);
-	const FFMS_FrameInfo* info = FFMS_GetFrameInfo(videoTrack, indexFrame);
-
-	int64_t pts = info->PTS;
-
-	const FFMS_TrackTimeBase* tb = FFMS_GetTimeBase(videoTrack);
-
-	frameItem->fS = (double)pts * (double)tb->Num/(double)tb->Den * 0.001;
-
-	////////////////
-
 	return frameItem;
 }
 

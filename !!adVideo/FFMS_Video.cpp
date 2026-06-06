@@ -18,11 +18,13 @@ FFMS_Video::~FFMS_Video()
 	videoCacheThread->Stop();
 	delete videoCacheThread;
 
-	audioThread->Stop();
-	delete audioThread;
-
 	if (audioSource)
+	{
+		audioThread->Stop();
+		delete audioThread;
+
 		FFMS_DestroyAudioSource(audioSource);
+	}
 	if (videoSource)
 		FFMS_DestroyVideoSource(videoSource);
 }
@@ -59,14 +61,17 @@ void FFMS_Video::LoadMPEG(const char* _filename)
 	audioSource = LoadMPEG_CreateAudioSource(_filename, index);
 	LoadMPEG_PrepareAudioFormat(audioSource);
 
-	// Create sound source
-	alGenSources(1, &idSndSource);
-	SoundAL::SetSourceDefaultParams(idSndSource);
+	if (audioSource)
+	{
+		// Create sound source
+		alGenSources(1, &idSndSource);
+		SoundAL::SetSourceDefaultParams(idSndSource);
 
-	audioThread = new AudioThread(audioSource, idSndSource, 4);
-	audioThread->ParseSourceProperties();
-	audioThread->EnqueueInitialBuffers();
-	//audioThread->Start();
+		audioThread = new AudioThread(audioSource, idSndSource, 4);
+		audioThread->ParseSourceProperties();
+		audioThread->EnqueueInitialBuffers();
+		//audioThread->Start();
+	}
 
 	videoCacheThread = new VideoCacheThread(videoSource, 24, 6);
 	videoCacheThread->UpdateCacheWindow(0);
@@ -141,8 +146,9 @@ FFMS_AudioSource* FFMS_Video::LoadMPEG_CreateAudioSource(const char* sourcefile,
 	int trackno = FFMS_GetFirstTrackOfType(index, FFMS_TYPE_AUDIO, &errinfo);
 	if (trackno < 0)
 	{
-		// no video tracks found in the file, this is bad and you should handle it
+		// no audio tracks found in the file
 		printf("%s\n", errinfo.Buffer);
+		return NULL;
 	}
 
 	printf("Track %d: AUDIO\n", trackno);
@@ -209,6 +215,8 @@ void FFMS_Video::LoadMPEG_PrepareAudioFormat(FFMS_AudioSource* audiosource)
 	FFMS_ErrorInfo errinfo;
 	errinfo.Buffer	   = errmsg;
 	errinfo.BufferSize = sizeof(errmsg);
+
+	if (!audiosource) return;
 
 	// Retrieve video properties so we know what we're getting
 	const FFMS_AudioProperties *audioprops = FFMS_GetAudioProperties(audiosource);
