@@ -42,6 +42,10 @@ protected:
 
 	bool DrawTicks(float count, float fThickness, float fHeight, const Matr4& matTransform);
 	bool DrawMinuteDigits(float count, const Matr4& matTransform);
+
+private:
+
+	HCURSOR hCurLeftRight;
 };
 
 

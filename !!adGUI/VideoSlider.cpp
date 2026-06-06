@@ -23,6 +23,8 @@ VideoSlider::VideoSlider(int px, int py, int _height):
 	bFocused = false;
 	vColor_focused   = Vecc3(0.1, 0.8 ,0.1);
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
+
+	hCurLeftRight     = LoadCursorFromFileW(L"Cursors\\aero_arrowLeftRight.cur");
 }
 
 void VideoSlider::SetPos0_1(double _val)
@@ -239,7 +241,18 @@ bool VideoSlider::Hover(int x, int y)
 		(ptPeep.Y >  posy - m_iHeight/2) && (ptPeep.Y <  posy + m_iHeight/2))
 	{
 		bFocused = bEnabled;
-		return true;
+		if (bEnabled)
+		{
+			if (GetCursor() != hCurLeftRight)
+			{
+				glutSetCursor(200);
+				SetCursor(hCurLeftRight);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	bFocused = false;

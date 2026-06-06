@@ -97,7 +97,7 @@ bool HorScrollBar::Hover(int x, int y)
 		(y > posy) && (y < posy + m_iHeight + 1))
 	{
 		bFocused = bEnabled;
-		return true;
+		return false;
 	}
 
 	bFocused = false;
