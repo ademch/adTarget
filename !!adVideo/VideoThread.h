@@ -22,7 +22,7 @@ class VideoCacheThread
 {
 public:
 
-	VideoCacheThread(FFMS_VideoSource* _videoSource, int _iBehind, int _iAhead);
+	VideoCacheThread(FFMS_VideoSource* _videoSource, int maxItems, int hysteresis);
 	~VideoCacheThread();
 
 	void Start();

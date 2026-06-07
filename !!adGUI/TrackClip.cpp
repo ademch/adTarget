@@ -180,7 +180,7 @@ bool TrackClip::Hover(int x, int y)
 		else
 			glutSetCursor(GLUT_CURSOR_INHERIT);
 
-		return false;
+		return true;
 	}
 
 	bFocused = false;

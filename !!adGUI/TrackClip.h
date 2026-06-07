@@ -43,12 +43,6 @@ public:
 
 	void Resize(int iWidth, int iHeight) override;
 
-	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
-	{
-		m_iStartPos10msUnits = _iStartPos10msTicks;
-		m_iLength10msUnits   = _iLength10msTicks;
-	}
-
 	void Draw() override;
 
 	bool Clicked(int button, int state, int x, int y) override;
@@ -60,6 +54,12 @@ public:
 
 	// the track this clip belongs to
 	int      iTrack;
+
+	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
+	{
+		m_iStartPos10msUnits = _iStartPos10msTicks;
+		m_iLength10msUnits   = _iLength10msTicks;
+	}
 
 	ClipType mediaType;
 	int      m_iLength10msUnits;
@@ -88,8 +88,6 @@ protected:
 
 	bool bFocused;
 
-	float iBeginDragX, iBeginDragY;
-
 	float xImmTransl;
 	float xImmBeg;
 	float xImmEnd;
@@ -101,6 +99,10 @@ protected:
 
 	float FindClipOnTrackBefore_TailPx(int iTrack, int iPos);
 	float FindClipOnTrackAfter_HeadPx(int iTrack, int iPos);
+
+private:
+
+	float iBeginDragX, iBeginDragY;
 
 };
 

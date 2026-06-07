@@ -73,7 +73,7 @@ void FFMS_Video::LoadMPEG(const char* _filename)
 		//audioThread->Start();
 	}
 
-	videoCacheThread = new VideoCacheThread(videoSource, 24, 6);
+	videoCacheThread = new VideoCacheThread(videoSource, 30, 5);
 	videoCacheThread->UpdateCacheWindow(0);
 	videoCacheThread->Start();
 
