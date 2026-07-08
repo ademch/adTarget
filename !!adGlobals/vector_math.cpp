@@ -747,6 +747,18 @@ Matr4 u;
 	return u;
 }
 
+Matr4 Mat4MakeScale( const Vec3& vScale )
+{
+	Matr4 u;
+	u = Mat4MakeIdent();
+
+	u.m[0][0] = vScale.X;
+	u.m[1][1] = vScale.Y;
+	u.m[2][2] = vScale.Z;
+
+	return u;
+}
+
 Matr4 Mat4MakeRot( const float fAngleDeg, const Vec3& axis )
 {
 Matr4 u;
@@ -1732,4 +1744,98 @@ Vec2 VecHatCW(const Vec2& v)
 Vec2 VecHatCCW(const Vec2& v)
 {
     return Vecc2(-v.Y, v.X);
+}
+
+Vec3 Lerp(const Vec3& a, const Vec3& b, float t)
+{
+	return	{	
+				a.X + (b.X - a.X) * t,
+				a.Y + (b.Y - a.Y) * t,
+				a.Z + (b.Z - a.Z) * t
+			};
+}
+
+TRSTransform Mat4Decompose(const Matr4& m)
+{
+	TRSTransform t;
+
+	// TRANSLATION
+	t.vTranslation =
+	{
+		m.m[0][3],
+		m.m[1][3],
+		m.m[2][3]
+	};
+
+	// SCALE
+	Vec3 x =
+	{
+		m.m[0][0],
+		m.m[1][0],
+		m.m[2][0]
+	};
+
+	Vec3 y =
+	{
+		m.m[0][1],
+		m.m[1][1],
+		m.m[2][1]
+	};
+
+	Vec3 z =
+	{
+		m.m[0][2],
+		m.m[1][2],
+		m.m[2][2]
+	};
+
+	t.vScale.X = VecLength(x);
+	t.vScale.Y = VecLength(y);
+	t.vScale.Z = VecLength(z);
+
+	x = x / t.vScale.X;
+	y = y / t.vScale.Y;
+	z = x / t.vScale.Z;
+
+	// ROTATION
+	Matr4 mRot = Mat4MakeIdent();
+	mRot.m[0][0]=x.X; mRot.m[1][0]=x.Y; mRot.m[2][0]=x.Z;
+	mRot.m[0][1]=y.X; mRot.m[1][1]=y.Y; mRot.m[2][1]=y.Z;
+	mRot.m[0][2]=z.X; mRot.m[1][2]=z.Y; mRot.m[2][2]=z.Z;
+
+	t.qRotation = Quaternion::FromMatrix(mRot);
+
+	return t;
+}
+
+
+TRSTransform TRSTransformInterpolate(const TRSTransform& a, const TRSTransform& b, float t)
+{
+	TRSTransform r;
+
+	r.vTranslation = Lerp(a.vTranslation, b.vTranslation, t);
+	r.vScale       = Lerp(a.vScale, b.vScale, t);
+	r.qRotation    = Quaternion::Slerp(a.qRotation, b.qRotation, t);
+
+	return r;
+}
+
+
+Matr4 Matr4Compose(const TRSTransform& tc)
+{
+	Matr4 T = Mat4MakeTrans(tc.vTranslation);
+	Matr4 S = Mat4MakeScale(tc.vScale);
+	Matr4 R = tc.qRotation.ToMatrix();
+
+	return T * R * S;
+}
+
+
+Matr4 Mat4Interpolate(const Matr4& A, const Matr4& B, float t)
+{
+	TRSTransform ta = Mat4Decompose(A);
+	TRSTransform tb = Mat4Decompose(B);
+	TRSTransform tc = TRSTransformInterpolate(ta, tb, t);
+
+	return Matr4Compose(tc);
 }

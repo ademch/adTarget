@@ -4,6 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <vector>
+#include "Quaternion.h"
 
 enum
 { X, Y, Z, W };
@@ -23,7 +24,7 @@ enum
 
 #define CLAMP(x, lo, hi) ((x) < (lo) ? (lo) : ((x) > (hi) ? (hi) : (x)))
 
-inline float sqr(float);
+inline float  sqr(float);
 inline double sqr(double);
 
 
@@ -34,7 +35,9 @@ struct Vec2i
 {	int X; int Y; };
 
 struct Vec3
-{	union { struct {float X; float Y; float Z;}; 
+{	
+	union {
+			struct {float X; float Y; float Z;}; 
             float ar[3]; 
           };
 };
@@ -69,7 +72,7 @@ struct TriVertex
 	Vec3 v;
 };
 
-//Helper structure defining triangle dereferenced from TriVertexIndex structure
+// Helper structure defining triangle dereferenced from TriVertexIndex structure
 struct Triangle
 {	TriVertex v0,v1,v2;
 };
@@ -115,16 +118,23 @@ struct SMeshBezier4x4
 	float w[4][4];
 };
 
+struct TRSTransform
+{
+	Vec3 vTranslation;
+	Vec3 vScale;
+	Quaternion qRotation;
+};
+
+
 float getRandomMinMax( float fMin, float fMax );
 Vec3  getRandomVector( void );
 Vec3  getRandomVector(Vec3 vInput, float fAngle );
 
-Vec2i Vecc2i(int x=0,int y=0);
+Vec2  Vecc2(float x=0.0, float y=0.0);
+Vec2i Vecc2i(int x=0, int y=0);
 
-Vec2 Vecc2(float x=0.0,float y=0.0);
-
-VecUB4 VeccUB4(unsigned char R=0,unsigned char G=0,unsigned char B=0,unsigned char A=255);//constructor
-VecUB3 VeccUB3(unsigned char R=0,unsigned char G=0,unsigned char B=0);//constructor
+VecUB4 VeccUB4(unsigned char R=0, unsigned char G=0, unsigned char B=0, unsigned char A=255);	// constructor
+VecUB3 VeccUB3(unsigned char R=0, unsigned char G=0, unsigned char B=0);						// constructor
 
 
 // single precision
@@ -158,8 +168,8 @@ Vec3 operator*(Vec3 v1,float s);
 Vec2 operator*(Vec2 v1, float s);
 Vec3 operator*(float s, Vec3 v1);
 Vec2 operator*(float s, Vec2 v1);
-Vec3  operator/(Vec3 v,float s);
-Vec2  operator/(Vec2 v, float s);
+Vec3 operator/(Vec3 v,float s);
+Vec2 operator/(Vec2 v, float s);
 float operator^(Vec3 v1,Vec3 v2);	  // DOT product
 Vec3 operator*(Vec3 v1,Vec3 v2);      // CROSS product
 Vec2 operator-(Vec2 v1, Vec2 v2);
@@ -218,6 +228,8 @@ Vec2   VecMix(Vec2 v1, Vec2 v2, float t);
 Vec3   VecMix(Vec3 v1, Vec3 v2, float t);
 VecUB4 VecMix(VecUB4 v1, VecUB4 v2, float t);
 
+Vec3   Lerp(const Vec3& a, const Vec3& b, float t);
+
 Vec3   VecClampOne(Vec3 v);
 Vec3   VecClampBYTE(Vec3 v);
 
@@ -240,6 +252,7 @@ Matr4d Mat4dMakeRot( const double fAngleDeg, const Vec3d& axis );
 Matr4  Mat4MakeTrans( const float x, const float y, const float z );
 Matr4  Mat4MakeTrans( const Vec3& dist );
 Matr4  Mat4MakeScale( const float x_scale, const float y_scale, const float z_scale );
+Matr4  Mat4MakeScale( const Vec3& vScale );
 
 Matr4 Mat4MakeTransformCoordSystem( const Vec3& v1,  const Vec3& v2,
                                     const Vec3& v1n, const Vec3& v2n);
@@ -249,8 +262,14 @@ Matr4 Mat4MakeTransformFromVectors( const Vec3& v1,  const Vec3& v2,
 Matr4 Mat4MakeTransformFromVectors( const Vec3& orig,  const Vec3& v1,  const Vec3& v2,
 									const Vec3& orign, const Vec3& v1n, const Vec3& v2n);
 
+TRSTransform TRSTransformInterpolate(const TRSTransform& a, const TRSTransform& b, float t);
+TRSTransform Mat4Decompose(const Matr4& m);
+Matr4        Matr4Compose(const TRSTransform& tc);
+Matr4        Mat4Interpolate(const Matr4& A, const Matr4& B, float t);
+
 void normalCalcPackSmooth(TriVertex* v0,TriVertex* v1, TriVertex* v2);
 void normalCalcPack(TriVertex* v0,TriVertex* v1, TriVertex* v2);
+
 
 // Intersection funcs
 bool intersectRayTriangle( Vec3 v0, Vec3 v1, Vec3 v2, const Vec3 ray_orig, const Vec3 ray_dir,

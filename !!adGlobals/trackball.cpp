@@ -258,8 +258,7 @@ trackballSubWindow(float q[4], float p1x, float p1y, float p2x, float p2y,
 /*
  *  Given an axis and angle, compute quaternion.
  */
-void
-axis_to_quat(float a[3], float phi, float q[4])
+void axis_to_quat(float a[3], float phi, float q[4])
 {
     vnormal(a);
     vcopy(a,q);
@@ -271,15 +270,17 @@ axis_to_quat(float a[3], float phi, float q[4])
  * Project an x,y pair onto a sphere of radius r OR a hyperbolic sheet
  * if we are away from the center of the sphere.
  */
-static float
-tb_project_to_sphere(float r, float x, float y)
+static float tb_project_to_sphere(float r, float x, float y)
 {
     float d, t, z;
 
     d = sqrt(x*x + y*y);
-    if (d < r * 0.70710678118654752440) {    /* Inside sphere */
+    if (d < r * 0.70710678118654752440)
+	{   /* Inside sphere */
         z = sqrt(r*r - d*d);
-    } else {           /* On hyperbola */
+    }
+	else
+	{   /* On hyperbola */
         t = r / 1.41421356237309504880;
         z = t*t / d;
     }
@@ -299,8 +300,7 @@ tb_project_to_sphere(float r, float x, float y)
 
 #define RENORMCOUNT 97
 
-void
-negate_quat(float q[4], float nq[4])
+void negate_quat(float q[4], float nq[4])
 {
     nq[0] = -q[0];
     nq[1] = -q[1];
@@ -308,16 +308,15 @@ negate_quat(float q[4], float nq[4])
     nq[3] = q[3];
 }
 
-void
-add_quats(float q1[4], float q2[4], float dest[4])
+void add_quats(float q1[4], float q2[4], float dest[4])
 {
     static int count=0;
     float t1[4], t2[4], t3[4];
     float tf[4];
 
 #if 0
-printf("q1 = %f %f %f %f\n", q1[0], q1[1], q1[2], q1[3]);
-printf("q2 = %f %f %f %f\n", q2[0], q2[1], q2[2], q2[3]);
+	printf("q1 = %f %f %f %f\n", q1[0], q1[1], q1[2], q1[3]);
+	printf("q2 = %f %f %f %f\n", q2[0], q2[1], q2[2], q2[3]);
 #endif
 
     vcopy(q1,t1);
@@ -332,7 +331,7 @@ printf("q2 = %f %f %f %f\n", q2[0], q2[1], q2[2], q2[3]);
     tf[3] = q1[3] * q2[3] - vdot(q1,q2);
 
 #if 0
-printf("tf = %f %f %f %f\n", tf[0], tf[1], tf[2], tf[3]);
+	printf("tf = %f %f %f %f\n", tf[0], tf[1], tf[2], tf[3]);
 #endif
 
     dest[0] = tf[0];
@@ -358,8 +357,7 @@ printf("tf = %f %f %f %f\n", tf[0], tf[1], tf[2], tf[3]);
  * - Pletinckx, D., Quaternion calculus as a basic tool in computer
  *   graphics, The Visual Computer 5, 2-13, 1989.
  */
-static void
-normalize_quat(float q[4])
+static void normalize_quat(float q[4])
 {
     int i;
     float mag;
@@ -379,7 +377,7 @@ void build_rotmatrix(/*out*/float m[4][4], float q[4])
     m[0][3] = 0.0;
 
     m[1][0] = 2.0 * (q[0] * q[1] + q[2] * q[3]);
-    m[1][1]= 1.0 - 2.0 * (q[2] * q[2] + q[0] * q[0]);
+    m[1][1] = 1.0 - 2.0 * (q[2] * q[2] + q[0] * q[0]);
     m[1][2] = 2.0 * (q[1] * q[2] - q[0] * q[3]);
     m[1][3] = 0.0;
 
