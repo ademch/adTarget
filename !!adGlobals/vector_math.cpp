@@ -1760,34 +1760,12 @@ TRSTransform Mat4Decompose(const Matr4& m)
 	TRSTransform t;
 
 	// TRANSLATION
-	t.vTranslation =
-	{
-		m.m[0][3],
-		m.m[1][3],
-		m.m[2][3]
-	};
+	t.vTranslation = { m.m[3][0], m.m[3][1], m.m[3][2] };
 
 	// SCALE
-	Vec3 x =
-	{
-		m.m[0][0],
-		m.m[1][0],
-		m.m[2][0]
-	};
-
-	Vec3 y =
-	{
-		m.m[0][1],
-		m.m[1][1],
-		m.m[2][1]
-	};
-
-	Vec3 z =
-	{
-		m.m[0][2],
-		m.m[1][2],
-		m.m[2][2]
-	};
+	Vec3 x =     	 { m.m[0][0], m.m[0][1], m.m[0][2] };
+	Vec3 y =   	     { m.m[1][0], m.m[1][1], m.m[1][2] };
+	Vec3 z = 	     { m.m[2][0], m.m[2][1], m.m[2][2] };
 
 	t.vScale.X = VecLength(x);
 	t.vScale.Y = VecLength(y);
@@ -1795,13 +1773,13 @@ TRSTransform Mat4Decompose(const Matr4& m)
 
 	x = x / t.vScale.X;
 	y = y / t.vScale.Y;
-	z = x / t.vScale.Z;
+	z = z / t.vScale.Z;
 
 	// ROTATION
 	Matr4 mRot = Mat4MakeIdent();
-	mRot.m[0][0]=x.X; mRot.m[1][0]=x.Y; mRot.m[2][0]=x.Z;
-	mRot.m[0][1]=y.X; mRot.m[1][1]=y.Y; mRot.m[2][1]=y.Z;
-	mRot.m[0][2]=z.X; mRot.m[1][2]=z.Y; mRot.m[2][2]=z.Z;
+	mRot.m[0][0]=x.X; mRot.m[0][1]=x.Y; mRot.m[0][2]=x.Z;
+	mRot.m[1][0]=y.X; mRot.m[1][1]=y.Y; mRot.m[1][2]=y.Z;
+	mRot.m[2][0]=z.X; mRot.m[2][1]=z.Y; mRot.m[2][2]=z.Z;
 
 	t.qRotation = Quaternion::FromMatrix(mRot);
 
@@ -1821,7 +1799,7 @@ TRSTransform TRSTransformInterpolate(const TRSTransform& a, const TRSTransform& 
 }
 
 
-Matr4 Matr4Compose(const TRSTransform& tc)
+Matr4 Mat4Compose(const TRSTransform& tc)
 {
 	Matr4 T = Mat4MakeTrans(tc.vTranslation);
 	Matr4 S = Mat4MakeScale(tc.vScale);
@@ -1837,5 +1815,5 @@ Matr4 Mat4Interpolate(const Matr4& A, const Matr4& B, float t)
 	TRSTransform tb = Mat4Decompose(B);
 	TRSTransform tc = TRSTransformInterpolate(ta, tb, t);
 
-	return Matr4Compose(tc);
+	return Mat4Compose(tc);
 }

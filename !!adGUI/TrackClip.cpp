@@ -44,6 +44,8 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 
 	stateClip = STATE_CLIP_IDLE;
 
+	bKeyframeEditing = false;
+
 	windowTool  = NULL;
 	textureIcon = NULL;
 
@@ -458,4 +460,15 @@ TrackClip* TrackClip::GetSelectedClip()
 			return *it;
 	}
 	return NULL;
+}
+
+
+double TrackClip::GetSelectedClipLocalTimeS()
+{
+	TrackClip* clip = TrackClip::GetSelectedClip();
+	if (!clip) return 0;	// eg welcome screen
+
+	int iPlayhead10msTicks = PositionMediator::Get()->Pos10msUnits();
+
+	return (iPlayhead10msTicks - clip->m_iStartPos10msUnits)/100.0;
 }

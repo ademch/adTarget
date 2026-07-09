@@ -12,7 +12,7 @@ public:
 
 	enum
 	{
-		ITEM_SPLIT  = 1,
+		ITEM_KEYFRAME_EDITING = 1,
 		ITEM_DELETE = 2
 	};
 
@@ -125,7 +125,7 @@ private:
 
 		switch (item)
 		{
-		case 0: cmd = ITEM_SPLIT;  break;
+		case 0: cmd = ITEM_KEYFRAME_EDITING;  break;
 		case 1: cmd = ITEM_DELETE; break;
 		}
 
@@ -173,7 +173,7 @@ private:
 			FillRect(hdc, &rc, bg);
 			DeleteObject(bg);
 
-			DrawItem(hdc, 0, TEXT("Split"));
+			DrawItem(hdc, 0, TEXT("Keyframes"));
 			DrawItem(hdc, 1, TEXT("Delete"));
 
 			// Border

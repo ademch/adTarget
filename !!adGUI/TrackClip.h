@@ -39,6 +39,7 @@ public:
 
 	static TrackClip* GetClip(OpenGLSubWindowWithGUI* wnd);
 	static TrackClip* GetSelectedClip();
+	static double     GetSelectedClipLocalTimeS();
 	static void       RemoveSelectedClip();
 
 	void Resize(int iWidth, int iHeight) override;
@@ -54,6 +55,8 @@ public:
 
 	// the track this clip belongs to
 	int      iTrack;
+
+	bool bKeyframeEditing;
 
 	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
 	{
