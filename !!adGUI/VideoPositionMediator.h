@@ -1,6 +1,7 @@
 #ifndef POSITONMEDIATOR_H
 #define POSITONMEDIATOR_H
 
+#include <algorithm>
 
 class PositionMediator
 {
@@ -11,17 +12,16 @@ class PositionMediator
 	double fPosSelEnd0_1;
 	double fPosMarker0_1;
 
-
-	std::vector<std::function<void(void*, double)>>		 listenersPos;
-	std::vector<std::function<void(void*, double, int)>> listenersPosInit;
-	std::vector<std::function<void(void*, double)>>		 listenersPosUpdateFromTimer;
-	std::vector<std::function<void(void*, double)>>		 listenersMarkerPos;
+	std::vector< std::pair<void*, std::function<void(void*, double)>> >		 listenersPos;
+	std::vector< std::pair<void*, std::function<void(void*, double, int)>> > listenersPosInit;
+	std::vector< std::pair<void*, std::function<void(void*, double)>> >		 listenersPosUpdateFromTimer;
+	std::vector< std::pair<void*, std::function<void(void*, double)>> >		 listenersMarkerPos;
 
 	PositionMediator()
 	{
 		iDuration10msUnit   = 0;
 
-		fPos0_1 = 0;
+		fPos0_1			= 0;
 		fPosSelStart0_1 = 0;
 		fPosSelEnd0_1   = 0;
 		fPosMarker0_1   = -1;
@@ -43,26 +43,26 @@ public:
 		fPos0_1 = _fPos;
 
 		for (auto& listener : listenersPos)
-			listener(origin, _fPos);
+			listener.second(origin, _fPos);
 
 		if (bUpdateFromTimer)
 		{
 			for (auto& listener : listenersPosUpdateFromTimer)
-				listener(origin, _fPos);
+				listener.second(origin, _fPos);
 		}
 	}
 
 	void SetSelection0_1(void* origin, double _fPosSelStart0_1, double _fPosSelEnd0_1)
 	{
 		if ( fabs(_fPosSelStart0_1 - fPosSelStart0_1) < 1e-6 &&
-			 fabs(_fPosSelEnd0_1   - fPosSelEnd0_1) < 1e-6 )
+			 fabs(_fPosSelEnd0_1   - fPosSelEnd0_1)   < 1e-6 )
 			return;
 
 		fPosSelStart0_1 = _fPosSelStart0_1;
 		fPosSelEnd0_1   = _fPosSelEnd0_1;
 
 		//for (auto& listener : listenersPos)
-		//	listener(origin, _fPos0_1);
+		//	listener.second(origin, _fPos0_1);
 	}
 
 	void SetMarker(void* origin, double _fPosMarker0_1)
@@ -73,7 +73,7 @@ public:
 		fPosMarker0_1 = _fPosMarker0_1;
 
 		for (auto& listener : listenersMarkerPos)
-			listener(origin, _fPosMarker0_1);
+			listener.second(origin, _fPosMarker0_1);
 	}
 
 	void Init(void* origin, double _fPos0_1, unsigned int _iDurationIn10msUnit)
@@ -82,7 +82,7 @@ public:
 		iDuration10msUnit = _iDurationIn10msUnit;
 
 		for (auto& listener : listenersPosInit)
-			listener(origin, _fPos0_1, _iDurationIn10msUnit);
+			listener.second(origin, _fPos0_1, _iDurationIn10msUnit);
 	}
 
 	int Duration10msUnits()
@@ -116,24 +116,39 @@ public:
 		return fPosSelStart0_1;
 	}
 
-	void subscribeForPos(std::function<void(void*, double)> cb)
+	// ----------------SUBSCRIPTION FUNCTIONS----------------------------------------
+
+	void subscribeForPos(void* owner, std::function<void(void*, double)> cb)
 	{
-		listenersPos.push_back(std::move(cb));
+		listenersPos.emplace_back(owner, std::move(cb));
 	}
 
-	void subscribeForMarker(std::function<void(void*, double)> cb)
+	void subscribeForMarker(void* owner, std::function<void(void*, double)> cb)
 	{
-		listenersMarkerPos.push_back(std::move(cb));
+		listenersMarkerPos.emplace_back(owner, std::move(cb));
 	}
 
-	void subscribeForPosInit(std::function<void(void*, double, int)> cb)
+	void subscribeForPosInit(void* owner, std::function<void(void*, double, int)> cb)
 	{
-		listenersPosInit.push_back(std::move(cb));
+		listenersPosInit.emplace_back(owner, std::move(cb));
 	}
 
-	void subscribeForPosUpdateFromTimer(std::function<void(void*, double)> cb)
+	void subscribeForPosUpdateFromTimer(void* owner, std::function<void(void*, double)> cb)
 	{
-		listenersPosUpdateFromTimer.push_back(std::move(cb));
+		listenersPosUpdateFromTimer.emplace_back(owner, std::move(cb));
+	}
+
+	// --------------UNSUBSCRIPTION FUNCTIONS--------------------------------------------
+
+	void unsubscribeForPos(void* owner)
+	{
+		listenersPos.erase( std::remove_if(	listenersPos.begin(),
+											listenersPos.end(),
+											[owner](const auto& l)
+											{
+												return l.first == owner;
+											}),
+											listenersPos.end() );
 	}
 
 };
