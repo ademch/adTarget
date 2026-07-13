@@ -14,7 +14,7 @@ int TrackClip::iSelected = 0;
 std::vector<TrackClip*> TrackClip::liClips;
 
 
-constexpr int const_iSnapPx       = 8;
+constexpr int const_iSnapPx       = 8;	// tracks are snapped to each other and to track start end boundary
 constexpr int const_iDragRadiusPx = 5;
 
 
@@ -241,7 +241,7 @@ bool TrackClip::Hover(int x, int y)
 		
 		bFocused = bEnabled;
 
-		if (abs(ptPeep.X - posx - m_iStartPos10msUnits*fPPU) < const_iDragRadiusPx*matrSliderNonInverted.m[0][0])
+		if (abs(ptPeep.X - posx - m_iStartPos10msUnits*fPPU)                        < const_iDragRadiusPx*matrSliderNonInverted.m[0][0])
 		{
 			glutSetCursor(GLUT_CURSOR_LEFT_RIGHT);
 			return true;

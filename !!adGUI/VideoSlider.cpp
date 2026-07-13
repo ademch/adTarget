@@ -3,8 +3,10 @@
 #include "../!!adGlobals/glut/glut.h"
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "VideoSlider.h"
-#include "../!!adGlobals/vector_math.h"
 #include "VideoPositionMediator.h"
+#include "TrackClip.h"
+
+const int iSnapPxToKeyframe = 4;
 
 extern GLFONT font;
 
@@ -185,7 +187,6 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 		// become a peephole with N times greater precision than 1/(600)
 		Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
-		// special case, component is symmetric along zero
 		if ((ptPeep.X > posx) && (ptPeep.X < posx + m_iWidth))
 		{
 			if (!bEnabled) return false;
@@ -213,7 +214,6 @@ bool VideoSlider::Drag(int x, int y)
 {
 	GUI_Element::Drag(x, y);
 
-	// special case, component is symmetric along zero
 	if ((x >= posx) && (x <= posx + m_iWidth))
 	{
 		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
@@ -225,6 +225,8 @@ bool VideoSlider::Drag(int x, int y)
 		{
 			//          float      int
 			m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
+
+			TryToSnapPositionToKeyframe(m_fPos01);
 
 			if (OnChange != NULL) OnChange(m_fPos01);
 
@@ -261,4 +263,51 @@ bool VideoSlider::Hover(int x, int y)
 	bFocused = false;
 
 	return false;
+}
+
+
+void VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
+{
+	TrackClip* clip = TrackClip::GetSelectedClip();
+	if (!clip) return;
+
+	PositionMediator* mediator = PositionMediator::Get();
+
+	// Pixels per 10ms
+	float fPPU = float(m_iWidth)/mediator->Duration10msUnits();
+
+	for (const auto& item : *(clip->liKeyframesTRS))
+	{
+		if (abs(item.time*100.0 + clip->m_iStartPos10msUnits - fPos0_1*mediator->Duration10msUnits()) <
+		   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
+		{
+			fPos0_1 = (item.time*100.0 + clip->m_iStartPos10msUnits)/mediator->Duration10msUnits();
+			return;
+		}
+	}
+
+	for (const auto& item : *(clip->liKeyframesMorphDst))
+	{
+		if (abs(item.time*100.0 + clip->m_iStartPos10msUnits - fPos0_1*mediator->Duration10msUnits()) <
+		   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
+		{
+			fPos0_1 = (item.time*100.0 + clip->m_iStartPos10msUnits)/mediator->Duration10msUnits();
+			return;
+		}
+	}
+
+	if (abs(clip->m_iStartPos10msUnits - fPos0_1*mediator->Duration10msUnits()) <
+	   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
+	{
+		fPos0_1 = double(clip->m_iStartPos10msUnits)/mediator->Duration10msUnits();
+		return;
+	}
+
+	if (abs(clip->m_iStartPos10msUnits + clip->m_iLength10msUnits - fPos0_1*mediator->Duration10msUnits()) <
+		(iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
+	{
+		fPos0_1 = double(clip->m_iStartPos10msUnits + clip->m_iLength10msUnits)/mediator->Duration10msUnits();
+		return;
+	}
+
 }
