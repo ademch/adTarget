@@ -52,6 +52,9 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 	fPPU = 1.0;
 
 	video = NULL;
+
+	liKeyframesTRS      = NULL;
+	liKeyframesMorphDst = NULL;
 }
 
 TrackClip::~TrackClip()
@@ -95,6 +98,76 @@ void TrackClip::Draw()
 					    24*fIconAspRatio*matrSliderNonInverted.m[0][0],	// width
 					    24,												// height
 					    11 );											// z
+
+	// Draw animated params timeline
+	if (bKeyframeEditing && liKeyframesTRS)
+	{
+		glColor3f(0.5, 0.0, 0.6);
+		glLineWidth(2.0);
+		glBegin(GL_LINE_STRIP);
+		for (const auto& item : *liKeyframesTRS)
+		{
+			Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.2*m_iHeight, 13);
+			glVertex3fv(&pt.X);
+		}
+		glEnd();
+
+		glColor3f(0.0, 0.0, 0.0);
+		glPointSize(8.0);
+		glBegin(GL_POINTS);
+			for (const auto& item : *liKeyframesTRS)
+			{
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.2*m_iHeight, 15);
+				glVertex3fv(&pt.X);
+			}
+		glEnd();
+
+		glColor3f(0.8, 0.0, 0.9);
+		glPointSize(6.0);
+		glBegin(GL_POINTS);
+			for (const auto& item : *liKeyframesTRS)
+			{
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.2*m_iHeight, 18);
+				glVertex3fv(&pt.X);
+			}
+		glEnd();
+
+	}
+
+	if (bKeyframeEditing && liKeyframesMorphDst)
+	{
+		glColor3f(0.0, 0.0, 0.8);
+		glLineWidth(2.0);
+		glBegin(GL_LINE_STRIP);
+			for (const auto& item : *liKeyframesMorphDst)
+			{
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.8*m_iHeight, 13);
+				glVertex3fv(&pt.X);
+			}
+		glEnd();
+
+		glColor3f(0.0, 0.0, 0.0);
+		glPointSize(8.0);
+		glBegin(GL_POINTS);
+			for (const auto& item : *liKeyframesMorphDst)
+			{
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.8*m_iHeight, 15);
+				glVertex3fv(&pt.X);
+			}
+		glEnd();
+
+		glColor3f(0.0, 0.0, 0.8);
+		glPointSize(6.0);
+		glBegin(GL_POINTS);
+			for (const auto& item : *liKeyframesMorphDst)
+			{
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.8*m_iHeight, 18);
+				glVertex3fv(&pt.X);
+			}
+		glEnd();
+
+	}
+
 
 }
 

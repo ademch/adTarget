@@ -3,6 +3,7 @@
 
 #include "gui_elementResizable.h"
 #include "../!!adGlobals/TextureDescriptor.h"
+#include "../!!adGlobals/VideoAnimatedParams.h"
 #include <functional>
 
 
@@ -57,6 +58,8 @@ public:
 	int      iTrack;
 
 	bool bKeyframeEditing;
+	std::vector<ParamKeyframeTRSTransform>* liKeyframesTRS;
+	std::vector<ParamKeyframePolyline2D>*   liKeyframesMorphDst;
 
 	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
 	{
@@ -80,6 +83,17 @@ public:
 	static std::vector<TrackClip*> liClips;
 
 	float ClipsFitsIntoGapOnTrackImmediate(int iTrack);
+
+	// ----------------ANIMATED PARAMS REGISTRATION----------------------------------
+	void RegisterTRSparam(std::vector<ParamKeyframeTRSTransform>* _liKeyframesTRS)
+	{
+		liKeyframesTRS = _liKeyframesTRS;
+	}
+
+	void RegisterMorphDSTparam(std::vector<ParamKeyframePolyline2D>* _liKeyframesMorphDst)
+	{
+		liKeyframesMorphDst = _liKeyframesMorphDst;
+	}
 
 protected:
 

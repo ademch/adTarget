@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+
 class PositionMediator
 {
 	int iDuration10msUnit;
@@ -19,12 +20,12 @@ class PositionMediator
 
 	PositionMediator()
 	{
-		iDuration10msUnit   = 0;
+		iDuration10msUnit = 0;
 
-		fPos0_1			= 0;
-		fPosSelStart0_1 = 0;
-		fPosSelEnd0_1   = 0;
-		fPosMarker0_1   = -1;
+		fPos0_1			  = 0;
+		fPosSelStart0_1   = 0;
+		fPosSelEnd0_1     = 0;
+		fPosMarker0_1     = -1;
 	}
 
 public:
