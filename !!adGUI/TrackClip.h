@@ -113,6 +113,7 @@ protected:
 private:
 
 	float iBeginDragX, iBeginDragY;
+	bool bDragInProgress;
 };
 
 

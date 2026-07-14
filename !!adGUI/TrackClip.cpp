@@ -16,12 +16,15 @@ std::vector<TrackClip*> TrackClip::liClips;
 
 constexpr int const_iSnapPx       = 8;	// tracks are snapped to each other and to track start end boundary
 constexpr int const_iDragRadiusPx = 5;
+constexpr int const_iDragStartPx  = 4;
 
 int TrackClip::iAutoIncrID = 0;
 
 TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 {
 	id   = _id;
+
+	bDragInProgress = false;
 
 	posx = px;
 	posy = py;
@@ -105,7 +108,7 @@ void TrackClip::Draw()
 			glColor3f(0.8, 0.0, 0.9);
 		else
 			glColor3f(0.6, 0.0, 0.7);
-		glLineWidth(1.0);
+		glLineWidth(2.0);
 		glBegin(GL_LINE_STRIP);
 		for (const auto& item : *liKeyframesTRS)
 		{
@@ -130,7 +133,7 @@ void TrackClip::Draw()
 			glColor3f(0.0, 0.2, 1.0);
 		else
 			glColor3f(0.0, 0.15, 0.75);
-		glLineWidth(1.0);
+		glLineWidth(2.0);
 		glBegin(GL_LINES);
 
 			for (size_t i = 0; i + 1 < liKeyframesMorphDst->size(); ++i)
@@ -342,6 +345,8 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 		}
 	}
 
+	bDragInProgress = false;
+
 	if (stateClip == STATE_CLIP_DRAG_POS)
 	{
 		m_iStartPos10msUnits += round(xImmTransl/fPPU);
@@ -391,6 +396,11 @@ bool TrackClip::Drag(int x, int y)
 	if (stateClip == STATE_CLIP_DRAG_POS)
 	{
 		dragNdrop_Clip = this;
+
+		if ((abs(x - iBeginDragX) < const_iDragStartPx) && !bDragInProgress)
+			return false;
+
+		bDragInProgress = true;
 
 		// Transform-scale input world coords of a slider using matrix from HorScrollBar.
 		// The matrix is specially organized in a way the world coordinates (-300...300)
@@ -503,7 +513,7 @@ void TrackClip::RegisterMorphDSTparam(std::vector<ParamKeyframePolyline2D>* _liK
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
 
 TrackClip* TrackClip::GetClip(OpenGLSubWindowWithGUI* wnd)
 {
