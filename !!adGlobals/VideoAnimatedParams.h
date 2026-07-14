@@ -44,6 +44,7 @@ public:
 	const std::vector<ParamKeyframeTRSTransform>* GetKeys() const;
 };
 
+
 class AnimatedParamPolyline2D
 {
 public:

@@ -26,7 +26,7 @@ float AnimatedParamFloat::Evaluate(double time)
 		{
 			double u = (time - a.time) / (b.time - a.time);
 
-			return a.value*(1.0f-u) + b.value*u;
+			return float( a.value*(1.0f-u) + b.value*u );
 		}
 	}
 
@@ -86,7 +86,7 @@ Matr4 AnimatedParamTRSTransform::Evaluate(double time)
 		{
 			double u = (time - a.time) / (b.time - a.time);
 
-			return Mat4Compose( TRSTransformInterpolate(a.value,b.value, u) );
+			return Mat4Compose( TRSTransformInterpolate(a.value,b.value, float(u)) );
 		}
 	}
 
@@ -130,11 +130,10 @@ const std::vector<ParamKeyframeTRSTransform>* AnimatedParamTRSTransform::GetKeys
 
 std::vector<Vec2> AnimatedParamPolyline2D::Evaluate(double time)
 {
+	std::vector<Vec2> empty;
+	
 	if (liKeys.empty())
-	{
-		std::vector<Vec2> empty;
 		return empty;
-	}
 
 	if (liKeys.size() == 1)
 		return liKeys[0].value;
@@ -152,16 +151,18 @@ std::vector<Vec2> AnimatedParamPolyline2D::Evaluate(double time)
 
 		if (time >= a.time && time <= b.time)
 		{
-			double u = (time - a.time) / (b.time - a.time);
+			// just do nothing in between different interpolation segments
+			if (a.value.size() != b.value.size())
+				return empty;
 
-			assert(a.value.size() == b.value.size());
+			double u = (time - a.time) / (b.time - a.time);
 
 			std::vector<Vec2> vNew;
 			vNew.reserve(a.value.size());
 
 			for (size_t i = 0; i < a.value.size(); ++i)
 			{
-				vNew.push_back( VecMix(a.value[i], b.value[i], u) );
+				vNew.push_back( VecMix(a.value[i], b.value[i], float(u)) );
 			}
 			
 			return vNew;

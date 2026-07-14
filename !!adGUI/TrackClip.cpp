@@ -44,8 +44,6 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 
 	stateClip = STATE_CLIP_IDLE;
 
-	bKeyframeEditing = false;
-
 	windowTool  = NULL;
 	textureIcon = NULL;
 
@@ -100,76 +98,70 @@ void TrackClip::Draw()
 					    11 );											// z
 
 	// Draw animated params timeline
-	if (bKeyframeEditing && liKeyframesTRS)
+	if (liKeyframesTRS)
 	{
-		glColor3f(0.5, 0.0, 0.6);
-		glLineWidth(2.0);
+		if (iSelected == id)
+			glColor3f(0.8, 0.0, 0.9);
+		else
+			glColor3f(0.6, 0.0, 0.7);
+		glLineWidth(1.0);
 		glBegin(GL_LINE_STRIP);
 		for (const auto& item : *liKeyframesTRS)
 		{
-			Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.2*m_iHeight, 13);
+			Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.25*m_iHeight, 13);
 			glVertex3fv(&pt.X);
 		}
 		glEnd();
 
-		glColor3f(0.0, 0.0, 0.0);
-		glPointSize(8.0);
+		glPointSize(7.0);
 		glBegin(GL_POINTS);
 			for (const auto& item : *liKeyframesTRS)
 			{
-				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.2*m_iHeight, 15);
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.25*m_iHeight, 15);
 				glVertex3fv(&pt.X);
 			}
 		glEnd();
-
-		glColor3f(0.8, 0.0, 0.9);
-		glPointSize(6.0);
-		glBegin(GL_POINTS);
-			for (const auto& item : *liKeyframesTRS)
-			{
-				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.2*m_iHeight, 18);
-				glVertex3fv(&pt.X);
-			}
-		glEnd();
-
 	}
 
-	if (bKeyframeEditing && liKeyframesMorphDst)
+	if (liKeyframesMorphDst)
 	{
-		glColor3f(0.0, 0.0, 0.8);
-		glLineWidth(2.0);
-		glBegin(GL_LINE_STRIP);
-			for (const auto& item : *liKeyframesMorphDst)
+		if (iSelected == id)
+			glColor3f(0.0, 0.2, 1.0);
+		else
+			glColor3f(0.0, 0.15, 0.75);
+		glLineWidth(1.0);
+		glBegin(GL_LINES);
+
+			for (size_t i = 0; i + 1 < liKeyframesMorphDst->size(); ++i)
 			{
-				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.8*m_iHeight, 13);
-				glVertex3fv(&pt.X);
+				const auto& a = (*liKeyframesMorphDst)[i];
+				const auto& b = (*liKeyframesMorphDst)[i + 1];
+
+				if (a.value.size() != b.value.size())
+					continue;
+
+				Vec3 pt1 = Vecc3(fStartX + a.time * 100.0 * fPPU, posy + 0.75 * m_iHeight, 13.0f);
+				Vec3 pt2 = Vecc3(fStartX + b.time * 100.0 * fPPU, posy + 0.75 * m_iHeight, 13.0f);
+
+				glVertex3fv(&pt1.X);
+				glVertex3fv(&pt2.X);
 			}
+
 		glEnd();
 
-		glColor3f(0.0, 0.0, 0.0);
-		glPointSize(8.0);
+		glPointSize(7.0);
 		glBegin(GL_POINTS);
 			for (const auto& item : *liKeyframesMorphDst)
 			{
-				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.8*m_iHeight, 15);
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.75*m_iHeight, 15);
 				glVertex3fv(&pt.X);
 			}
 		glEnd();
-
-		glColor3f(0.0, 0.0, 0.8);
-		glPointSize(6.0);
-		glBegin(GL_POINTS);
-			for (const auto& item : *liKeyframesMorphDst)
-			{
-				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.8*m_iHeight, 18);
-				glVertex3fv(&pt.X);
-			}
-		glEnd();
-
 	}
 
 
 }
+
 
 void TrackClip::Resize(int iWidth, int iHeight)
 {
@@ -215,6 +207,7 @@ float TrackClip::FindClipOnTrackAfter_HeadPx(int iTrack, int iPos10msUnits)
 
 	return iMin;
 }
+
 
 float TrackClip::ClipsFitsIntoGapOnTrackImmediate(int iTrack)
 {
@@ -494,6 +487,18 @@ bool TrackClip::Drag(int x, int y)
 	}
 
 	return false;
+}
+
+// ----------------ANIMATED PARAMS REGISTRATION----------------------------------
+
+void TrackClip::RegisterTRSparam(std::vector<ParamKeyframeTRSTransform>* _liKeyframesTRS)
+{
+	liKeyframesTRS = _liKeyframesTRS;
+}
+
+void TrackClip::RegisterMorphDSTparam(std::vector<ParamKeyframePolyline2D>* _liKeyframesMorphDst)
+{
+	liKeyframesMorphDst = _liKeyframesMorphDst;
 }
 
 

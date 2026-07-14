@@ -57,7 +57,6 @@ public:
 	// the track this clip belongs to
 	int      iTrack;
 
-	bool bKeyframeEditing;
 	std::vector<ParamKeyframeTRSTransform>* liKeyframesTRS;
 	std::vector<ParamKeyframePolyline2D>*   liKeyframesMorphDst;
 
@@ -84,16 +83,8 @@ public:
 
 	float ClipsFitsIntoGapOnTrackImmediate(int iTrack);
 
-	// ----------------ANIMATED PARAMS REGISTRATION----------------------------------
-	void RegisterTRSparam(std::vector<ParamKeyframeTRSTransform>* _liKeyframesTRS)
-	{
-		liKeyframesTRS = _liKeyframesTRS;
-	}
-
-	void RegisterMorphDSTparam(std::vector<ParamKeyframePolyline2D>* _liKeyframesMorphDst)
-	{
-		liKeyframesMorphDst = _liKeyframesMorphDst;
-	}
+	void RegisterTRSparam(std::vector<ParamKeyframeTRSTransform>* _liKeyframesTRS);
+	void RegisterMorphDSTparam(std::vector<ParamKeyframePolyline2D>* _liKeyframesMorphDst);
 
 protected:
 
