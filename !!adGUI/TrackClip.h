@@ -54,6 +54,8 @@ public:
 	static int iSelected;
 	int		 id;
 
+	static int iAutoIncrID;
+
 	// the track this clip belongs to
 	int      iTrack;
 
@@ -111,7 +113,6 @@ protected:
 private:
 
 	float iBeginDragX, iBeginDragY;
-
 };
 
 

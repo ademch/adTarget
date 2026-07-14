@@ -17,6 +17,7 @@ std::vector<TrackClip*> TrackClip::liClips;
 constexpr int const_iSnapPx       = 8;	// tracks are snapped to each other and to track start end boundary
 constexpr int const_iDragRadiusPx = 5;
 
+int TrackClip::iAutoIncrID = 0;
 
 TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 {
