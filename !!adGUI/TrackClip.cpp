@@ -110,11 +110,11 @@ void TrackClip::Draw()
 			glColor3f(0.6, 0.0, 0.7);
 		glLineWidth(2.0);
 		glBegin(GL_LINE_STRIP);
-		for (const auto& item : *liKeyframesTRS)
-		{
-			Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.25*m_iHeight, 13);
-			glVertex3fv(&pt.X);
-		}
+			for (const auto& item : *liKeyframesTRS)
+			{
+				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.25*m_iHeight, 13);
+				glVertex3fv(&pt.X);
+			}
 		glEnd();
 
 		glPointSize(7.0);
@@ -138,6 +138,7 @@ void TrackClip::Draw()
 
 			for (size_t i = 0; i + 1 < liKeyframesMorphDst->size(); ++i)
 			{
+				// process pairs
 				const auto& a = (*liKeyframesMorphDst)[i];
 				const auto& b = (*liKeyframesMorphDst)[i + 1];
 
@@ -397,6 +398,7 @@ bool TrackClip::Drag(int x, int y)
 	{
 		dragNdrop_Clip = this;
 
+		// prevent accidental drag start
 		if ((abs(x - iBeginDragX) < const_iDragStartPx) && !bDragInProgress)
 			return false;
 

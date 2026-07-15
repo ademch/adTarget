@@ -2,6 +2,7 @@
 #define VIDEO_ANIMATED_PARAMS_H
 
 #include "vector_math.h"
+#include "Quaternion.h"
 
 class ParamKeyframeFloat
 {

@@ -4,7 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <vector>
-#include "Quaternion.h"
+
 
 enum
 { X, Y, Z, W };
@@ -116,13 +116,6 @@ struct SMeshBezier4x4
 	float y[4][4];
 	float z[4][4];
 	float w[4][4];
-};
-
-struct TRSTransform
-{
-	Vec3 vTranslation;
-	Vec3 vScale;
-	Quaternion qRotation;
 };
 
 
@@ -261,11 +254,6 @@ Matr4 Mat4MakeTransformFromVectors( const Vec3& v1,  const Vec3& v2,
 
 Matr4 Mat4MakeTransformFromVectors( const Vec3& orig,  const Vec3& v1,  const Vec3& v2,
 									const Vec3& orign, const Vec3& v1n, const Vec3& v2n);
-
-Matr4        Mat4Compose(const TRSTransform& tc);
-Matr4        Mat4Interpolate(const Matr4& A, const Matr4& B, float t);
-TRSTransform TRSTransformInterpolate(const TRSTransform& a, const TRSTransform& b, float t);
-TRSTransform Mat4Decompose(const Matr4& m);
 
 void normalCalcPackSmooth(TriVertex* v0,TriVertex* v1, TriVertex* v2);
 void normalCalcPack(TriVertex* v0,TriVertex* v1, TriVertex* v2);

@@ -1,7 +1,8 @@
 #ifndef QUATERNION_H
 #define QUATERNION_H
 
-struct Matr4;
+#include "vector_math.h"
+
 
 struct Quaternion
 {
@@ -21,5 +22,18 @@ struct Quaternion
 
 	void Normalize();
 };
+
+struct TRSTransform
+{
+	Vec3 vTranslation;
+	Vec3 vScale;
+	Quaternion qRotation;
+};
+
+
+Matr4        Mat4Compose(const TRSTransform& tc);
+Matr4        Mat4Interpolate(const Matr4& A, const Matr4& B, float t);
+TRSTransform TRSTransformInterpolate(const TRSTransform& a, const TRSTransform& b, float t);
+TRSTransform Mat4Decompose(const Matr4& m);
 
 #endif
