@@ -47,32 +47,32 @@ void SimpleModel::UploadDataToGraphicsCard()
 int nParam_ArrayObjectSize = 0;
 int nArrayObjectSize;
 
-	nArrayObjectSize = sizeof(TriVertex) * vertices.m_uiBufferedItemsNumber;
-
 	glGenBuffersARB( 1, &m_VertexBufferObjectID );
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_VertexBufferObjectID );
-	glBufferDataARB( GL_ARRAY_BUFFER_ARB, nArrayObjectSize, &vertices.items[0], GL_STATIC_DRAW_ARB );
+	
+		nArrayObjectSize = sizeof(TriVertex)*vertices.m_uiBufferedItemsNumber;
+		glBufferDataARB( GL_ARRAY_BUFFER_ARB, nArrayObjectSize, &vertices.items[0], GL_STATIC_DRAW_ARB );
 
-	glGetBufferParameterivARB( GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &nParam_ArrayObjectSize );
+		glGetBufferParameterivARB( GL_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &nParam_ArrayObjectSize );
 
-	printf("VBO: allocated %d Kbyte in graphics card for vertex buffer\n", nParam_ArrayObjectSize >> 10);
-	if( nParam_ArrayObjectSize <= 0 )
-	{	printf("glBufferDataARB failed to allocate memory!");
-	}
-
-	nArrayObjectSize = sizeof(TriVertexIndex) * indices.m_uiBufferedItemsNumber;
+		printf("VBO: allocated %d Kbyte in graphics card for vertex buffer\n", nParam_ArrayObjectSize >> 10);
+		if ( nParam_ArrayObjectSize <= 0 )
+			printf("glBufferDataARB failed to allocate memory!");
+		
 	nParam_ArrayObjectSize = 0;
 
 	glGenBuffersARB( 1, &m_ElementBufferObjectID );
 	glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, m_ElementBufferObjectID );
-	glBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, nArrayObjectSize, &indices.items[0], GL_STATIC_DRAW_ARB );
 
-	glGetBufferParameterivARB( GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &nParam_ArrayObjectSize );
+		nArrayObjectSize = sizeof(TriVertexIndex)*indices.m_uiBufferedItemsNumber;
+		glBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, nArrayObjectSize, &indices.items[0], GL_STATIC_DRAW_ARB );
 
-	printf("VBO: allocated %d Kbyte in graphics card for index buffer\n", nParam_ArrayObjectSize >> 10);
-	if( nParam_ArrayObjectSize <= 0 )
-	{	printf("glBufferDataARB failed to allocate memory!");
-	}
+		glGetBufferParameterivARB( GL_ELEMENT_ARRAY_BUFFER_ARB, GL_BUFFER_SIZE_ARB, &nParam_ArrayObjectSize );
+
+		printf("VBO: allocated %d Kbyte in graphics card for index buffer\n", nParam_ArrayObjectSize >> 10);
+		if ( nParam_ArrayObjectSize <= 0 )
+			printf("glBufferDataARB failed to allocate memory!");
+		
 
 	glBindBufferARB( GL_ARRAY_BUFFER_ARB, NULL );
 	glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, NULL );
@@ -82,26 +82,28 @@ void SimpleModel::Render()
 {
 	if (vertices.m_uiBufferedItemsNumber == 0) return;
 	
-	ASSERT(m_VertexBufferObjectID != -1);
+	ASSERT(m_VertexBufferObjectID  != -1);
 	ASSERT(m_ElementBufferObjectID != -1);
 
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_VertexBufferObjectID );
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB,         m_VertexBufferObjectID );
 	glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, m_ElementBufferObjectID );
 
 	//glVertexPointer (3, GL_FLOAT, sizeof(TriVertex), &VertexManager.items[0].v);
-	glVertexPointer (3, GL_FLOAT, sizeof(TriVertex), GRAPHICS_BUFFER_OFFSET(sizeof(Vec3)));
-	glNormalPointer (GL_FLOAT, sizeof(TriVertex), GRAPHICS_BUFFER_OFFSET(0));
+	//               coords     type             offset                ptr to the first coord
+	glVertexPointer (     3, GL_FLOAT, sizeof(TriVertex), GRAPHICS_BUFFER_OFFSET(sizeof(Vec3)) );
+	glNormalPointer (        GL_FLOAT, sizeof(TriVertex), GRAPHICS_BUFFER_OFFSET(0) );
 
-	glEnableClientState( GL_VERTEX_ARRAY );
-	glEnableClientState( GL_NORMAL_ARRAY );
+		glEnableClientState( GL_VERTEX_ARRAY );
+		glEnableClientState( GL_NORMAL_ARRAY );
 
-	//glDrawElements(GL_TRIANGLES, IndexManager.m_uiBufferedItemsNumber*3, GL_UNSIGNED_INT, &IndexManager.items[0]);
-	glDrawElements(GL_TRIANGLES, indices.m_uiBufferedItemsNumber*3, GL_UNSIGNED_INT, GRAPHICS_BUFFER_OFFSET(0));
+			//glDrawElements(GL_TRIANGLES, IndexManager.m_uiBufferedItemsNumber*3, GL_UNSIGNED_INT, &IndexManager.items[0]);
+			//			       prim type                      indices count	      index type                       ptr
+			glDrawElements( GL_TRIANGLES, indices.m_uiBufferedItemsNumber*3, GL_UNSIGNED_INT, GRAPHICS_BUFFER_OFFSET(0) );
 
-	glDisableClientState( GL_VERTEX_ARRAY );
-	glDisableClientState( GL_NORMAL_ARRAY );
+		glDisableClientState( GL_VERTEX_ARRAY );
+		glDisableClientState( GL_NORMAL_ARRAY );
 
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB,         0 );
 	glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, 0 );
 }
 

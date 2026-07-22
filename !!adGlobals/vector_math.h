@@ -66,6 +66,9 @@ struct Matr3
 struct Matr3d
 {	double m[3][3];	};
 
+struct Matr2
+{	float m[2][2];	};
+
 // GL_N3F_V3F
 struct TriVertex
 {	Vec3 n;
@@ -145,10 +148,13 @@ Vec3d Vecc3d(const Vec3& vec);				                    //caster
 Vec3d Vecc3d(double x=0.0,double y=0.0,double z=0.0);			//constructor
 
 
-inline Matr4 Matrc4(const Vec4& r0=Vecc4(1.0,0.0,0.0,0.0),
-					const Vec4& r1=Vecc4(0.0,1.0,0.0,0.0),
-					const Vec4& r2=Vecc4(0.0,0.0,1.0,0.0),
-					const Vec4& r3=Vecc4(0.0,0.0,0.0,1.0));
+Matr4 Matrc4(const Vec4& r0=Vecc4(1.0,0.0,0.0,0.0),
+			 const Vec4& r1=Vecc4(0.0,1.0,0.0,0.0),
+			 const Vec4& r2=Vecc4(0.0,0.0,1.0,0.0),
+			 const Vec4& r3=Vecc4(0.0,0.0,0.0,1.0));
+
+Matr2 Matrc2(const Vec2& r0=Vecc2(1.0,0.0),
+			 const Vec2& r1=Vecc2(0.0,1.0));
 
 Matr4 MatrTranspose(const Matr4& m);
 
@@ -213,6 +219,7 @@ Vec3d  VecReflect(Vec3d vInput, Vec3d vNormal);
 
 Vec3   VecTranslate(Vec3 v, const float x, const float y, const float z);
 Vec2   VecRotate(Vec2 v, float angle);
+Vec3   VecRotateAroundAxis(Vec3 v, Vec3 axis, float angleRad);
 
 float  AngleBetweenVectors(Vec2 vec1, Vec2 vec2);
 float  AngleBetweenVectorsCCW(Vec2 vec1, Vec2 vec2);
@@ -232,11 +239,16 @@ Vec3 SphereCoordinatesToCartesian(float fTheta, float fPhi, float fR);
 Vec3 SphereCoordinatesToCartesian(Vec2 vAngles, float fR = 1.0f);
 
 // Matrix operators
-inline Vec3 operator*(Matr4 m, Vec3 v);
+Vec3 operator*(Matr4 m, Vec3 v);
 Vec3   operator*(Vec3 v, Matr4 m);
 Vec3   operator^(Matr4 m, Vec3 v);
 Vec3d  operator^(Matr4d m, Vec3d v);
-inline Matr4 operator*(const Matr4& m1, const Matr4& m2);
+Matr4 operator*(const Matr4& m1, const Matr4& m2);
+
+Matr2 operator*(const Matr2& m1, const Matr2& m2);
+Matr2 operator/(const Matr2& m, float s);
+float Det(const Matr2& m);
+Matr2 Transpose(const Matr2& m);
 
 // Matrix generators
 Matr4  Mat4MakeIdent();

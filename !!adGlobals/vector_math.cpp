@@ -152,6 +152,16 @@ return u;
 }
 
 
+Matr2 Matrc2(const Vec2& r0, const Vec2& r1)
+{
+Matr2 u;
+
+	u.m[0][0] = r0.X; u.m[0][1] = r0.Y;
+	u.m[1][0] = r1.X; u.m[1][1] = r1.Y;
+
+	return u;
+}
+
 float VecLength(const Vec3& v)
 {    return sqrt(sqr(v.X) + sqr(v.Y)+ sqr(v.Z));  }
 
@@ -288,6 +298,18 @@ Vec2 VecRotate(Vec2 v, float angle)
 		          sin(angle)*v.X + cos(angle)*v.Y );
 }
 
+Vec3 VecRotateAroundAxis(Vec3 v, Vec3 axis, float angleRad)
+{
+	axis = VecNormalize(axis);
+
+	float c = cos(angleRad);
+	float s = sin(angleRad);
+
+	return v*c +
+		   (axis * v)*s +
+		    axis*(axis ^ v)*(1.0f - c);
+}
+
 // Return value range [0, PI]
 float AngleBetweenVectors(Vec2 vec1, Vec2 vec2)
 {
@@ -318,10 +340,10 @@ Vec3 TriangleLinearInterpolate(Vec3 v0, Vec3 v1, Vec3 v2, float u, float v)
 	assert(u<1);	assert(u>0);
 	assert(v<1);	assert(v>0);
 
-Vec3 Ra = v0*(1-u) + v1*u;
-Vec3 Rb = v2*(1-u) + v1*u;
+	Vec3 Ra = v0*(1-u) + v1*u;
+	Vec3 Rb = v2*(1-u) + v1*u;
 
-return Ra*(1-v) + Rb*v;
+	return Ra*(1-v) + Rb*v;
 }
 
 Vec2 operator-(Vec2 v1, Vec2 v2) { return Vecc2(v1.X - v2.X, v1.Y - v2.Y); }
@@ -425,10 +447,9 @@ Vec3d u;
 
 Matr4 operator*(const Matr4& m1, const Matr4& m2)
 {
-unsigned char j;
 Matr4 u;
 
-	for ( j = 0 ; j < 4 ; j++ )
+	for (unsigned char j = 0 ; j < 4 ; j++ )
 	{
 		u.m[0][j] = m2.m[0][0] * m1.m[0][j] + m2.m[0][1] * m1.m[1][j] + m2.m[0][2] * m1.m[2][j] + m2.m[0][3] * m1.m[3][j];
 		u.m[1][j] = m2.m[1][0] * m1.m[0][j] + m2.m[1][1] * m1.m[1][j] + m2.m[1][2] * m1.m[2][j] + m2.m[1][3] * m1.m[3][j];
@@ -437,6 +458,50 @@ Matr4 u;
 	}
 
 return u;
+}
+
+Matr2 operator*(const Matr2& m1, const Matr2& m2)
+{
+Matr2 u;
+
+	for (unsigned char j = 0 ; j < 2 ; j++ )
+	{
+		u.m[0][j] = m2.m[0][0] * m1.m[0][j] + m2.m[0][1] * m1.m[1][j];
+		u.m[1][j] = m2.m[1][0] * m1.m[0][j] + m2.m[1][1] * m1.m[1][j];
+	}
+
+	return u;
+}
+
+Matr2 operator/(const Matr2& m, float s)
+{
+Matr2 r;
+
+	r.m[0][0] = m.m[0][0] / s;
+	r.m[0][1] = m.m[0][1] / s;
+	r.m[1][0] = m.m[1][0] / s;
+	r.m[1][1] = m.m[1][1] / s;
+
+	return r;
+}
+
+float Det(const Matr2& m)
+{
+	return m.m[0][0] * m.m[1][1]
+		 - m.m[0][1] * m.m[1][0];
+}
+
+Matr2 Transpose(const Matr2& m)
+{
+Matr2 r;
+
+	r.m[0][0] = m.m[0][0];
+	r.m[0][1] = m.m[1][0];
+
+	r.m[1][0] = m.m[0][1];
+	r.m[1][1] = m.m[1][1];
+
+	return r;
 }
 
 /**
