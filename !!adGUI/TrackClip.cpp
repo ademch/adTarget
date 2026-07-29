@@ -51,8 +51,6 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 	windowTool  = NULL;
 	textureIcon = NULL;
 
-	fPPU = 1.0;
-
 	video = NULL;
 
 	liKeyframesTRS      = NULL;
@@ -70,6 +68,9 @@ TrackClip::~TrackClip()
 void TrackClip::Draw()
 {
 	GUI_ElementResizable::Draw();
+
+	// pixels per 10ms unit
+	float fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
 
 	float fStartX = posx + m_iStartPos10msUnits*fPPU + xImmTransl + xImmBeg;
 
@@ -172,14 +173,14 @@ void TrackClip::Resize(int iWidth, int iHeight)
 {
 	m_iWidth  = iWidth;
 	//m_iHeight = iHeight;
-
-	// Pixels per 10ms
-	fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
 }
 
 
 float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos10msUnits)
 {
+	// pixels per 10ms unit
+	float fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
+
 	float iMax = -m_iWidth/2;
 	for (auto iterEl : liClips)
 	{
@@ -198,6 +199,9 @@ float TrackClip::FindClipOnTrackBefore_TailPx(int iTrack, int iPos10msUnits)
 
 float TrackClip::FindClipOnTrackAfter_HeadPx(int iTrack, int iPos10msUnits)
 {
+	// pixels per 10ms unit
+	float fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
+
 	float iMin = m_iWidth/2;
 	for (auto iterEl : liClips)
 	{
@@ -216,6 +220,9 @@ float TrackClip::FindClipOnTrackAfter_HeadPx(int iTrack, int iPos10msUnits)
 
 float TrackClip::ClipsFitsIntoGapOnTrackImmediate(int iTrack)
 {
+	// pixels per 10ms unit
+	float fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
+
 	float fLeftWallPix  = dragNdrop_Clip->FindClipOnTrackBefore_TailPx(iTrack, m_iStartPos10msUnits + xImmTransl/fPPU);
 	float fRightWallPix = dragNdrop_Clip->FindClipOnTrackAfter_HeadPx(iTrack, m_iStartPos10msUnits + xImmTransl/fPPU);
 
@@ -229,6 +236,9 @@ float TrackClip::ClipsFitsIntoGapOnTrackImmediate(int iTrack)
 bool TrackClip::Hover(int x, int y)
 {
 	GUI_ElementResizable::Hover(x, y);
+
+	// pixels per 10ms unit
+	float fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
 
 	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
@@ -267,6 +277,9 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 	if (!bEnabled) return false;
 
 	GUI_ElementResizable::Clicked(button, state, x, y);
+
+	// pixels per 10ms unit
+	float fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
 
 	Vec3 ptPeep = matrSliderNonInverted*Vecc3(x,y);
 
@@ -393,6 +406,9 @@ bool TrackClip::Drag(int x, int y)
 
 	// Ignore under 1 pixel drag for all cases
 	if (abs(x - iBeginDragX) < 1) return false;
+
+	// pixels per 10ms unit
+	float fPPU = float(m_iWidth)/PositionMediator::Get()->Duration10msUnits();
 
 	if (stateClip == STATE_CLIP_DRAG_POS)
 	{

@@ -79,8 +79,9 @@ public:
 	}
 
 protected:
-	bool CreateShader(const char* name, const char* nameVertexProgram, const char* nameFragmentProgram);
-	bool CreateShaderR(const char* name, const char* sourceVertexProgram, const char* sourceFragmentProgram);
+	bool CreateShader(const char* name, const char* filenameVS, const char* filenameFS, const char* filenameGS = NULL);
+	bool CreateShaderR(const char* name, const char* sourceVS, const char* sourceFS, const char* sourceGS = NULL);
+
 	GLint glGetUniformLocationARBassert(GLhandleARB programObj, const GLcharARB *name);
 
 private:

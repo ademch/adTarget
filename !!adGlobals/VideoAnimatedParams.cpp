@@ -197,6 +197,18 @@ void AnimatedParamPolyline2D::SetValueAt(double time, std::vector<Vec2> value)
 	liKeys.insert(it, k);
 }
 
+void AnimatedParamPolyline2D::DeleteValueAt(double time)
+{
+	for (auto it = liKeys.begin(); it != liKeys.end(); ++it)
+	{
+		if (fabs(it->time - time) < 1e-4)
+		{
+			liKeys.erase(it);
+			return;
+		}
+	}
+}
+
 const std::vector<ParamKeyframePolyline2D>* AnimatedParamPolyline2D::GetKeys() const
 {
 	return &liKeys;

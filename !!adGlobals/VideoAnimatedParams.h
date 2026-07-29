@@ -53,6 +53,7 @@ public:
 
 	std::vector<Vec2> Evaluate(double time);
 	void SetValueAt(double time, std::vector<Vec2> value);
+	void DeleteValueAt(double time);
 	const std::vector<ParamKeyframePolyline2D>* GetKeys() const;
 };
 

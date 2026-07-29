@@ -44,7 +44,6 @@ public:
 	static void       RemoveSelectedClip();
 
 	void Resize(int iWidth, int iHeight) override;
-
 	void Draw() override;
 
 	bool Clicked(int button, int state, int x, int y) override;
@@ -103,9 +102,6 @@ protected:
 	float xImmEnd;
 
 	StateClipDrag_enum stateClip;
-
-	// pixels per 10ms unit
-	float fPPU;
 
 	float FindClipOnTrackBefore_TailPx(int iTrack, int iPos);
 	float FindClipOnTrackAfter_HeadPx(int iTrack, int iPos);

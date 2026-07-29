@@ -114,19 +114,26 @@ GLint GLSL_AbstractPipeline::glGetUniformLocationARBassert(GLhandleARB programOb
 }
 
 
-bool GLSL_AbstractPipeline::CreateShader(const char* name, const char* nameVertexProgram, const char* nameFragmentProgram)
+bool GLSL_AbstractPipeline::CreateShader(const char* name, const char* filenameVS, const char* filenameFS, const char* filenameGS)
 {
 GLcharARB* shaderData;
 
 	GPUPrograms[name] = new GPUProgram(glCreateProgramObjectARB());
 
-	shaderData = read_shader_file(FullPathToFile(nameVertexProgram));
-	if (shaderData == NULL)	return false;
-	GPUPrograms[name]->addShader(shaderData, GL_VERTEX_SHADER_ARB);
+		shaderData = read_shader_file(FullPathToFile(filenameVS));
+		if (shaderData == NULL)	return false;
+		GPUPrograms[name]->addShader(shaderData, GL_VERTEX_SHADER_ARB);
 
-	shaderData = read_shader_file(FullPathToFile(nameFragmentProgram));
-	if (shaderData == NULL)	return false;
-	GPUPrograms[name]->addShader(shaderData, GL_FRAGMENT_SHADER_ARB);
+		shaderData = read_shader_file(FullPathToFile(filenameFS));
+		if (shaderData == NULL)	return false;
+		GPUPrograms[name]->addShader(shaderData, GL_FRAGMENT_SHADER_ARB);
+
+		if (filenameGS != NULL)
+		{
+			shaderData = read_shader_file(FullPathToFile(filenameGS));
+			if (shaderData == NULL)	return false;
+			GPUPrograms[name]->addShader(shaderData, GL_GEOMETRY_SHADER_ARB);
+		}
 
 	GPUPrograms[name]->link_program();
 
@@ -134,19 +141,26 @@ GLcharARB* shaderData;
 }
 
 
-bool GLSL_AbstractPipeline::CreateShaderR(const char* name, const char* sourceVertexProgram, const char* sourceFragmentProgram)
+bool GLSL_AbstractPipeline::CreateShaderR(const char* name, const char* sourceVS, const char* sourceFS, const char* sourceGS)
 {
 	GLcharARB* shaderData;
 
 	GPUPrograms[name] = new GPUProgram(glCreateProgramObjectARB());
 
-	shaderData = new char[strlen(sourceVertexProgram)+1];
-	strcpy(shaderData, sourceVertexProgram);
-	GPUPrograms[name]->addShader(shaderData, GL_VERTEX_SHADER_ARB);
+		shaderData = new char[strlen(sourceVS) + 1];
+		strcpy(shaderData, sourceVS);
+		GPUPrograms[name]->addShader(shaderData, GL_VERTEX_SHADER_ARB);
 
-	shaderData = new char[strlen(sourceFragmentProgram) + 1];
-	strcpy(shaderData, sourceFragmentProgram);
-	GPUPrograms[name]->addShader(shaderData, GL_FRAGMENT_SHADER_ARB);
+		shaderData = new char[strlen(sourceFS) + 1];
+		strcpy(shaderData, sourceFS);
+		GPUPrograms[name]->addShader(shaderData, GL_FRAGMENT_SHADER_ARB);
+
+		if (sourceGS != NULL)
+		{
+			shaderData = new char[strlen(sourceGS) + 1];
+			strcpy(shaderData, sourceGS);
+			GPUPrograms[name]->addShader(shaderData, GL_GEOMETRY_SHADER_ARB);
+		}
 
 	GPUPrograms[name]->link_program();
 
