@@ -38,6 +38,8 @@ public:
 	TrackClip(int _id, int px, int py, int _width, int _height);
 	~TrackClip();
 
+	static std::vector<TrackClip*> liClips;
+
 	static TrackClip* GetClip(OpenGLSubWindowWithGUI* wnd);
 	static TrackClip* GetSelectedClip();
 	static double     GetSelectedClipLocalTimeS();
@@ -79,8 +81,6 @@ public:
 	std::function<bool()>      OnClickDrag;
 
 	std::function<void(OpenGLSubWindowWithGUI*)> OnClipChange;
-
-	static std::vector<TrackClip*> liClips;
 
 	float ClipsFitsIntoGapOnTrackImmediate(int iTrack);
 
