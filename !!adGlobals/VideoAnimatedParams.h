@@ -42,6 +42,7 @@ public:
 
 	Matr4 Evaluate(double time);
 	void  SetValueAt(double time, TRSTransform value);
+	void DeleteValueAt(double time);
 	const std::vector<ParamKeyframeTRSTransform>* GetKeys() const;
 };
 

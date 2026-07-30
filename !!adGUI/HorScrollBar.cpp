@@ -5,7 +5,7 @@
 #include "../!!adGlobals/adOpenGLUtilities.h"
 #include "VideoPositionMediator.h"
 
-const unsigned int g_minZoomOutIndex = -24;
+const unsigned int g_minZoomOutIndex = -25;
 
 HorScrollBar::HorScrollBar(std::string caption, int px, int py)
 {

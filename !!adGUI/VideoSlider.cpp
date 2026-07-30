@@ -276,7 +276,7 @@ void VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
 	// Pixels per 10ms
 	float fPPU = float(m_iWidth)/mediator->Duration10msUnits();
 
-	for (const auto& item : *(clip->liKeyframesTRS))
+	for (const auto& item : clip->animatedTRSTransformPtr->liKeys)
 	{
 		if (abs(item.time*100.0 + clip->m_iStartPos10msUnits - fPos0_1*mediator->Duration10msUnits()) <
 		   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
@@ -286,7 +286,7 @@ void VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
 		}
 	}
 
-	for (const auto& item : *(clip->liKeyframesMorphDst))
+	for (const auto& item : clip->animatedPolylineDstPtr->liKeys)
 	{
 		if (abs(item.time*100.0 + clip->m_iStartPos10msUnits - fPos0_1*mediator->Duration10msUnits()) <
 		   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )

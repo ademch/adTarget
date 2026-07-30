@@ -119,6 +119,18 @@ void AnimatedParamTRSTransform::SetValueAt(double time, TRSTransform value)
 	liKeys.insert(it, k);
 }
 
+void AnimatedParamTRSTransform::DeleteValueAt(double time)
+{
+	for (auto it = liKeys.begin(); it != liKeys.end(); ++it)
+	{
+		if (fabs(it->time - time) < 1e-4)
+		{
+			liKeys.erase(it);
+			return;
+		}
+	}
+}
+
 const std::vector<ParamKeyframeTRSTransform>* AnimatedParamTRSTransform::GetKeys() const
 {
 	return &liKeys;

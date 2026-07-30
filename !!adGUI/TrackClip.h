@@ -48,9 +48,9 @@ public:
 	void Resize(int iWidth, int iHeight) override;
 	void Draw() override;
 
+	bool Hover(int x, int y) override;
 	bool Clicked(int button, int state, int x, int y) override;
 	bool Drag(int x, int y) override;
-	bool Hover(int x, int y) override;
 
 	static int iSelected;
 	int		 id;
@@ -60,8 +60,11 @@ public:
 	// the track this clip belongs to
 	int      iTrack;
 
-	std::vector<ParamKeyframeTRSTransform>* liKeyframesTRS;
-	std::vector<ParamKeyframePolyline2D>*   liKeyframesMorphDst;
+	AnimatedParamTRSTransform* animatedTRSTransformPtr;
+	AnimatedParamPolyline2D*   animatedPolylineDstPtr;
+
+	double fSelectedKeyframeTRS_time;
+	double fSelectedKeyframePolylineDst_time;
 
 	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
 	{
@@ -84,8 +87,8 @@ public:
 
 	float ClipsFitsIntoGapOnTrackImmediate(int iTrack);
 
-	void RegisterTRSparam(std::vector<ParamKeyframeTRSTransform>* _liKeyframesTRS);
-	void RegisterMorphDSTparam(std::vector<ParamKeyframePolyline2D>* _liKeyframesMorphDst);
+	void RegisterTRSparam(AnimatedParamTRSTransform* _liKeyframesTRS);
+	void RegisterMorphDSTparam(AnimatedParamPolyline2D* _liKeyframesMorphDst);
 
 protected:
 
@@ -109,7 +112,7 @@ protected:
 private:
 
 	float iBeginDragX, iBeginDragY;
-	bool bDragInProgress;
+	bool  bDragInProgress;
 };
 
 
