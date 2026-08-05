@@ -71,7 +71,7 @@ void VideoCacheThread::Worker()
 	{
 		if (atomic_bNewRequest)
 		{
-			UpdateCacheWindow(idxPlayhead);
+			if (!UpdateCacheWindow(idxPlayhead)) continue;
 
 			atomic_bNewRequest = false;
 		}
@@ -80,7 +80,7 @@ void VideoCacheThread::Worker()
 	}
 }
 
-void VideoCacheThread::UpdateCacheWindow(int index)
+bool VideoCacheThread::UpdateCacheWindow(int index)
 {
 	if (!m_bCacheInitialized)
 	{
@@ -119,23 +119,38 @@ void VideoCacheThread::UpdateCacheWindow(int index)
 	// 2. LOAD missing (iLow -> iHigh ensures correct order)
 	for (int i = m_center; i <= iHigh && i <= iTotalFrames-1; ++i)
 	{
+		// check for user frame to be loaded during this batch
+		if ((idxPlayhead < iLow) || (idxPlayhead > iHigh))
+		{
+			printf("cache: rebasing on %i\n", idxPlayhead);
+			return false;
+		}
+		
 		if (!ExistsInCache(i))
 			InsertIntoCache(i);
 	}
 
 	for (int i = iLow; i < m_center && i <= iTotalFrames-1; ++i)
 	{
+		// check for user frame to be loaded during this batch
+		if ((idxPlayhead < iLow) || (idxPlayhead > iHigh))
+		{
+			printf("cache: rebasing on %i\n", idxPlayhead);
+			return false;
+		}
+
 		if (!ExistsInCache(i))
 			InsertIntoCache(i);
 	}
 
+	return true;
 }
 
 bool VideoCacheThread::ExistsInCache(int i)
 {
 	std::lock_guard<std::mutex> lock(_mutex_mapExclusiveAccess);
 
-	return (m_cache.find(i) != m_cache.end());
+		return (m_cache.find(i) != m_cache.end());
 }
 
 

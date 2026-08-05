@@ -29,7 +29,7 @@ public:
 	void Stop();
 
 	FrameItem* GetFrame(int index);
-	void UpdateCacheWindow(int index);
+	bool UpdateCacheWindow(int index);
 
 protected:
 
