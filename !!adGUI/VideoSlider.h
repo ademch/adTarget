@@ -46,7 +46,10 @@ protected:
 	bool DrawTicks(float count, float fThickness, float fHeight, const Matr4& matTransform);
 	bool DrawMinuteDigits(float count, const Matr4& matTransform);
 
-	void TryToSnapPositionToKeyframe(double& fPos0_1);
+	bool TryToSnapPositionToKeyframe(double& fPos0_1);
+
+	bool bSpaceSliderSnapped;
+	int  iSpaceSliderAccum;
 
 private:
 

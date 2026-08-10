@@ -27,6 +27,9 @@ VideoSlider::VideoSlider(int px, int py, int _height):
 	vColor_defocused = Vecc3(0.1, 0.5, 0.1);
 
 	hCurLeftRight     = LoadCursorFromFileW(L"Cursors\\aero_arrowLeftRight.cur");
+
+	bSpaceSliderSnapped = false;
+	iSpaceSliderAccum = 0;
 }
 
 void VideoSlider::SetPos0_1(double _val)
@@ -213,6 +216,12 @@ void VideoSlider::MoveByScreenPixels(int dx)
 {
 	if (!bEnabled) return;
 
+	if (bSpaceSliderSnapped)
+	{
+		iSpaceSliderAccum += dx;
+		dx = iSpaceSliderAccum;
+	}
+
 	// m_fPos01*m_iWidth can produce screen coordinates but those are unpredictable in terms of rounding.
 	// Thats why we need first to get slider-precision coordinates into screen coordinates and then transform them back
 
@@ -234,6 +243,19 @@ void VideoSlider::MoveByScreenPixels(int dx)
 	// Convert back to 0..1
 	m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
 	m_fPos01 = CLAMP(m_fPos01, 0.0, 1.0);
+
+	// Handle snapping logic
+	if (TryToSnapPositionToKeyframe(m_fPos01))
+	{
+		if (!bSpaceSliderSnapped)
+		{
+			// have just snapped
+			bSpaceSliderSnapped = true;
+			iSpaceSliderAccum = 0;
+		}
+	}
+	else
+		bSpaceSliderSnapped = false;
 
 	if (OnChange) OnChangeSpaceScroller(m_fPos01);
 }
@@ -295,10 +317,10 @@ bool VideoSlider::Hover(int x, int y)
 }
 
 
-void VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
+bool VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
 {
 	TrackClip* clip = TrackClip::GetSelectedClip();
-	if (!clip) return;
+	if (!clip) return false;
 
 	PositionMediator* mediator = PositionMediator::Get();
 
@@ -311,7 +333,7 @@ void VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
 		   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
 		{
 			fPos0_1 = (item.time*100.0 + clip->m_iStartPos10msUnits)/mediator->Duration10msUnits();
-			return;
+			return true;
 		}
 	}
 
@@ -321,7 +343,7 @@ void VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
 		   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
 		{
 			fPos0_1 = (item.time*100.0 + clip->m_iStartPos10msUnits)/mediator->Duration10msUnits();
-			return;
+			return true;
 		}
 	}
 
@@ -329,14 +351,16 @@ void VideoSlider::TryToSnapPositionToKeyframe(double& fPos0_1)
 	   (iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
 	{
 		fPos0_1 = double(clip->m_iStartPos10msUnits)/mediator->Duration10msUnits();
-		return;
+		return true;
 	}
 
 	if (abs(clip->m_iStartPos10msUnits + clip->m_iLength10msUnits - fPos0_1*mediator->Duration10msUnits()) <
 		(iSnapPxToKeyframe*matrSliderNonInverted.m[0][0])/fPPU )
 	{
 		fPos0_1 = double(clip->m_iStartPos10msUnits + clip->m_iLength10msUnits)/mediator->Duration10msUnits();
-		return;
+		return true;
 	}
+
+	return false;
 
 }
