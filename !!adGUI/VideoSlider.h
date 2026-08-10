@@ -13,6 +13,7 @@ public:
 	VideoSlider(int px, int py, int _height);
 
 	std::function<void(double)>      OnChange;
+	std::function<void(double)>      OnChangeSpaceScroller;
 
 	void SetPos0_1(double _val);
 	void SetPosInit(double _val, int _v_max);
@@ -24,6 +25,8 @@ public:
 	bool Clicked(int button, int state, int x, int y) override;
 	bool Drag(int x, int y) override;
 	bool Hover(int x, int y) override;
+
+	void MoveByScreenPixels(int dx);
 
 protected:
 

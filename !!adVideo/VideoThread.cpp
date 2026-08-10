@@ -166,7 +166,7 @@ void VideoCacheThread::InsertIntoCache(int index)
 
 FrameItem* VideoCacheThread::LoadFrameFromStream(int indexFrame)
 {
-	std::cout << "Loading " << indexFrame << "\n";
+	std::cout << "cache: Loading " << indexFrame << "\n";
 
 	char errmsg[1024];
 	FFMS_ErrorInfo err;

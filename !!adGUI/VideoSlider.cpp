@@ -209,6 +209,35 @@ bool VideoSlider::Clicked(int button, int state, int x, int y)
 	return false;
 }
 
+void VideoSlider::MoveByScreenPixels(int dx)
+{
+	if (!bEnabled) return;
+
+	// m_fPos01*m_iWidth can produce screen coordinates but those are unpredictable in terms of rounding.
+	// Thats why we need first to get slider-precision coordinates into screen coordinates and then transform them back
+
+	// Current slider position in slider-world coordinates
+	float worldX = m_fPos01*m_iWidth - m_iWidth/2;
+
+	Matr4 matrSlider;
+	gluInvertMatrix(&matrSliderNonInverted.m[0][0], &matrSlider.m[0][0]);
+
+	// Convert to screen coordinates
+	Vec3 ptScreen = matrSlider*Vecc3(worldX, 0);
+
+	// Move by screen pixels
+	ptScreen.X += dx;
+
+	// Convert back to slider-precision coordinates
+	Vec3 ptPeep = matrSliderNonInverted*ptScreen;
+
+	// Convert back to 0..1
+	m_fPos01 = (ptPeep.X + m_iWidth/2) / m_iWidth;
+	m_fPos01 = CLAMP(m_fPos01, 0.0, 1.0);
+
+	if (OnChange) OnChangeSpaceScroller(m_fPos01);
+}
+
 
 bool VideoSlider::Drag(int x, int y)
 {
