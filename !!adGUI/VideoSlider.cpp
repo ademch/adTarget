@@ -29,7 +29,7 @@ VideoSlider::VideoSlider(int px, int py, int _height):
 	hCurLeftRight     = LoadCursorFromFileW(L"Cursors\\aero_arrowLeftRight.cur");
 
 	bSpaceSliderSnapped = false;
-	iSpaceSliderAccum = 0;
+	iSpaceSliderOutOfSnapAccum = 0;
 }
 
 void VideoSlider::SetPos0_1(double _val)
@@ -218,8 +218,8 @@ void VideoSlider::MoveByScreenPixels(int dx)
 
 	if (bSpaceSliderSnapped)
 	{
-		iSpaceSliderAccum += dx;
-		dx = iSpaceSliderAccum;
+		iSpaceSliderOutOfSnapAccum += dx;
+		dx = iSpaceSliderOutOfSnapAccum;
 	}
 
 	// m_fPos01*m_iWidth can produce screen coordinates but those are unpredictable in terms of rounding.
@@ -251,7 +251,7 @@ void VideoSlider::MoveByScreenPixels(int dx)
 		{
 			// have just snapped
 			bSpaceSliderSnapped = true;
-			iSpaceSliderAccum = 0;
+			iSpaceSliderOutOfSnapAccum = 0;
 		}
 	}
 	else

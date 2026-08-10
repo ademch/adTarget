@@ -49,7 +49,7 @@ protected:
 	bool TryToSnapPositionToKeyframe(double& fPos0_1);
 
 	bool bSpaceSliderSnapped;
-	int  iSpaceSliderAccum;
+	int  iSpaceSliderOutOfSnapAccum;
 
 private:
 

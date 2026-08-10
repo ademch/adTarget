@@ -271,10 +271,10 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 // Called from outside by MediaSubWindow during playback to make sure pleayhead stays visible
 void HorScrollBar::ScrollToMakePlayheadVisible(double fVal)
 {
-	PositionMediator* mediator = PositionMediator::Get();
-	// 				 float           int
-	float fSliderX = fVal*m_iWidth - m_iWidth/2 -fVal*iBorder*2 + iBorder;
+	// 					   // usable width         left
+	float fSliderX = fVal*(m_iWidth - iBorder*2) - m_iWidth/2 + iBorder;
 
+	// find control left and right borders in zoomed coordinates
 	cpuLoadIdentity();
 
 		cpuTranslatef(vUserSceneTranslation.X, 0, 0);
@@ -283,11 +283,17 @@ void HorScrollBar::ScrollToMakePlayheadVisible(double fVal)
 		float xLeft  = cpuPipelineVertex3fv( Vecc3(-m_iWidth/2 + iBorder) ).X;
 		float xRight = cpuPipelineVertex3fv( Vecc3( m_iWidth/2 - iBorder) ).X;
 
-	if (fSliderX <= xRight) return;
-
 	float fDelta = xRight - xLeft;
 
-	// Precalculate how far handle goes out of the window after current drag and move it back
+	if (fSliderX < xLeft)
+		fDelta = xLeft - xRight;
+	else if (fSliderX > xRight)
+		fDelta = xRight - xLeft;
+	else
+		return;
+
+	// Precalculate how far scroll handle goes out of the window after the full timeline visible width scroll
+	// and compensate if out of bounds
 	{
 		cpuLoadIdentity();
 
