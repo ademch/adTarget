@@ -1664,6 +1664,34 @@ float PointDistToLineSegment(const Vec3& ptX, const Vec3& ptA, const Vec3& ptB, 
 	return PointDist(ptOut, ptX);
 }
 
+// Find the distance between a point and a line segment in 3D
+// Parameters:
+//     ptX - point in question
+//     ptA, ptB - line end points
+//     ptOut - the closest point on the line
+// Result: Distance in mm
+float PointDistToLineSegment(const Vec2& ptX, const Vec2& ptA, const Vec2& ptB, Vec2& ptOut)
+{
+	float sqrDist = PointDistSqr(ptA, ptB);
+	if (sqrDist > 1e-6)
+	{
+		Vec2 vX = ptX - ptA;
+		Vec2 vL = ptB - ptA;
+
+		float t = (vX^vL) / sqrDist;
+		if (t <= 0)
+			ptOut = ptA;
+		else if (t >= 1)
+			ptOut = ptB;
+		else
+			ptOut = ptA + t*vL;
+	}
+	else
+		ptOut = ptA;
+
+	return PointDist(ptOut, ptX);
+}
+
 // Test if a point is inside the closed polyline
 // Note: The spline and point must be in 2D. This means that the Z-coordinate is not used.
 bool PointInsideCurve2D(const Vec2& ptTest, std::vector<Vec2> sp)

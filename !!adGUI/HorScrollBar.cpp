@@ -271,6 +271,7 @@ bool HorScrollBar::Wheel(int state, int delta, int x, int y)
 // Called from outside by MediaSubWindow during playback to make sure pleayhead stays visible
 void HorScrollBar::ScrollToMakePlayheadVisible(double fVal)
 {
+	// find slider X coord in screen coordinates
 	// 					   // usable width         left
 	float fSliderX = fVal*(m_iWidth - iBorder*2) - m_iWidth/2 + iBorder;
 

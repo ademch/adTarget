@@ -322,6 +322,7 @@ void matrTransp(float* matr);
 void normalize(float *coor);
 
 float PointDistToLineSegment(const Vec3& ptX, const Vec3& ptA, const Vec3& ptB, Vec3& ptOut);
+float PointDistToLineSegment(const Vec2& ptX, const Vec2& ptA, const Vec2& ptB, Vec2& ptOut);
 bool  PointInsideCurve2D(const Vec2& ptTest, std::vector<Vec2> sp);
 
 Vec3 CatmullRom(Vec3 aptCP0, Vec3 aptCP1, Vec3 aptCP2, Vec3 aptCP3, float t);
