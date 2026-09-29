@@ -61,10 +61,10 @@ public:
 	int      iTrack;
 
 	AnimatedParamTRSTransform* animatedTRSTransformPtr;
-	AnimatedParamPolyline2D*   animatedPolylineDstPtr;
+	AnimatedParamPolyline2D*   animatedMorphDstPtr;
 
 	double fSelectedKeyframeTRS_time;
-	double fSelectedKeyframePolylineDst_time;
+	double fSelectedKeyframePolylineDst_10ms;
 
 	void SetAttr(int _iStartPos10msTicks, int _iLength10msTicks)
 	{

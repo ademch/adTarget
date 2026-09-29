@@ -55,10 +55,10 @@ TrackClip::TrackClip(int _id, int px, int py, int _width, int _height)
 	video = NULL;
 
 	animatedTRSTransformPtr = NULL;
-	animatedPolylineDstPtr	= NULL;
+	animatedMorphDstPtr	= NULL;
 
 	fSelectedKeyframeTRS_time			= -1.0;
-	fSelectedKeyframePolylineDst_time	= -1.0;
+	fSelectedKeyframePolylineDst_10ms	= -1.0;
 }
 
 TrackClip::~TrackClip()
@@ -141,7 +141,7 @@ void TrackClip::Draw()
 		}
 	}
 
-	if (animatedPolylineDstPtr)
+	if (animatedMorphDstPtr)
 	{
 		if (iSelected == id)
 			glColor3f(0.0, 0.2, 1.0);
@@ -150,11 +150,11 @@ void TrackClip::Draw()
 		glLineWidth(2.0);
 		glBegin(GL_LINES);
 
-			for (size_t i = 0; i + 1 < animatedPolylineDstPtr->liKeys.size(); ++i)
+			for (size_t i = 0; i + 1 < animatedMorphDstPtr->liKeys.size(); ++i)
 			{
 				// process pairs
-				const auto& a = animatedPolylineDstPtr->liKeys[i];
-				const auto& b = animatedPolylineDstPtr->liKeys[i + 1];
+				const auto& a = animatedMorphDstPtr->liKeys[i];
+				const auto& b = animatedMorphDstPtr->liKeys[i + 1];
 
 				if (a.value.size() != b.value.size())
 					continue;
@@ -170,18 +170,18 @@ void TrackClip::Draw()
 
 		glPointSize(7.0);
 		glBegin(GL_POINTS);
-			for (const auto& item : animatedPolylineDstPtr->liKeys)
+			for (const auto& item : animatedMorphDstPtr->liKeys)
 			{
 				Vec3 pt = Vecc3(fStartX + item.time*100.0*fPPU, posy + 0.75*m_iHeight, 15);
 				glVertex3fv(&pt.X);
 			}
 		glEnd();
 
-		if (fSelectedKeyframePolylineDst_time >= 0.0)
+		if (fSelectedKeyframePolylineDst_10ms >= 0.0)
 		{
 			glPointSize(9.0);
 			glBegin(GL_POINTS);
-				Vec3 pt = Vecc3(fStartX + fSelectedKeyframePolylineDst_time*100.0*fPPU, posy + 0.75*m_iHeight, 16);
+				Vec3 pt = Vecc3(fStartX + fSelectedKeyframePolylineDst_10ms*100.0*fPPU, posy + 0.75*m_iHeight, 16);
 				glVertex3fv(&pt.X);
 			glEnd();
 		}
@@ -301,17 +301,17 @@ bool TrackClip::Hover(int x, int y)
 			fSelectedKeyframeTRS_time = -1.0;
 
 			// traverse 2D polyline Dst keyframes for point hover
-			for (const auto& item : animatedPolylineDstPtr->liKeys)
+			for (const auto& item : animatedMorphDstPtr->liKeys)
 			{
 				if ((abs(ptPeep.X - posx - m_iStartPos10msUnits*fPPU - item.time*100.0*fPPU) < const_iKeyframeJitterPx*matrSliderNonInverted.m[0][0]) &&
 					(abs(ptPeep.Y - posy - 0.75*m_iHeight)                                   < const_iKeyframeJitterPx))
 				{
-					fSelectedKeyframePolylineDst_time = item.time;
+					fSelectedKeyframePolylineDst_10ms = item.time;
 
 					return true;
 				}
 			}
-			fSelectedKeyframePolylineDst_time = -1.0;
+			fSelectedKeyframePolylineDst_10ms = -1.0;
 		}
 
 		return true;
@@ -320,7 +320,7 @@ bool TrackClip::Hover(int x, int y)
 	bFocused = false;
 
 	fSelectedKeyframeTRS_time = -1.0;
-	fSelectedKeyframePolylineDst_time = -1.0;
+	fSelectedKeyframePolylineDst_10ms = -1.0;
 
 	return false;
 }
@@ -370,12 +370,12 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 			}
 
 			// traverse 2D ployline Dst keyframes for click hit
-			for (const auto& item : animatedPolylineDstPtr->liKeys)
+			for (const auto& item : animatedMorphDstPtr->liKeys)
 			{
 				if ((abs(ptPeep.X - posx - m_iStartPos10msUnits*fPPU - item.time*100.0*fPPU) < const_iKeyframeJitterPx*matrSliderNonInverted.m[0][0]) &&
 					(abs(ptPeep.Y - posy - 0.75*m_iHeight)                                   < const_iKeyframeJitterPx))
 				{
-					fSelectedKeyframePolylineDst_time = item.time;
+					fSelectedKeyframePolylineDst_10ms = item.time;
 
 					POINT pt;
 					GetCursorPos(&pt);
@@ -616,7 +616,7 @@ void TrackClip::RegisterTRSparam(AnimatedParamTRSTransform* _animatedTRSTransfor
 
 void TrackClip::RegisterMorphDSTparam(AnimatedParamPolyline2D* _animatedPolylineDst)
 {
-	animatedPolylineDstPtr = _animatedPolylineDst;
+	animatedMorphDstPtr = _animatedPolylineDst;
 }
 
 
