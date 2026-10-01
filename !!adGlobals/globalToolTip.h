@@ -23,6 +23,8 @@ public:
 private:
 	HWND g_hwndToolTip;
 
+	SIZE sz;
+
 	bool bHintHasBeenShown;
 
 	int iToolTipX;

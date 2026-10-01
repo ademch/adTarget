@@ -14,6 +14,8 @@ ToolTip::ToolTip()
 
 	memset(strTooTip, 0, sizeof(strTooTip));
 
+	sz = {};
+
 	iToolTipX = 0;
 	iToolTipY = 0;
 
@@ -81,7 +83,7 @@ SIZE GetTextSize(HDC hdc, const char* text)
 {
 	RECT rc = {0, 0, 0, 0};
 
-	DrawTextA(hdc, text, -1, &rc, DT_CALCRECT | DT_SINGLELINE);
+	DrawTextA(hdc, text, -1, &rc, DT_CALCRECT );
 
 	SIZE s;
 	s.cx = rc.right  - rc.left;
@@ -97,12 +99,12 @@ void ToolTip::_ShowWindow()
 
 	HDC hdc = GetDC(NULL);
 
-		SIZE sz = GetTextSize(hdc, strTooTip);
+		sz = GetTextSize(hdc, strTooTip);
 
 	ReleaseDC(NULL, hdc);
 
 	int w = sz.cx + 10;	// + padding
-	int h = sz.cy + 5;	// + padding
+	int h = sz.cy + 10;	// + padding
 
 	SetWindowPos(g_hwndToolTip, HWND_TOPMOST, iToolTipX + 20, iToolTipY + 20, w, h, SWP_SHOWWINDOW | SWP_NOACTIVATE);
 
@@ -185,7 +187,11 @@ LRESULT CALLBACK TipProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetBkMode(hdc, TRANSPARENT);
 		SetTextColor(hdc, RGB(200, 220, 200));
 
-		DrawTextA(hdc, strTooTip, -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		// DrawTextA can not format multiline text vertically
+		rc.top  += 5;
+		rc.left += 5;
+
+		DrawTextA(hdc, strTooTip, -1, &rc, DT_LEFT);
 
 		EndPaint(hWnd, &ps);
 		return 0;

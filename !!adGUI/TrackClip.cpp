@@ -6,6 +6,7 @@
 #include "VideoPositionMediator.h"
 #include "../!!adVideo/FFMS_VIdeo.h"
 #include "TrackClipMenu.h"
+#include "../!!adGlobals/globalToolTip.h"
 
 
 TrackClip* dragNdrop_Clip = NULL;
@@ -152,10 +153,10 @@ void TrackClip::Draw()
 
 			for (size_t i = 0; i + 1 < animatedMorphDstPtr->liKeys.size(); ++i)
 			{
-				// process pairs
 				const auto& a = animatedMorphDstPtr->liKeys[i];
 				const auto& b = animatedMorphDstPtr->liKeys[i + 1];
 
+				// check whether next spline is from the same morphing sequence
 				if (a.value.size() != b.value.size())
 					continue;
 
@@ -295,6 +296,12 @@ bool TrackClip::Hover(int x, int y)
 				{
 					fSelectedKeyframeTRS_time = item.time;
 
+					#ifdef _ENABLE_TOOLTIP
+						//char aBuffer[100];
+						//sprintf_s(aBuffer, sizeof(aBuffer), "%zu point(s) morphing sequence", item.value.size());
+						ToolTip::Get()->Schedule("Transformation\naaa");
+					#endif
+
 					return true;
 				}
 			}
@@ -308,13 +315,19 @@ bool TrackClip::Hover(int x, int y)
 				{
 					fSelectedKeyframePolylineDst_10ms = item.time;
 
+					#ifdef _ENABLE_TOOLTIP
+						char aBuffer[100];
+						sprintf_s(aBuffer, sizeof(aBuffer), "%zu point(s) morphing sequence", item.value.size());
+						ToolTip::Get()->Schedule(aBuffer);
+					#endif
+
 					return true;
 				}
 			}
 			fSelectedKeyframePolylineDst_10ms = -1.0;
 		}
 
-		return true;
+		return false;// changed recently from true because we need to reset hint, if smth found malfunctioning change back to false and call hint->Finish here
 	}
 
 	bFocused = false;
@@ -668,4 +681,3 @@ double TrackClip::GetSelectedClipLocalTimeS()
 
 	return (iPlayhead10msTicks - clip->m_iStartPos10msUnits)/100.0;
 }
-
