@@ -221,6 +221,41 @@ void AnimatedParamPolyline2D::DeleteValueAt(double time)
 	}
 }
 
+void AnimatedParamPolyline2D::DeleteValueSegmentAround(double time)
+{
+	for (auto it = liKeys.begin(); it != liKeys.end(); ++it)
+	{
+		if (fabs(it->time - time) < 1e-4)
+		{
+			auto first = it;
+			auto last  = it;
+
+			while (first != liKeys.begin())
+			{
+				auto prev = first - 1;
+
+				if (prev->value.size() != it->value.size())
+					break;
+
+				first = prev;
+			}
+
+			while (last + 1 != liKeys.end())
+			{
+				auto next = last + 1;
+
+				if (next->value.size() != it->value.size())
+					break;
+
+				last = next;
+			}
+
+			liKeys.erase(first, last + 1);
+			return;
+		}
+	}
+}
+
 const std::vector<ParamKeyframePolyline2D>* AnimatedParamPolyline2D::GetKeys() const
 {
 	return &liKeys;

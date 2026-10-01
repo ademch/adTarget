@@ -98,12 +98,14 @@ public:
 
 	enum
 	{
-		ITEM_DELETE = 0
+		ITEM_DELETE = 0,
+		ITEM_DELETE_SEGEMENT
 	};
 
 	void Init(HWND parent) override
 	{
 		m_liItems.emplace_back(0, TEXT("Delete morph key"));
+		m_liItems.emplace_back(1, TEXT("Delete morph sequence"));
 
 		TrackMenuBase::Init(parent);
 	}

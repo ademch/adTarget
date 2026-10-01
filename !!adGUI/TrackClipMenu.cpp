@@ -14,8 +14,8 @@ void TrackMenuBase::Init(HWND parent)
 
 	static bool classRegistered = false;
 
-	m_iWidth        = 150;
-	m_iItemHeight = 24;
+	m_iWidth        = 200;
+	m_iItemHeight	= 24;
 	m_iHeight       = m_iItemHeight * m_liItems.size();
 
 	if (!classRegistered)

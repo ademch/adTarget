@@ -160,14 +160,40 @@ void TrackClip::Draw()
 				if (a.value.size() != b.value.size())
 					continue;
 
-				Vec3 pt1 = Vecc3(fStartX + a.time * 100.0 * fPPU, posy + 0.75 * m_iHeight, 13.0f);
-				Vec3 pt2 = Vecc3(fStartX + b.time * 100.0 * fPPU, posy + 0.75 * m_iHeight, 13.0f);
+				Vec3 pt1 = Vecc3(fStartX + a.time*100.0*fPPU, posy + 0.75*m_iHeight, 13.0f);
+				Vec3 pt2 = Vecc3(fStartX + b.time*100.0*fPPU, posy + 0.75*m_iHeight, 13.0f);
 
 				glVertex3fv(&pt1.X);
 				glVertex3fv(&pt2.X);
 			}
 
 		glEnd();
+
+		if (animatedMorphDstPtr->liKeys.size())
+		{
+			glEnable(GL_LINE_STIPPLE);
+			glLineStipple(2, 0xAAAA);
+
+			glBegin(GL_LINES);
+
+				const auto& a = animatedMorphDstPtr->liKeys[0];
+				const auto& b = animatedMorphDstPtr->liKeys[animatedMorphDstPtr->liKeys.size()-1];
+
+				Vec3 pt1 = Vecc3(fStartX,                     posy + 0.75*m_iHeight, 13.0f);
+				Vec3 pt2 = Vecc3(fStartX + a.time*100.0*fPPU, posy + 0.75*m_iHeight, 13.0f);
+
+				glVertex3fv(&pt1.X);
+				glVertex3fv(&pt2.X);
+
+				pt1 = Vecc3(fStartX + b.time*100.0*fPPU,                           posy + 0.75*m_iHeight, 13.0f);
+				pt2 = Vecc3(fStartX + m_iLength10msUnits*fPPU - xImmBeg + xImmEnd, posy + 0.75*m_iHeight, 13.0f);
+
+				glVertex3fv(&pt1.X);
+				glVertex3fv(&pt2.X);
+				
+				glEnd();
+			glDisable(GL_LINE_STIPPLE);
+		}
 
 		glPointSize(7.0);
 		glBegin(GL_POINTS);
@@ -178,6 +204,7 @@ void TrackClip::Draw()
 			}
 		glEnd();
 
+		// Higlight hovered point
 		if (fSelectedKeyframePolylineDst_10ms >= 0.0)
 		{
 			glPointSize(9.0);
@@ -373,6 +400,9 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 					(abs(ptPeep.Y - posy - 0.25*m_iHeight)                                   < const_iKeyframeJitterPx))
 				{
 					fSelectedKeyframeTRS_time = item.time;
+
+					// hide tooltip so it does not conflict with menu
+					ToolTip::Get()->Finish();
 					
 					POINT pt;
 					GetCursorPos(&pt);
@@ -389,6 +419,9 @@ bool TrackClip::Clicked(int button, int state, int x, int y)
 					(abs(ptPeep.Y - posy - 0.75*m_iHeight)                                   < const_iKeyframeJitterPx))
 				{
 					fSelectedKeyframePolylineDst_10ms = item.time;
+
+					// hide tooltip so it does not conflict with menu
+					ToolTip::Get()->Finish();
 
 					POINT pt;
 					GetCursorPos(&pt);
